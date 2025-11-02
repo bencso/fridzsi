@@ -16,14 +16,13 @@ import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import getLoginStyles from "@/styles/auth/login";
 import { emailRegex } from "@/constants/regex";
-import { MaterialCommunityIcons } from "@expo/vector-icons";
+import PasswordInputText from "@/components/passwordinput";
 
 export default function LoginScreen() {
   const { scheme } = useTheme();
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [emailCorrect, setEmailCorrect] = useState<boolean>(false);
-  const [showPassword, setShowPassword] = useState<boolean>(false);
   const emailTextInput = useRef<TextInput>(null);
   const { t } = useTranslation();
   const disabledButton =
@@ -51,7 +50,7 @@ export default function LoginScreen() {
       return;
     }
     const result = await login({ email: email, password: password });
-    if (typeof result !== "boolean" && result !== true)
+    if (result === false)
       Alert.alert(t("alerts.authErrorTitle"), t("alerts.authErrorMessage"));
   }
 
@@ -96,43 +95,7 @@ export default function LoginScreen() {
             }}
             placeholder={t("forms.email")}
           />
-          <View style={{ position: "relative", justifyContent: "center" }}>
-            <TextInput
-              style={styles.input}
-              value={password}
-              maxLength={150}
-              placeholderTextColor={`${Colors[scheme ?? "light"].text}80`}
-              autoComplete="current-password"
-              autoCorrect={false}
-              keyboardType="default"
-              textContentType="password"
-              autoCapitalize="none"
-              enablesReturnKeyAutomatically
-              secureTextEntry={!showPassword}
-              placeholder={t("forms.password")}
-              onChangeText={setPassword}
-            />
-            <TouchableOpacity
-              style={{
-                position: "absolute",
-                right: 10,
-                top: 0,
-                bottom: 0,
-                justifyContent: "center",
-                height: "100%",
-              }}
-              onPress={() => {
-                setShowPassword((prev) => !prev);
-              }}
-              activeOpacity={0.7}
-            >
-              <MaterialCommunityIcons
-                name={showPassword ? 'eye-off' : 'eye'}
-                size={24}
-                style={styles.icon}
-              />
-            </TouchableOpacity>
-          </View>
+          <PasswordInputText scheme={scheme} value={password} setValue={setPassword} label={t("forms.password")} />
           <TouchableOpacity
             disabled={disabledButton}
             onPress={onSubmit}

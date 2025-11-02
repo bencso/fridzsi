@@ -30,8 +30,8 @@ export default function getAuthenticatedIndexStyles({
       gap: 28,
       backgroundColor: `${Colors[colorScheme ?? "light"].tabIconDefault}`,
       padding: 18,
-      borderEndStartRadius: 24,
-      borderEndEndRadius: 24,
+      borderEndStartRadius: 32,
+      borderEndEndRadius: 32,
     },
     title: {
       maxWidth: "80%",
@@ -41,8 +41,7 @@ export default function getAuthenticatedIndexStyles({
       flexDirection: "column",
       gap: 12,
       color: Colors[colorScheme ?? "light"].text,
-      backgroundColor: "white",
-
+      backgroundColor: Colors[colorScheme ?? "light"].background,
       paddingHorizontal: 16,
       borderRadius: 24,
       fontSize: 16,
@@ -72,7 +71,7 @@ export default function getAuthenticatedIndexStyles({
     card: {
       width: 70,
       paddingVertical: 15,
-      borderRadius: 25,
+      borderRadius: 120,
       backgroundColor: Colors[colorScheme ?? "light"].background,
       marginHorizontal: 6,
       elevation: 1,
@@ -80,7 +79,7 @@ export default function getAuthenticatedIndexStyles({
     activeCard: {
       width: 70,
       paddingVertical: 15,
-      borderRadius: 25,
+      borderRadius: 120,
       backgroundColor: Colors[colorScheme ?? "light"].primary,
       marginHorizontal: 6,
       elevation: 1,

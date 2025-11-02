@@ -14,7 +14,7 @@ export class SessionService {
     private jwtService: JwtService,
     private config: ConfigService,
     private userService: UsersService,
-  ) { }
+  ) {}
   async createSessionInDb(
     sub: number,
     token: string,

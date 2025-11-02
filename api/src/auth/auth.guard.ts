@@ -11,7 +11,7 @@ import { SessionService } from 'src/sessions/sessions.service';
 //! Ha jól értem: nest guard = express middleware
 @Injectable()
 export class AuthGuard implements CanActivate {
-  constructor(private readonly sessionService: SessionService) { }
+  constructor(private readonly sessionService: SessionService) {}
   async canActivate(context: ExecutionContext): Promise<boolean> {
     // Request letárolása
     const request = context.switchToHttp().getRequest<Request>();

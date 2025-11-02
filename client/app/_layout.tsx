@@ -148,6 +148,7 @@ function AppContent() {
                 >
                   <MaterialCommunityIcons
                     name="cog"
+                    color={pathname === "/" ? Colors[scheme === "light" ? "dark" : "light"].tabIconDefault : Colors[scheme ?? "light"].tabIconDefault}
                     size={24}
                   />
                 </TouchableOpacity>
