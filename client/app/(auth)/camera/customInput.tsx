@@ -88,6 +88,7 @@ export default function CustomInputScreen() {
                         value={productName}
                         maxLength={150}
                         autoCorrect={false}
+                        clearButtonMode="while-editing"
                         keyboardType="default"
                         autoCapitalize="none"
                         returnKeyType="next"
@@ -150,6 +151,7 @@ export default function CustomInputScreen() {
                         maxLength={150}
                         placeholderTextColor={`${Colors[scheme ?? "light"].text}80`}
                         autoCorrect={false}
+                        clearButtonMode="while-editing"
                         keyboardType="number-pad"
                         returnKeyType="next"
                         editable={product?.code === null || product?.code === undefined}
@@ -167,6 +169,7 @@ export default function CustomInputScreen() {
                         value={amount.toString()}
                         maxLength={3}
                         autoCorrect={false}
+                        clearButtonMode="while-editing"
                         keyboardType="number-pad"
                         returnKeyType="done"
                         returnKeyLabel={t("buttons.done")}

@@ -26,12 +26,13 @@ export default function getAuthenticatedIndexStyles({
       fontSize: 16,
       backgroundColor: `${Colors[colorScheme ?? "light"].primary}10`,
     },
-    settingGroup: {
-      gap: 28,
+    shoppingListContainer: {
+      gap: 12,
       backgroundColor: `${Colors[colorScheme ?? "light"].tabIconDefault}`,
       padding: 18,
       borderEndStartRadius: 32,
       borderEndEndRadius: 32,
+      marginBottom: 12
     },
     title: {
       maxWidth: "80%",
@@ -46,7 +47,7 @@ export default function getAuthenticatedIndexStyles({
       borderRadius: 24,
       fontSize: 16,
       overflow: "scroll",
-      maxHeight: 180,
+      minHeight: 180,
     },
     topBarItem: {
       flexDirection: "row",
@@ -70,28 +71,37 @@ export default function getAuthenticatedIndexStyles({
     },
     card: {
       width: 70,
-      paddingVertical: 15,
       borderRadius: 120,
       backgroundColor: Colors[colorScheme ?? "light"].background,
-      marginHorizontal: 6,
       elevation: 1,
+      paddingVertical: 15,
+      marginHorizontal: 5,
     },
     activeCard: {
       width: 70,
       paddingVertical: 15,
       borderRadius: 120,
       backgroundColor: Colors[colorScheme ?? "light"].primary,
-      marginHorizontal: 6,
       elevation: 1,
+      marginHorizontal: 5,
     },
     cardTop: {
+      display: "flex",
       flexDirection: "column",
       alignItems: "center",
       textAlign: "center",
-      paddingVertical: 2,
-      paddingHorizontal: 5,
     },
     flexRow: { flexDirection: "row", gap: 16, alignItems: "center" },
     amountText: { fontSize: 14, color: Colors[colorScheme ?? "light"].text },
+    input: {
+      color: Colors[colorScheme ?? "light"].text,
+      paddingTop: 16,
+      paddingBottom: 16,
+      paddingStart: 16,
+     paddingEnd: 16, 
+      borderRadius: 32,
+      fontSize: 16,
+      backgroundColor: Colors[colorScheme ?? "light"].background,
+    },
   });
 }

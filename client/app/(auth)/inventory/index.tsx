@@ -44,7 +44,6 @@ export default function InventoryScreen() {
         {
           (pantry !== null) && <ThemedView style={styles.content}>
             <ScrollView showsVerticalScrollIndicator={false} scrollToOverflowEnabled style={{ height: "100%", overflow: "hidden", width: "100%" }}>
-              {/* */}
               <GestureHandlerRootView style={{ gap: 12 }}>
                 {
                   pantry && pantry.map((item: PantryType, idx: number) => {
@@ -54,7 +53,6 @@ export default function InventoryScreen() {
                   })
                 }
               </GestureHandlerRootView>
-              {/* */}
             </ScrollView>
           </ThemedView>
         }
