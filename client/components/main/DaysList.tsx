@@ -1,9 +1,12 @@
 import { Colors } from "@/constants/theme";
 import getAuthenticatedIndexStyles from "@/styles/authenticatedIndex";
 import { useTheme } from "@/contexts/theme-context";
-import { useState, useEffect } from "react";
+import { useState, useCallback } from "react";
 import { View, ScrollView, TouchableOpacity } from "react-native";
 import { ThemedText } from "../themed-text";
+import { usePantry } from "@/contexts/pantry-context";
+import { useFocusEffect } from "expo-router";
+import { PantryType } from "@/types/pantryType";
 
 export const DaysNextTwoMonth = () => {
     const [selectedDay, setSelectedDay] = useState<{
@@ -13,49 +16,72 @@ export const DaysNextTwoMonth = () => {
         month: "",
         numberDay: 0
     });
+    const { pantry, loadPantry } = usePantry();
     const { scheme: colorScheme } = useTheme();
     const styles = getAuthenticatedIndexStyles({ colorScheme });
 
     const [days, setDays] = useState<{ nameDay: string; numberDay: number; month: string; }[]>([]);
 
-    const nowYear = new Date().getFullYear();
-    const nowMonth = new Date().getMonth();
-    const nextMonth = new Date().getMonth() + 1;
-    const nowDay = new Date().getDate();
-    const nowDays = new Date(nowYear, nowMonth, 0).getDate();
-    const nextMonthDays = new Date(nowYear, nextMonth, 0).getDate();
+    // const nowYear = new Date().getFullYear();
+    // const nowMonth = new Date().getMonth();
+    // const nextMonth = new Date().getMonth() + 1;
+    // const nowDay = new Date().getDate();
+    // const nowDays = new Date(nowYear, nowMonth, 0).getDate();
+    // const nextMonthDays = new Date(nowYear, nextMonth, 0).getDate();
 
+    useFocusEffect(
+        useCallback(() => {
+            const generatedItems: { nameDay: string; numberDay: number; month: string; }[] = [];
 
-    useEffect(() => {
-        const generatedItems = [];
-        setSelectedDay({
-            numberDay: nowDay,
-            month: new Date(nowYear, nowMonth, nowDay).toLocaleDateString("en-us", { month: "short" }),
-        });
+            loadPantry();
+            pantry.flatMap((pantryItem: PantryType) => {
+                pantryItem.expiredAt.map((value: string) => {
+                    const [year, month, day] = value.split('.')
+                        .map(s => s.trim())
+                        .filter(Boolean);
+                    const date = new Date(Number(year), Number(month) - 1, Number(day));
+                    generatedItems.push({
+                        month: date.toLocaleDateString("en-us", { month: "short" }),
+                        nameDay: date.toLocaleDateString("en-us", { weekday: "short" }),
+                        numberDay: date.getDate(),
+                    });
 
-        for (let day = nowDay; day < nowDays; day++) {
-            generatedItems.push(
-                {
-                    month: new Date(nowYear, nowMonth, day).toLocaleDateString("en-us", { month: "short" }),
-                    nameDay: new Date(nowYear, nowMonth, day).toLocaleDateString("en-us", { weekday: "short" }),
-                    numberDay: day,
-                }
-            );
-        }
+                    setDays(generatedItems);
+                });
+            });
+            setSelectedDay(generatedItems[0]);
+        }, [loadPantry, pantry])
+    );
 
-        for (let day = 1; day < nextMonthDays; day++) {
-            generatedItems.push(
-                {
-                    month: new Date(nowYear, nextMonth, day).toLocaleDateString("en-us", { month: "short" }),
-                    nameDay: new Date(nowYear, nextMonth, day).toLocaleDateString("en-us", { weekday: "short" }),
-                    numberDay: day,
-                }
-            );
-        }
+    // useEffect(() => {
+    //     const generatedItems = [];
+    //     setSelectedDay({
+    //         numberDay: nowDay,
+    //         month: new Date(nowYear, nowMonth, nowDay).toLocaleDateString("en-us", { month: "short" }),
+    //     });
 
-        setDays(generatedItems);
-    }, [nextMonth, nextMonthDays, nowDay, nowDays, nowMonth, nowYear])
+    //     for (let day = nowDay; day < nowDays; day++) {
+    //         generatedItems.push(
+    //             {
+    //                 month: new Date(nowYear, nowMonth, day).toLocaleDateString("en-us", { month: "short" }),
+    //                 nameDay: new Date(nowYear, nowMonth, day).toLocaleDateString("en-us", { weekday: "short" }),
+    //                 numberDay: day,
+    //             }
+    //         );
+    //     }
 
+    //     for (let day = 1; day < nextMonthDays; day++) {
+    //         generatedItems.push(
+    //             {
+    //                 month: new Date(nowYear, nextMonth, day).toLocaleDateString("en-us", { month: "short" }),
+    //                 nameDay: new Date(nowYear, nextMonth, day).toLocaleDateString("en-us", { weekday: "short" }),
+    //                 numberDay: day,
+    //             }
+    //         );
+    //     }
+
+    //     setDays(generatedItems);
+    // }, [nextMonth, nextMonthDays, nowDay, nowDays, nowMonth, nowYear])
 
     return (
         <View style={{

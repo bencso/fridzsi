@@ -35,7 +35,6 @@ export const getInventoryStyle = ({colorScheme} : {colorScheme: keyof typeof Col
     productIcon: {
       width: 50,
       height: 50,
-      backgroundColor: "black",
       borderRadius: "100%",
       justifyContent: "center",
       alignItems: "center",

@@ -108,36 +108,66 @@ function InventoryItem({ product, idx }: {
     );
   };
 
+  //! Lehetett volna szebben és jobban ez az expiredAt mondjuk Date-ben visszadni, késöbb lehet ezt megcsinálni :)
+  //TODO: Az expiredAt késöbbiekben Date-ben jöjjön vissza, könnyebb kezelhetőség
   return (
-    product.amount.map((_, index) => {
-      return <ReanimatedSwipeable
-        containerStyle={{
-          padding: 20, paddingTop: 0, paddingBottom: 12, borderBottomWidth: 1, borderBottomColor: Colors[colorScheme ?? "light"].border,
-          borderRadius: 12,
-        }}
-        key={idx + "-" + index}
-        friction={1}
-        enableTrackpadTwoFingerGesture
-        rightThreshold={80}
-        renderRightActions={(progress, dragX, _) => (
-          <RightAction progress={progress} dragX={dragX} key={idx + "-" + index} code={product.code} />
-        )}>
-        <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", width: "100%" }}>
-          <View style={{ flexDirection: "row", gap: 16, alignItems: "center" }}>
-            <View style={styles.productIcon} >
-              <ThemedText type="subtitle" style={{ color: "white" }}>{
-                product.name?.at(0)?.toUpperCase()
-              }</ThemedText>
+    product.amount.map((amount, i) => ({
+      amount,
+      expiredAt: product.expiredAt[i],
+    }))
+      .sort((a, b) => {
+        const [ayear, amonth, aday] = a.expiredAt?.split(".").map(Number) || [];
+        const [byear, bmonth, bday] = b.expiredAt?.split(".").map(Number) || [];
+        const aDate = new Date(ayear, amonth - 1, aday);
+        const bDate = new Date(byear, bmonth - 1, bday);
+        return aDate.getTime() - bDate.getTime();
+      }).map((item, index) => {
+        function expirationColoring() {
+          const [year, month, day] = item.expiredAt?.split(".").map(s => Number(s.trim())).filter(Boolean) || [];
+          return new Date(year, month - 1, day).toLocaleDateString() === new Date().toLocaleDateString()
+            ? Colors[colorScheme ?? "light"].uncorrect
+            : Colors[colorScheme ?? "light"].text;
+        }
+
+        return (
+          <ReanimatedSwipeable
+            containerStyle={{
+              padding: 20,
+              paddingTop: 12,
+              paddingBottom: 12,
+              borderBottomWidth: 1,
+              borderBottomColor: Colors[colorScheme ?? "light"].border,
+            }}
+            key={idx + "-" + index}
+            friction={1}
+            enableTrackpadTwoFingerGesture
+            rightThreshold={80}
+            renderRightActions={(progress, dragX, _) => (
+              <RightAction progress={progress} dragX={dragX} key={idx + "-" + index} code={product.code} />
+            )}
+          >
+            <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", width: "100%" }}>
+              <View style={{ flexDirection: "row", gap: 16, alignItems: "center" }}>
+                <View
+                  style={{
+                    ...styles.productIcon,
+                    backgroundColor: expirationColoring(),
+                  }}
+                >
+                  <ThemedText style={{ color: Colors[colorScheme ?? "light"].background, fontWeight: "900", fontSize: 20 }}>
+                    {product.name?.at(0)?.toUpperCase()}
+                  </ThemedText>
+                </View>
+                <ThemedText numberOfLines={1} type="defaultSemiBold" style={styles.productTitle}>
+                  {product.name}
+                </ThemedText>
+              </View>
+              <ThemedText style={styles.productSecond}>
+                {item.amount} x
+              </ThemedText>
             </View>
-            <ThemedText numberOfLines={1} type="defaultSemiBold" style={styles.productTitle}>
-              {product.name}
-            </ThemedText>
-          </View>
-          <ThemedText style={styles.productSecond}>
-            {product.amount[index]} x
-          </ThemedText>
-        </View>
-      </ReanimatedSwipeable>
-    })
-  )
+          </ReanimatedSwipeable>
+        );
+      })
+  );
 }

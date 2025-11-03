@@ -35,6 +35,14 @@ export default function AuthenticatedLayout() {
             />
             <Label>{t("inventory.cta")}</Label>
           </NativeTabs.Trigger>
+          <NativeTabs.Trigger name="shoppinglist">
+            <Icon
+              selectedColor={Colors[scheme ?? "light"].tabIconSelected}
+              sf="list.bullet"
+              drawable="custom_listbullet_drawable"
+            />
+            <Label>{t("shoppinglist.cta")}</Label>
+          </NativeTabs.Trigger>
           <NativeTabs.Trigger name="camera" role="search">
             <Icon
               selectedColor={Colors[scheme ?? "light"].tabIconSelected}
@@ -75,6 +83,27 @@ export default function AuthenticatedLayout() {
             tabBarIcon: () => (
               <Icon sf="scanner" drawable="custom_scanner_drawable" />
             ),
+            tabBarAccessibilityLabel: t("tabs.inventory.create"),
+          }}
+        />
+        <Tabs.Screen
+          name="shoppinglist"
+          options={{
+            title: t("shoppinglist.cta"),
+            tabBarIcon: () => (
+              <Icon sf="list.bullet" drawable="custom_listbullet_drawable" />
+            ),
+            tabBarAccessibilityLabel: t("shoppinglist.cta"),
+          }}
+        />
+        <Tabs.Screen
+          name="camera"
+          options={{
+            title: t("inventory.camera.create"),
+            tabBarIcon: () => (
+              <Icon sf="plus" drawable="custom_camera_drawable" />
+            ),
+            tabBarAccessibilityLabel: t("inventory.camera.create"),
           }}
         />
       </Tabs>
