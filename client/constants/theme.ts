@@ -56,7 +56,7 @@ export const Fonts = Platform.select({
     bold: 'Bold',
     sans: 'Regular',
     serif: 'Regular',
-    rounded: 'Regular',
+    rounded: 'Italic',
     mono: 'Regular'
   },
   default: {
@@ -64,7 +64,7 @@ export const Fonts = Platform.select({
     bold: 'Bold',
     sans: 'Regular',
     serif: 'Regular',
-    rounded: 'Regular',
+    rounded: 'Italic',
     mono: 'Regular'
   },
   web: {
@@ -72,7 +72,7 @@ export const Fonts = Platform.select({
     bold: 'Bold',
     sans: 'Regular',
     serif: 'Regular',
-    rounded: 'Regular',
+    rounded: 'Italic',
     mono: 'Regular'
   },
 });

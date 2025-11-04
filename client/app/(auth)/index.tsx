@@ -1,4 +1,3 @@
-import { DaysNextTwoMonth } from "@/components/main/DaysList";
 import { ShoppingListSection } from "@/components/main/ShoppingListSection";
 import { ThemedText } from "@/components/themed-text";
 import { ThemedView } from "@/components/themed-view";
@@ -40,7 +39,7 @@ export default function AuthenticatedScreen() {
       </View>
       <ShoppingListSection />
       <ThemedView style={styles.content}>
-        <DaysNextTwoMonth />
+        
       </ThemedView >
     </ThemedView >
   );

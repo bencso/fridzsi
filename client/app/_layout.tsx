@@ -58,6 +58,7 @@ function AppContent() {
     Regular: require("../assets/fonts/DMSans_36pt-Regular.ttf"),
     Bold: require("../assets/fonts/DMSans_36pt-Bold.ttf"),
     Black: require("../assets/fonts/DMSans_36pt-Black.ttf"),
+    Italic: require("../assets/fonts/DMSans-Italic.ttf")
   });
 
   useEffect(() => {
