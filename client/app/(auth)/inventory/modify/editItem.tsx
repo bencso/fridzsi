@@ -23,7 +23,7 @@ export default function DeleteItemScreen() {
     const [selectedItemId, setSelectedItemId] = useState<number | null>(null);
     const [products, setProducts] = useState([]);
     const { scheme } = useTheme();
-    const { editPantryItem, loadPantry } = usePantry();
+    const { editPantryItem } = usePantry();
     const { t } = useTranslation();
     const params = useLocalSearchParams();
     const { getItemsById } = usePantry();
@@ -107,7 +107,6 @@ export default function DeleteItemScreen() {
                                                     id: selectedItemId,
                                                     amount: Number(amount)
                                                 });
-                                                await loadPantry();
                                                 router.back();
                                             }
                                         }

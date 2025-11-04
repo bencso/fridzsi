@@ -14,4 +14,5 @@ export declare class SessionService {
     deleteSessionInDb(token: string, user_data: UserData): Promise<void>;
     validateAccessToken(req: Request): Promise<any>;
     validateRefreshToken(refreshToken: string): Promise<boolean>;
+    validateRefreshTokenUserData(refreshToken: string): Promise<number | boolean>;
 }

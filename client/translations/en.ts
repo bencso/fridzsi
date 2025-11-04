@@ -54,7 +54,8 @@ export default {
     cta: "Add product",
     productName: "Product name",
     productCode: "Product code",
-    send: "Add"
+    send: "Add",
+    searchLabel: "Search products"
   },
   alerts: {
     authErrorTitle: "An error occurred during login!",
@@ -73,6 +74,7 @@ export default {
   },
   inventory: {
     cta: "Pantry",
+        title: "Your pantry",
     permission: {
       title: "Permission is required to use the camera.",
       description:
@@ -89,6 +91,33 @@ export default {
       wrongscan: "Correct incorrect entry",
       customadd: "Add product to the system",
       custominput: "Manual input",
+    },
+    edititem: {
+      title: "Edit item",
+      cta: "Edit",
+      amountInput: {
+        title: "Amount",
+        message: "Please enter the new amount.",
+        submit: "Save",
+        cancel: "Cancel",
+        error: "Invalid amount!",
+        errorTitle: "Error",
+      },
+    },
+    deleteItem: {
+      title: "Delete item",
+      cta: " amount delete",
+      amountInput: {
+        title: "Amount",
+      },
+    },
+  },
+  shoppinglist: {
+    cta: "Shopping list",
+    title: "Your shopping list",
+    search: {
+      cta: "Search products",
+      notHave: "No products found.",
     },
   },
 };

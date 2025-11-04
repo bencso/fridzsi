@@ -33,8 +33,8 @@ let AuthController = class AuthController {
     passwordChange(body, request) {
         return this.authService.passwordChange(body, request);
     }
-    refreshToken(request) {
-        return this.authService.refresh(request);
+    refreshToken(request, body) {
+        return this.authService.refresh(request, body);
     }
     validUser(request) {
         return this.authService.validation(request);
@@ -79,11 +79,11 @@ __decorate([
 __decorate([
     (0, common_1.Post)('refresh'),
     (0, swagger_1.ApiBearerAuth)(),
-    (0, common_1.UseGuards)(auth_guard_1.AuthGuard),
     (0, common_1.HttpCode)(common_1.HttpStatus.OK),
     __param(0, (0, common_1.Req)()),
+    __param(1, (0, common_1.Body)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object]),
+    __metadata("design:paramtypes", [Object, Object]),
     __metadata("design:returntype", void 0)
 ], AuthController.prototype, "refreshToken", null);
 __decorate([

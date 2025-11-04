@@ -96,7 +96,6 @@ export class SessionService {
 
       if (!accessToken) return null;
 
-      //? IGNORE EXPIRATION !!!
       const payload = await this.jwtService.verifyAsync(accessToken, {
         secret: this.config.get<string>('JWT_TOKEN_SECRET'),
       });
@@ -123,6 +122,30 @@ export class SessionService {
         .getOne();
 
       return !!dbData;
+    } catch {
+      return false;
+    }
+  }
+
+  async validateRefreshTokenUserData(
+    refreshToken: string,
+  ): Promise<number | boolean> {
+    try {
+      const payload = await this.jwtService.verifyAsync(refreshToken, {
+        secret: this.config.get<string>('JWT_REFRESH_SECRET'),
+      });
+
+      const haveUser = await this.dataSource
+        .getRepository(Sessions)
+        .createQueryBuilder('sessions')
+        .where('sessions.userId = :userId', {
+          userId: payload.sub,
+          session_id: payload.tokenId,
+        })
+        .getOne();
+
+      if (!haveUser.token) throw new Error();
+      return payload.sub;
     } catch {
       return false;
     }

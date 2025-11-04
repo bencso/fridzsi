@@ -4,7 +4,6 @@ import React, {
     createContext,
     ReactNode,
     useContext,
-    useEffect,
     useState,
 } from "react";
 import { Product } from "@/constants/product.interface"
@@ -164,10 +163,6 @@ export function PantryProvider({ children }: { children: ReactNode }) {
             setIsLoading(false);
         }
     }
-
-    useEffect(() => {
-        loadPantry();
-    }, []);
 
     return (
         <PantryContext.Provider value={{ pantry, loadPantry, isLoading, addPantryItem, deletePantryItem, product, getItemsById, setProductItemByCode, searchProductByKeyword, scanned, setScanned, setProduct, editPantryItem }}>

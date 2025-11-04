@@ -51,7 +51,8 @@ export default {
         cta: "Termék felvitele",
         productName: "Termék neve",
         productCode: "Termék kódja",
-        send: "Felvitel"
+        send: "Felvitel",
+        searchLabel: "Keresés a termékek között"
     },
     alerts: {
         authErrorTitle: "Hiba történt a bejelentkezéskor!",
@@ -70,6 +71,7 @@ export default {
     },
     inventory: {
         cta: "Kamra",
+        title: "Az Ön kamrája",
         permission: {
             title: "A kamera használatához engedély szükséges.",
             description:
@@ -86,6 +88,33 @@ export default {
             wrongscan: "Hibás bevitel javítása",
             customadd: "Termék hozzáadása a rendszerhez",
             custominput: "Kézi bevitel",
+        },
+        editItem: {
+            title: "Termék szerkesztése",
+            cta: "Szerkesztés",
+            amountInput: {
+                title: "Darabszám",
+                message: "Kérjük, adja meg az új darabszámot.",
+                submit: "Mentés",
+                cancel: "Mégsem",
+                error: "Érvénytelen darabszám!",
+                errorTitle: "Hiba",
+            },
+        },
+        deleteItem: {
+             title: "Termék törlése",
+            cta: "db törlése",
+            amountInput: {
+                title: "Darabszám",
+            },
+        },
+    },
+    shoppinglist: {
+        cta: "Bevásárlólista",
+        title: "A te bevásárlólistád",
+        search: {
+            cta: "Termékek keresése",
+            notHave: "Nincs találat.",
         },
     },
 };

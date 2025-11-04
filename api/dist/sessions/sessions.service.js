@@ -123,6 +123,27 @@ let SessionService = class SessionService {
             return false;
         }
     }
+    async validateRefreshTokenUserData(refreshToken) {
+        try {
+            const payload = await this.jwtService.verifyAsync(refreshToken, {
+                secret: this.config.get('JWT_REFRESH_SECRET'),
+            });
+            const haveUser = await this.dataSource
+                .getRepository(sessions_entity_1.Sessions)
+                .createQueryBuilder('sessions')
+                .where('sessions.userId = :userId', {
+                userId: payload.sub,
+                session_id: payload.tokenId,
+            })
+                .getOne();
+            if (!haveUser.token)
+                throw new Error();
+            return payload.sub;
+        }
+        catch {
+            return false;
+        }
+    }
 };
 exports.SessionService = SessionService;
 exports.SessionService = SessionService = __decorate([

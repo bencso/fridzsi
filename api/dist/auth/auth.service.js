@@ -173,20 +173,28 @@ let AuthService = class AuthService {
             };
         }
     }
-    async refresh(request) {
+    async refresh(request, body) {
         if (request) {
             try {
-                const refreshToken = request?.cookies?.refreshToken;
-                const verifiedToken = await this.jwtService.verifyAsync(refreshToken, {
-                    secret: this.config.get('JWT_REFRESH_SECRET'),
-                });
-                const user = await this.usersService.findOne(verifiedToken.sub);
-                const user_data = {
-                    ip: request.ip,
-                    user_agent: request.headers['user-agent'],
-                };
-                const accessToken = await this.createAccessToken(user, user_data);
-                return { accessToken };
+                if (body.refreshToken) {
+                    const requestUser = await this.sessionsService.validateRefreshTokenUserData(body.refreshToken);
+                    if (typeof requestUser !== 'number')
+                        throw new Error();
+                    const user = await this.usersService.findOne(requestUser);
+                    const user_data = {
+                        ip: request.ip,
+                        user_agent: request.headers['user-agent'],
+                    };
+                    const accessToken = await this.createAccessToken(user, user_data);
+                    const payload = {
+                        sub: user.id,
+                        tokenId: (0, crypto_1.randomUUID)(),
+                    };
+                    const refreshToken = await this.createRefreshToken(payload);
+                    return { accessToken, refreshToken };
+                }
+                else
+                    throw new Error();
             }
             catch (error) {
                 throw new common_1.UnauthorizedException('Érvénytelen vagy lejárt refresh token: ' + error);

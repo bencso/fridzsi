@@ -46,10 +46,12 @@ export class AuthController {
 
   @Post('refresh')
   @ApiBearerAuth()
-  @UseGuards(AuthGuard)
   @HttpCode(HttpStatus.OK)
-  refreshToken(@Req() request: Request) {
-    return this.authService.refresh(request);
+  refreshToken(
+    @Req() request: Request,
+    @Body() body: { refreshToken: string },
+  ) {
+    return this.authService.refresh(request, body);
   }
 
   @Get('valid')

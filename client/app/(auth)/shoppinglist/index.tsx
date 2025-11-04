@@ -27,7 +27,7 @@ export default function ShoppingListScreen() {
   return (
     <><View style={navbarStyle.navbar}>
       <ThemedText type="title" style={navbarStyle.title}>
-        {t("inventory.title")}
+        {t("shoppinglist.title")}
       </ThemedText>
     </View>
       <ThemedView style={styles.container}>

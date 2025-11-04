@@ -6,6 +6,7 @@ import { BodyRegistration, RegistrationDto } from './dto/registration.dto';
 import { ConfigService } from '@nestjs/config';
 import { Request, Response } from 'express';
 import { ReturnUserDto } from 'src/users/dto/return.dto';
+import { UUID } from 'crypto';
 import { SessionService } from 'src/sessions/sessions.service';
 import { UserData } from 'src/sessions/entities/sessions.entity';
 import { ReturnDataDto, ReturnDto } from 'src/dto/return.dto';
@@ -22,9 +23,14 @@ export declare class AuthService {
     passwordChange(body: PasswordChangeBody, request: Request): Promise<ReturnDto | UnauthorizedException>;
     signIn(email: string, password: string, request: Request): Promise<LoginDto | UnauthorizedException>;
     registration(body: BodyRegistration): Promise<RegistrationDto | ConflictException>;
-    refresh(request: Request): Promise<object | UnauthorizedException>;
+    refresh(request: Request, body: {
+        refreshToken: string;
+    }): Promise<object | UnauthorizedException>;
     createAccessToken(user: ReturnUserDto, user_data: UserData): Promise<string>;
-    createRefreshToken(payload: any): Promise<string>;
+    createRefreshToken(payload: {
+        sub: number;
+        tokenId: UUID;
+    }): Promise<string>;
     logout(response: Response, request: Request): Promise<Response<ReturnDto>>;
     validation(request: Request): Promise<ReturnDataDto>;
     getMe(request: Request): Promise<ReturnDataDto>;

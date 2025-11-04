@@ -36,9 +36,9 @@ export const ShoppingListSection = () => {
         <ThemedView style={styles.shoppingListContainer}>
             <ThemedText type="defaultSemiBold" style={{
                 color: Colors[colorScheme ?? "light"].background
-            }}>{t("main.listTitle")}</ThemedText>
+            }}>{t("shoppinglist.title")}</ThemedText>
             <View>
-                <TextInput clearButtonMode="while-editing" autoComplete="off" returnKeyType="search" keyboardType="web-search" cursorColor={Colors[colorScheme ?? "light"].primary} style={styles.input} autoCapitalize="none" placeholder={t("main.search")} value={search} onChangeText={(text: string) => {
+                <TextInput clearButtonMode="while-editing" autoComplete="off" returnKeyType="search" keyboardType="web-search" cursorColor={Colors[colorScheme ?? "light"].primary} style={styles.input} autoCapitalize="none" placeholder={t("shoppinglist.search.cta")} value={search} onChangeText={(text: string) => {
                     setSearch(text);
                 }} />
             </View>
@@ -48,7 +48,7 @@ export const ShoppingListSection = () => {
                         filteredLists.length === 0 && <ThemedText style={{
                             paddingHorizontal: 12,
                             paddingVertical: 24
-                        }}>{t("search.notHave")}</ThemedText>
+                        }}>{t("shoppinglist.search.notHave")}</ThemedText>
 
                     }
                     {
@@ -70,7 +70,6 @@ export const ShoppingListSection = () => {
                                 </ThemedText>
                             </ThemedView>
                         ))
-
                     }
                 </ScrollView>
             </ThemedView>

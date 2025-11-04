@@ -24,7 +24,6 @@ export default function InventoryScreen() {
     }, [])
   );
 
-
   const styles = getInventoryStyle({ colorScheme });
   const navbarStyle = getNavbarStyles({ colorScheme });
 

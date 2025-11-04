@@ -14,7 +14,7 @@ import { ConfigService } from '@nestjs/config';
 import * as bcrypt from 'bcrypt';
 import { Request, Response } from 'express';
 import { ReturnUserDto } from 'src/users/dto/return.dto';
-import { randomUUID } from 'crypto';
+import { randomUUID, UUID } from 'crypto';
 import { SessionService } from 'src/sessions/sessions.service';
 import { Sessions, UserData } from 'src/sessions/entities/sessions.entity';
 import { User } from 'src/users/entities/user.entity';
@@ -204,23 +204,37 @@ export class AuthService {
     }
   }
 
-  async refresh(request: Request): Promise<object | UnauthorizedException> {
+  async refresh(
+    request: Request,
+    body: { refreshToken: string },
+  ): Promise<object | UnauthorizedException> {
     if (request) {
       try {
-        const refreshToken = request?.cookies?.refreshToken;
-        const verifiedToken = await this.jwtService.verifyAsync(refreshToken, {
-          secret: this.config.get<string>('JWT_REFRESH_SECRET'),
-        });
+        if (body.refreshToken) {
+          const requestUser =
+            await this.sessionsService.validateRefreshTokenUserData(
+              body.refreshToken,
+            );
 
-        const user = await this.usersService.findOne(verifiedToken.sub);
+          if (typeof requestUser !== 'number') throw new Error();
 
-        const user_data = {
-          ip: request.ip,
-          user_agent: request.headers['user-agent'],
-        } as UserData;
+          const user = await this.usersService.findOne(requestUser);
+          const user_data = {
+            ip: request.ip,
+            user_agent: request.headers['user-agent'],
+          } as UserData;
 
-        const accessToken = await this.createAccessToken(user, user_data);
-        return { accessToken };
+          const accessToken = await this.createAccessToken(user, user_data);
+
+          const payload = {
+            sub: user.id,
+            tokenId: randomUUID(),
+          };
+
+          const refreshToken = await this.createRefreshToken(payload);
+
+          return { accessToken, refreshToken };
+        } else throw new Error();
       } catch (error) {
         throw new UnauthorizedException(
           'Érvénytelen vagy lejárt refresh token: ' + error,
@@ -244,7 +258,7 @@ export class AuthService {
     } as JwtSignOptions);
   }
 
-  async createRefreshToken(payload: any) {
+  async createRefreshToken(payload: { sub: number; tokenId: UUID }) {
     return this.jwtService.signAsync(payload, {
       secret: this.config.get<string>('JWT_REFRESH_SECRET'),
       expiresIn: Number(this.config.get<any>('JWT_REFRESH_TIME')),

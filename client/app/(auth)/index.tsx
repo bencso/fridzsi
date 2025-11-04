@@ -7,7 +7,8 @@ import { useAuth } from "@/contexts/auth-context";
 import { useTheme } from "@/contexts/theme-context";
 import getAuthenticatedIndexStyles from "@/styles/authenticatedIndex";
 import getNavbarStyles from "@/styles/navbar";
-import { useEffect } from "react";
+import { useFocusEffect } from "expo-router";
+import { useCallback } from "react";
 import { useTranslation } from "react-i18next";
 import { View } from "react-native";
 
@@ -19,11 +20,12 @@ export default function AuthenticatedScreen() {
   const styles = getAuthenticatedIndexStyles({ colorScheme });
   const navbarStyles = getNavbarStyles({ colorScheme });
 
-
-  useEffect(() => {
-    loadAuth()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  useFocusEffect(
+    useCallback(() => {
+      loadAuth();
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [])
+  );
 
 
   return (

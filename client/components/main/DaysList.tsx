@@ -1,7 +1,7 @@
 import { Colors } from "@/constants/theme";
 import getAuthenticatedIndexStyles from "@/styles/authenticatedIndex";
 import { useTheme } from "@/contexts/theme-context";
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { View, ScrollView, TouchableOpacity } from "react-native";
 import { ThemedText } from "../themed-text";
 import { usePantry } from "@/contexts/pantry-context";
@@ -31,27 +31,31 @@ export const DaysNextTwoMonth = () => {
 
     useFocusEffect(
         useCallback(() => {
-            const generatedItems: { nameDay: string; numberDay: number; month: string; }[] = [];
-
             loadPantry();
-            pantry.flatMap((pantryItem: PantryType) => {
-                pantryItem.expiredAt.map((value: string) => {
-                    const [year, month, day] = value.split('.')
-                        .map(s => s.trim())
-                        .filter(Boolean);
-                    const date = new Date(Number(year), Number(month) - 1, Number(day));
-                    generatedItems.push({
-                        month: date.toLocaleDateString("en-us", { month: "short" }),
-                        nameDay: date.toLocaleDateString("en-us", { weekday: "short" }),
-                        numberDay: date.getDate(),
-                    });
-
-                    setDays(generatedItems);
-                });
-            });
-            setSelectedDay(generatedItems[0]);
-        }, [loadPantry, pantry])
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+        }, [])
     );
+
+    useEffect(() => {
+        const generatedItems: { nameDay: string; numberDay: number; month: string; }[] = [];
+
+        pantry.flatMap((pantryItem: PantryType) => {
+            pantryItem.expiredAt.map((value: string) => {
+                const [year, month, day] = value.split('.')
+                    .map(s => s.trim())
+                    .filter(Boolean);
+                const date = new Date(Number(year), Number(month) - 1, Number(day));
+                generatedItems.push({
+                    month: date.toLocaleDateString("en-us", { month: "short" }),
+                    nameDay: date.toLocaleDateString("en-us", { weekday: "short" }),
+                    numberDay: date.getDate(),
+                });
+
+                setDays(generatedItems);
+            });
+        });
+        setSelectedDay(generatedItems[0]);   
+    }, [pantry]);
 
     // useEffect(() => {
     //     const generatedItems = [];
