@@ -2,7 +2,8 @@ export declare class ProductDto {
     code: string;
     product_name: string;
     brands?: string;
-    quantity?: string;
+    quantity?: number;
+    quantity_metric?: string;
     categories?: string;
     serving_size?: string;
     energy_kcal_100g?: number;

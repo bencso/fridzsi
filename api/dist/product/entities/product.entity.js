@@ -38,13 +38,21 @@ __decorate([
 ], Product.prototype, "brands", void 0);
 __decorate([
     (0, typeorm_1.Column)({
-        type: 'varchar',
+        type: 'integer',
         nullable: true,
     }),
     (0, class_validator_1.IsInt)(),
     (0, class_validator_1.Min)(1),
-    __metadata("design:type", String)
+    __metadata("design:type", Number)
 ], Product.prototype, "quantity", void 0);
+__decorate([
+    (0, typeorm_1.Column)({
+        type: 'varchar',
+        nullable: true,
+        default: 'kg',
+    }),
+    __metadata("design:type", String)
+], Product.prototype, "quantity_metric", void 0);
 __decorate([
     (0, typeorm_1.Column)({
         type: 'varchar',

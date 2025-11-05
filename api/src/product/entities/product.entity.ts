@@ -21,12 +21,19 @@ export class Product {
   brands: string;
 
   @Column({
-    type: 'varchar',
+    type: 'integer',
     nullable: true,
   })
   @IsInt()
   @Min(1)
-  quantity: string;
+  quantity: number;
+
+  @Column({
+    type: 'varchar',
+    nullable: true,
+    default: 'kg',
+  })
+  quantity_metric: string;
 
   @Column({
     type: 'varchar',
