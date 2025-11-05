@@ -116,5 +116,6 @@ export default {
             cta: "Termékek keresése",
             notHave: "Nincs találat.",
         },
+        stickyNote: "-t venni kell belőle"
     },
 };

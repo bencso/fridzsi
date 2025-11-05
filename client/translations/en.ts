@@ -119,5 +119,6 @@ export default {
       cta: "Search products",
       notHave: "No products found.",
     },
+    stickyNote: "you have to take it"
   },
 };

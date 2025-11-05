@@ -12,6 +12,7 @@ import { DaysNextTwoMonth } from "@/components/main/DaysList";
 import { Fonts } from "@/constants/theme";
 import Swipeable from 'react-native-gesture-handler/ReanimatedSwipeable';
 import { GestureHandlerRootView } from "react-native-gesture-handler";
+import { SafeAreaProvider } from "react-native-safe-area-context";
 
 export default function ShoppingListScreen() {
   const { scheme: colorScheme } = useTheme();
@@ -56,40 +57,21 @@ export default function ShoppingListScreen() {
       </View>
       <ThemedView style={styles.container}>
         <DaysNextTwoMonth />
-            <GestureHandlerRootView>
-          <View style={{ flexDirection: "row", justifyContent: "center", gap: 24, flexWrap: "wrap", marginTop: 24 }}>
+        <GestureHandlerRootView>
+          <SafeAreaProvider style={{ flexDirection: "row", justifyContent: "center", gap: 24, flexWrap: "wrap", marginTop: 24 }}>
             {notes.map((note, idx) => (
+              //TODO: Nem müködik a swipeolás normálisan, ennek fixálása.
+              //! Megoldás: React Native PanResponder: ez tulajdonképpen engedi huzni az adott elementet és ennek vannak  metódusai amik ittt talán jók lehetnek
+              // Lényeg: Ha valamerre swipeolja a user a cetlit akkor Alert hogy törli-e
               <Swipeable
                 key={note.id + "-" + idx}
-                onSwipeableOpen={() => {
-                  Alert.alert(
-                    t("alerts.deleteItemTitle") || "Delete item",
-                    t("alerts.deleteItemMessage") || "Are you sure you want to delete this item?",
-                    [
-                      { text: t("alerts.cancel") || "Cancel", style: "cancel" },
-                      { text: t("alerts.ok") || "OK", onPress: () => {/* törlés logika */ } }
-                    ]
-                  );
-                }}
               >
                 <View
                   style={[
                     {
-                      paddingHorizontal: 24,
-                      paddingVertical: 24,
                       backgroundColor: note.color,
-                      shadowColor: "#000",
-                      shadowOffset: { width: 1, height: 3 },
-                      shadowOpacity: 0.2,
-                      elevation: 2,
-                      flexDirection: "column",
-                      alignItems: "flex-start",
-                      gap: 10,
-                      minWidth: 120,
-                      maxWidth: 160,
-                      marginBottom: 10,
-                      borderRadius: 0,
                       transform: [{ rotate: note.rotate }],
+                      ...styles.stickyNote
                     },
                   ]}
                 >
@@ -97,12 +79,12 @@ export default function ShoppingListScreen() {
                     {note.text}
                   </ThemedText>
                   <ThemedText style={{ fontSize: 15, marginTop: 8, color: note.textColor, fontFamily: Fonts.rounded }}>
-                    {note.amount} {note.type} {t("shoppinglist.stickyNote")}
+                    {note.amount} {note.type}{t("shoppinglist.stickyNote")}
                   </ThemedText>
                 </View>
               </Swipeable>
             ))}
-          </View>
+          </SafeAreaProvider>
         </GestureHandlerRootView>
       </ThemedView>
     </>
