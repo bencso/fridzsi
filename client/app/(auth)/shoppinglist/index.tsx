@@ -53,13 +53,13 @@ export default function ShoppingListScreen() {
   )
 
   if (noteRefs.current.length !== notes.length) {
-    noteRefs.current = notes.map(() => {
+    noteRefs.current = notes.map((note: Note) => {
       const pan = new Animated.ValueXY();
       const panResponder = PanResponder.create({
         onMoveShouldSetPanResponder: () => true,
         onPanResponderMove: () => {
           Animated.event([null, { dx: pan.x, dy: pan.y }], { useNativeDriver: false });
-          deleteAlert({ t: t })
+          deleteAlert({ t: t, note: note })
         },
         onPanResponderRelease: () => {
           pan.extractOffset();
@@ -90,10 +90,10 @@ export default function ShoppingListScreen() {
   );
 }
 
-function deleteAlert({ t }: { t: TFunction<"translation", undefined> }) {
+function deleteAlert({ t, note }: { t: TFunction<"translation", undefined>, note: Note }) {
   return Alert.alert(
     t('shoppinglist.deleteItem.title'),
-    t('shoppinglist.deleteItem.message'),
+    `${t('shoppinglist.deleteItem.message')}: ${note.text}`,
     [
       {
         text: t('shoppinglist.deleteItem.cancel'),
