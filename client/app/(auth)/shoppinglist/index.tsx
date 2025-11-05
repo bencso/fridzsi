@@ -39,15 +39,15 @@ export default function ShoppingListScreen() {
     useCallback(() => {
       function getRandomPosition() {
         const MAX = 3;
-        const oneOrNull = Math.random();
-        const maximumFive = Math.floor(Math.random() * MAX);
-        return `${oneOrNull < 0.5 ? "-" : "+"}${maximumFive}deg`;
+        const random = Math.random();
+        const maximumFive = Math.floor(random * MAX);
+        return `${random < 0.5 ? "-" : "+"}${maximumFive}deg`;
       }
 
       setNotes([
-        { id: 1, text: "Egész csirke", color: "#FFF9C4", textColor: "#795548", amount: 4, type: "db", rotate: getRandomPosition() },
-        { id: 2, text: "Krumpli", color: "#FFECB3", textColor: "#6D4C41", amount: .85, type: "kg", rotate: getRandomPosition() },
-        { id: 3, text: "Coca Cola", color: "#B3E5FC", textColor: "#01579B", amount: 1, type: "liter", rotate: getRandomPosition() },
+        { id: 1, text: "Egész csirke", color: "#FFF9C4", textColor: "#795548", amount: 4, type: "db", rotate: getRandomPosition(), date: new Date() },
+        { id: 2, text: "Krumpli", color: "#FFECB3", textColor: "#6D4C41", amount: .85, type: "kg", rotate: getRandomPosition(), date: new Date() },
+        { id: 3, text: "Coca Cola", color: "#B3E5FC", textColor: "#01579B", amount: 1, type: "liter", rotate: getRandomPosition(), date: new Date() },
       ]);
     }, [])
   )

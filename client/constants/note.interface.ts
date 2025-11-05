@@ -6,4 +6,5 @@ export interface Note {
   amount: number;
   type: string;
   rotate: string;
+  date?: Date
 }
