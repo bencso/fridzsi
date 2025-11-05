@@ -41,7 +41,7 @@ export default function ShoppingListScreen() {
         const MAX = 3;
         const random = Math.random();
         const maximumFive = Math.floor(random * MAX);
-        return `${random < 0.5 && "-" }${maximumFive}deg`;
+        return `${random < 0.5 ? "-" : "+"}${maximumFive}deg`;
       }
 
       setNotes([
