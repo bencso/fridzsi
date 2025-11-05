@@ -14,16 +14,19 @@ export default function Button({
   disabled
 }: {
   label: string;
-  action: any;
+  action: Promise<void> | void | Function | any;
   chevron?: boolean;
   icon?: keyof typeof MaterialCommunityIcons.glyphMap;
   coloredIcon?: boolean;
   disabled?: boolean;
 }) {
   const { scheme } = useTheme();
+
   let disabledButton = false;
   if (disabled) disabledButton = disabled;
+
   const styles = getButtonStyles({ scheme, disabled: disabledButton });
+
   return (
     <TouchableOpacity style={styles.button} disabled={disabledButton} onPress={action} >
       <View style={styles.buttonLeft}>

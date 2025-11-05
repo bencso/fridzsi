@@ -119,6 +119,16 @@ export default {
       cta: "Search products",
       notHave: "No products found.",
     },
-    stickyNote: "you have to take it"
-  },
+    stickyNote: "you have to take it",
+    name: "Name",
+    amount: "Amount",
+    add: "Add",
+    cancel: "Cancel",
+    deleteItem: {
+      title: "Delete item",
+      message: "Are you sure you want to delete this product: {{name}}?",
+      submit: "Delete",
+      cancel: "Cancel"
+    }
+  }
 };

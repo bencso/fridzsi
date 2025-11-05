@@ -23,6 +23,7 @@ export const getButtonStyles = ({scheme, disabled}:{scheme: keyof typeof Colors,
     },
     chevron: {
       opacity: 0.9,
+      marginLeft: 12
     },
     icon: {
       marginRight: 20,

@@ -116,6 +116,16 @@ export default {
             cta: "Termékek keresése",
             notHave: "Nincs találat.",
         },
-        stickyNote: "-t venni kell belőle"
-    },
+        stickyNote: "-t venni kell belőle",
+        name: "Név",
+        amount: "Mennyiség",
+        add: "Hozzáadás",
+        cancel: "Mégse",
+        deleteItem: {
+            title: "Tétel törlése",
+            message: "Biztosan törölni szeretné ezt a terméket: ",
+            submit: "Törlés",
+            cancel: "Mégse"
+        }
+    }
 };

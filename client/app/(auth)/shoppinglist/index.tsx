@@ -2,7 +2,7 @@ import { ThemedText } from "@/components/themed-text";
 import { ThemedView } from "@/components/themed-view";
 import { useTheme } from "@/contexts/theme-context";
 import { useTranslation } from "react-i18next";
-import { Alert, Animated, PanResponder, View } from "react-native";
+import { Alert, Animated, PanResponder, TouchableHighlight, View } from "react-native";
 import { usePantry } from "@/contexts/pantry-context";
 import { useCallback, useRef, useState } from "react";
 import getNavbarStyles from "@/styles/navbar";
@@ -13,6 +13,9 @@ import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import StickyNote from "@/components/inventory/StickyNotes";
 import { Note } from "@/constants/note.interface";
 import { TFunction } from "i18next";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { Fonts } from "@/constants/theme";
+import AddShoppinglistModal from "@/components/inventory/AddShoppinglistModal";
 
 
 export default function ShoppingListScreen() {
@@ -20,6 +23,7 @@ export default function ShoppingListScreen() {
   const { t } = useTranslation();
   const { loadPantry } = usePantry();
   const [notes, setNotes] = useState<Note[]>([]);
+  const [addModalOpen, setAddModalOpen] = useState<boolean>(false);
 
   const styles = getShoppingListStyle({ colorScheme });
   const navbarStyle = getNavbarStyles({ colorScheme });
@@ -83,6 +87,23 @@ export default function ShoppingListScreen() {
             {notes.map((note: Note, idx: number) => (
               <StickyNote noteRefs={noteRefs} note={note} idx={idx} styles={styles} key={note.id + "-" + idx} />
             ))}
+            <AddShoppinglistModal isOpen={addModalOpen} setIsOpen={setAddModalOpen} />
+            <TouchableHighlight
+              style={{
+                backgroundColor: "#B3E5FC",
+                ...styles.stickyNote,
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+              onPress={() => {
+                setAddModalOpen(true);
+              }}
+              underlayColor="#B3E5FC"
+            >
+              <ThemedText style={{ fontWeight: "900", color: "#01579B", fontFamily: Fonts.bold }}>
+                <MaterialCommunityIcons size={50} name="plus" />
+              </ThemedText>
+            </TouchableHighlight>
           </SafeAreaView>
         </SafeAreaProvider>
       </ThemedView>
@@ -93,7 +114,7 @@ export default function ShoppingListScreen() {
 function deleteAlert({ t, note }: { t: TFunction<"translation", undefined>, note: Note }) {
   return Alert.alert(
     t('shoppinglist.deleteItem.title'),
-    `${t('shoppinglist.deleteItem.message')}: ${note.text}`,
+    `${t('shoppinglist.deleteItem.message')}${note.text}?`,
     [
       {
         text: t('shoppinglist.deleteItem.cancel'),
