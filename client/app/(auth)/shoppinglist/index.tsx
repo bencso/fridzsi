@@ -2,17 +2,15 @@ import { ThemedText } from "@/components/themed-text";
 import { ThemedView } from "@/components/themed-view";
 import { useTheme } from "@/contexts/theme-context";
 import { useTranslation } from "react-i18next";
-import { Alert, View } from "react-native";
+import { Alert, Animated, PanResponder, View } from "react-native";
 import { usePantry } from "@/contexts/pantry-context";
-import { useCallback, useState } from "react";
+import { useCallback, useRef, useState } from "react";
 import getNavbarStyles from "@/styles/navbar";
 import { useFocusEffect } from "expo-router";
 import { getShoppingListStyle } from "@/styles/shoppinglist";
 import { DaysNextTwoMonth } from "@/components/main/DaysList";
 import { Fonts } from "@/constants/theme";
-import Swipeable from 'react-native-gesture-handler/ReanimatedSwipeable';
-import { GestureHandlerRootView } from "react-native-gesture-handler";
-import { SafeAreaProvider } from "react-native-safe-area-context";
+import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 
 export default function ShoppingListScreen() {
   const { scheme: colorScheme } = useTheme();
@@ -48,6 +46,42 @@ export default function ShoppingListScreen() {
     }, [])
   )
 
+  const noteRefs = useRef<{ pan: Animated.ValueXY; panResponder: any }[]>([]);
+
+  if (noteRefs.current.length !== notes.length) {
+    noteRefs.current = notes.map(() => {
+      const pan = new Animated.ValueXY();
+      const panResponder = PanResponder.create({
+        onMoveShouldSetPanResponder: () => true,
+        onPanResponderMove: () => {
+          Animated.event([null, { dx: pan.x, dy: pan.y }], { useNativeDriver: false });
+          Alert.alert(
+            t('shoppinglist.deleteItem.title'),
+            t('shoppinglist.deleteItem.message'),
+            [
+              {
+                text: t('shoppinglist.deleteItem.cancel'),
+                style: "cancel"
+              },
+              {
+                text: t('shoppinglist.deleteItem.submit'),
+                style: "default",
+                onPress: async () => {
+
+                }
+              }
+            ]
+          );
+        },
+        onPanResponderRelease: () => {
+          pan.extractOffset();
+        }
+      });
+      return { pan, panResponder };
+    });
+  }
+
+
   return (
     <>
       <View style={navbarStyle.navbar}>
@@ -57,35 +91,33 @@ export default function ShoppingListScreen() {
       </View>
       <ThemedView style={styles.container}>
         <DaysNextTwoMonth />
-        <GestureHandlerRootView>
-          <SafeAreaProvider style={{ flexDirection: "row", justifyContent: "center", gap: 24, flexWrap: "wrap", marginTop: 24 }}>
+        <SafeAreaProvider>
+          <SafeAreaView style={{ flexDirection: "row", justifyContent: "center", gap: 24, flexWrap: "wrap", marginTop: 24 }}>
             {notes.map((note, idx) => (
-              //TODO: Nem müködik a swipeolás normálisan, ennek fixálása.
-              //! Megoldás: React Native PanResponder: ez tulajdonképpen engedi huzni az adott elementet és ennek vannak  metódusai amik ittt talán jók lehetnek
-              // Lényeg: Ha valamerre swipeolja a user a cetlit akkor Alert hogy törli-e
-              <Swipeable
+              <Animated.View
                 key={note.id + "-" + idx}
+                style={{
+                  transform: [
+                    { translateX: noteRefs.current[idx].pan.x },
+                    { translateY: noteRefs.current[idx].pan.y },
+                    { rotate: note.rotate }
+                  ],
+                  backgroundColor: note.color,
+                  ...styles.stickyNote
+
+                }}
+                {...noteRefs.current[idx].panResponder.panHandlers}
               >
-                <View
-                  style={[
-                    {
-                      backgroundColor: note.color,
-                      transform: [{ rotate: note.rotate }],
-                      ...styles.stickyNote
-                    },
-                  ]}
-                >
-                  <ThemedText style={{ fontSize: 18, fontWeight: "900", color: note.textColor, fontFamily: Fonts.bold }}>
-                    {note.text}
-                  </ThemedText>
-                  <ThemedText style={{ fontSize: 15, marginTop: 8, color: note.textColor, fontFamily: Fonts.rounded }}>
-                    {note.amount} {note.type}{t("shoppinglist.stickyNote")}
-                  </ThemedText>
-                </View>
-              </Swipeable>
+                <ThemedText style={{ fontSize: 18, fontWeight: "900", color: note.textColor, fontFamily: Fonts.bold }}>
+                  {note.text}
+                </ThemedText>
+                <ThemedText style={{ fontSize: 15, marginTop: 8, color: note.textColor, fontFamily: Fonts.rounded }}>
+                  {note.amount} {note.type}{t("shoppinglist.stickyNote")}
+                </ThemedText>
+              </Animated.View>
             ))}
-          </SafeAreaProvider>
-        </GestureHandlerRootView>
+          </SafeAreaView>
+        </SafeAreaProvider>
       </ThemedView>
     </>
   );

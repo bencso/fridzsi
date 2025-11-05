@@ -23,7 +23,6 @@ export const getShoppingListStyle = ({
       gap: 10,
       minWidth: 120,
       maxWidth: 160,
-      marginBottom: 10,
       borderRadius: 0,
     },
   });
