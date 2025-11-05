@@ -10,6 +10,7 @@ export const getShoppingListStyle = ({
     container: {
       flex: 1,
       backgroundColor: Colors[colorScheme ?? "light"].background,
+      paddingTop: 24
     },
     stickyNote: {
       paddingHorizontal: 24,

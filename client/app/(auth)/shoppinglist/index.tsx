@@ -9,14 +9,22 @@ import getNavbarStyles from "@/styles/navbar";
 import { useFocusEffect } from "expo-router";
 import { getShoppingListStyle } from "@/styles/shoppinglist";
 import { DaysNextTwoMonth } from "@/components/main/DaysList";
-import { Fonts } from "@/constants/theme";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
+import StickyNote from "@/components/inventory/StickyNotes";
+import { Note } from "@/constants/note.interface";
+import { TFunction } from "i18next";
+
 
 export default function ShoppingListScreen() {
   const { scheme: colorScheme } = useTheme();
   const { t } = useTranslation();
   const { loadPantry } = usePantry();
-  const [notes, setNotes] = useState<{ id: number; text: string; color: string; textColor: string; amount: number; type: string; rotate: string; }[]>([]);
+  const [notes, setNotes] = useState<Note[]>([]);
+
+  const styles = getShoppingListStyle({ colorScheme });
+  const navbarStyle = getNavbarStyles({ colorScheme });
+
+  const noteRefs = useRef<{ pan: Animated.ValueXY; panResponder: any }[]>([]);
 
   useFocusEffect(
     useCallback(() => {
@@ -25,12 +33,10 @@ export default function ShoppingListScreen() {
     }, [])
   );
 
-  const styles = getShoppingListStyle({ colorScheme });
-  const navbarStyle = getNavbarStyles({ colorScheme });
 
+  //TODO: API integráció késöbbiekben!
   useFocusEffect(
     useCallback(() => {
-
       function getRandomPosition() {
         const MAX = 3;
         const oneOrNull = Math.random();
@@ -46,8 +52,6 @@ export default function ShoppingListScreen() {
     }, [])
   )
 
-  const noteRefs = useRef<{ pan: Animated.ValueXY; panResponder: any }[]>([]);
-
   if (noteRefs.current.length !== notes.length) {
     noteRefs.current = notes.map(() => {
       const pan = new Animated.ValueXY();
@@ -55,23 +59,7 @@ export default function ShoppingListScreen() {
         onMoveShouldSetPanResponder: () => true,
         onPanResponderMove: () => {
           Animated.event([null, { dx: pan.x, dy: pan.y }], { useNativeDriver: false });
-          Alert.alert(
-            t('shoppinglist.deleteItem.title'),
-            t('shoppinglist.deleteItem.message'),
-            [
-              {
-                text: t('shoppinglist.deleteItem.cancel'),
-                style: "cancel"
-              },
-              {
-                text: t('shoppinglist.deleteItem.submit'),
-                style: "default",
-                onPress: async () => {
-
-                }
-              }
-            ]
-          );
+          deleteAlert({ t: t })
         },
         onPanResponderRelease: () => {
           pan.extractOffset();
@@ -80,7 +68,6 @@ export default function ShoppingListScreen() {
       return { pan, panResponder };
     });
   }
-
 
   return (
     <>
@@ -93,32 +80,32 @@ export default function ShoppingListScreen() {
         <DaysNextTwoMonth />
         <SafeAreaProvider>
           <SafeAreaView style={{ flexDirection: "row", justifyContent: "center", gap: 24, flexWrap: "wrap", marginTop: 24 }}>
-            {notes.map((note, idx) => (
-              <Animated.View
-                key={note.id + "-" + idx}
-                style={{
-                  transform: [
-                    { translateX: noteRefs.current[idx].pan.x },
-                    { translateY: noteRefs.current[idx].pan.y },
-                    { rotate: note.rotate }
-                  ],
-                  backgroundColor: note.color,
-                  ...styles.stickyNote
-
-                }}
-                {...noteRefs.current[idx].panResponder.panHandlers}
-              >
-                <ThemedText style={{ fontSize: 18, fontWeight: "900", color: note.textColor, fontFamily: Fonts.bold }}>
-                  {note.text}
-                </ThemedText>
-                <ThemedText style={{ fontSize: 15, marginTop: 8, color: note.textColor, fontFamily: Fonts.rounded }}>
-                  {note.amount} {note.type}{t("shoppinglist.stickyNote")}
-                </ThemedText>
-              </Animated.View>
+            {notes.map((note: Note, idx: number) => (
+              <StickyNote noteRefs={noteRefs} note={note} idx={idx} styles={styles} key={note.id + "-" + idx} />
             ))}
           </SafeAreaView>
         </SafeAreaProvider>
       </ThemedView>
     </>
+  );
+}
+
+function deleteAlert({ t }: { t: TFunction<"translation", undefined> }) {
+  return Alert.alert(
+    t('shoppinglist.deleteItem.title'),
+    t('shoppinglist.deleteItem.message'),
+    [
+      {
+        text: t('shoppinglist.deleteItem.cancel'),
+        style: "cancel"
+      },
+      {
+        text: t('shoppinglist.deleteItem.submit'),
+        style: "default",
+        onPress: async () => {
+
+        }
+      }
+    ]
   );
 }
