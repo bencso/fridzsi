@@ -23,9 +23,13 @@ export class ShoppingList {
 
   @ManyToOne(() => Product, {
     cascade: true,
+    nullable: true,
   })
   @JoinTable()
-  product: Product;
+  product?: Product;
+
+  @Column({ type: 'varchar', nullable: true })
+  customProductName?: string;
 
   @Column({
     type: 'int',
@@ -37,7 +41,7 @@ export class ShoppingList {
 
   @Column({
     type: 'date',
-    default: () => "CURRENT_DATE + INTERVAL '1 week'",
+    nullable: false,
   })
   @IsDate()
   @MinDate(new Date())

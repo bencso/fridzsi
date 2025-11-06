@@ -1,15 +1,24 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { IsNumber, IsString, Min } from 'class-validator';
 
 export class CreateShoppingListItemDto {
-  @ApiProperty()
-  code: string;
+  @ApiProperty({ type: String })
+  code?: string;
 
-  @ApiProperty()
+  @ApiProperty({ type: String })
   product_name?: string;
 
-  @ApiProperty()
+  @Min(1)
+  @IsNumber()
+  @ApiProperty({ type: Number, minimum: 1, default: 1 })
   amount: number;
 
-  @ApiProperty()
+  @IsString()
+  @ApiProperty({
+    type: Date,
+    format: 'date',
+    required: false,
+    default: new Date().toISOString().split('T')[0],
+  })
   day?: Date;
 }

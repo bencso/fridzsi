@@ -33,7 +33,7 @@ let ShoppingListService = class ShoppingListService {
                 .createQueryBuilder()
                 .select()
                 .where({
-                day: (0, typeorm_1.LessThanOrEqual)(convertedDate),
+                day: (0, typeorm_1.MoreThanOrEqual)(convertedDate),
                 user: user,
             })
                 .getMany();
@@ -61,14 +61,19 @@ let ShoppingListService = class ShoppingListService {
             const dates = await this.dataSource
                 .getRepository(shoppinglist_entity_1.ShoppingList)
                 .createQueryBuilder()
-                .select(['date'])
+                .select(['day'])
                 .where({
                 user: user,
+                day: (0, typeorm_1.MoreThanOrEqual)(new Date()),
             })
-                .groupBy('date')
-                .execute();
+                .groupBy('day')
+                .getRawMany();
             if (dates.length > 0) {
-                return dates;
+                return [
+                    ...dates.map((date) => {
+                        return new Date(date.day);
+                    }),
+                ];
             }
             else {
                 return {
@@ -80,6 +85,54 @@ let ShoppingListService = class ShoppingListService {
         catch {
             return {
                 message: ['Hiba történt a lekérdezés során!'],
+                statusCode: 401,
+            };
+        }
+    }
+    async createItem({ request, data, }) {
+        try {
+            const convertedDate = new Date(data.day);
+            if (!data.code && !data.product_name)
+                throw new Error('Kérem adja meg legalább a nevét vagy a kódját');
+            if (data.amount <= 0)
+                throw new Error('A mennyiségnek legalább 1 kell lennie');
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+            if (convertedDate < today)
+                throw new Error('A dátum nem lehet a múltba!');
+            const requestUser = await this.sessionsService.validateAccessToken(request);
+            const user = await this.usersService.findUser(requestUser.email);
+            let product;
+            if (data.code) {
+                product = await this.productService.getItemById(data.code);
+            }
+            else {
+                const productByName = await this.productService.getItemByKeyword(data.product_name);
+                if (productByName.length > 0)
+                    product = productByName[0];
+            }
+            await this.dataSource
+                .createQueryBuilder()
+                .insert()
+                .into(shoppinglist_entity_1.ShoppingList)
+                .values({
+                user: user,
+                product: product ? product : null,
+                customProductName: product ? null : data.product_name,
+                amount: data.amount,
+                day: convertedDate,
+            })
+                .execute();
+            return {
+                message: [
+                    `Sikeresen létrehozva a/az ${product ? product.name : data.product_name}!`,
+                ],
+                statusCode: 200,
+            };
+        }
+        catch (error) {
+            return {
+                message: ['Hiba történt a létrehozás során! ' + error],
                 statusCode: 401,
             };
         }

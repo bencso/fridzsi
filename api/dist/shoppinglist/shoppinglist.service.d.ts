@@ -5,6 +5,7 @@ import { ProductService } from 'src/product/product.service';
 import { ShoppingList } from './entities/shoppinglist.entity';
 import { Request } from 'express';
 import { ReturnDto } from 'src/dto/return.dto';
+import { CreateShoppingListItemDto } from './dto/create-shoppinglist-item.dto';
 export declare class ShoppingListService {
     private readonly usersService;
     private readonly dataSource;
@@ -17,5 +18,9 @@ export declare class ShoppingListService {
     }): Promise<ShoppingList[] | ReturnDto>;
     getItemDates({ request, }: {
         request: Request;
-    }): Promise<ShoppingList[] | ReturnDto>;
+    }): Promise<Date[] | ReturnDto>;
+    createItem({ request, data, }: {
+        request: Request;
+        data: CreateShoppingListItemDto;
+    }): Promise<ShoppingList | ReturnDto>;
 }

@@ -11,23 +11,32 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.CreateShoppingListItemDto = void 0;
 const swagger_1 = require("@nestjs/swagger");
+const class_validator_1 = require("class-validator");
 class CreateShoppingListItemDto {
 }
 exports.CreateShoppingListItemDto = CreateShoppingListItemDto;
 __decorate([
-    (0, swagger_1.ApiProperty)(),
+    (0, swagger_1.ApiProperty)({ type: String }),
     __metadata("design:type", String)
 ], CreateShoppingListItemDto.prototype, "code", void 0);
 __decorate([
-    (0, swagger_1.ApiProperty)(),
+    (0, swagger_1.ApiProperty)({ type: String }),
     __metadata("design:type", String)
 ], CreateShoppingListItemDto.prototype, "product_name", void 0);
 __decorate([
-    (0, swagger_1.ApiProperty)(),
+    (0, class_validator_1.Min)(1),
+    (0, class_validator_1.IsNumber)(),
+    (0, swagger_1.ApiProperty)({ type: Number, minimum: 1, default: 1 }),
     __metadata("design:type", Number)
 ], CreateShoppingListItemDto.prototype, "amount", void 0);
 __decorate([
-    (0, swagger_1.ApiProperty)(),
+    (0, class_validator_1.IsString)(),
+    (0, swagger_1.ApiProperty)({
+        type: Date,
+        format: 'date',
+        required: false,
+        default: new Date().toISOString().split('T')[0],
+    }),
     __metadata("design:type", Date)
 ], CreateShoppingListItemDto.prototype, "day", void 0);
 //# sourceMappingURL=create-shoppinglist-item.dto.js.map

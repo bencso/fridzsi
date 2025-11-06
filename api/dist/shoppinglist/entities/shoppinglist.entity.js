@@ -31,10 +31,15 @@ __decorate([
 __decorate([
     (0, typeorm_1.ManyToOne)(() => product_entity_1.Product, {
         cascade: true,
+        nullable: true,
     }),
     (0, typeorm_1.JoinTable)(),
     __metadata("design:type", product_entity_1.Product)
 ], ShoppingList.prototype, "product", void 0);
+__decorate([
+    (0, typeorm_1.Column)({ type: 'varchar', nullable: true }),
+    __metadata("design:type", String)
+], ShoppingList.prototype, "customProductName", void 0);
 __decorate([
     (0, typeorm_1.Column)({
         type: 'int',
@@ -47,7 +52,7 @@ __decorate([
 __decorate([
     (0, typeorm_1.Column)({
         type: 'date',
-        default: () => "CURRENT_DATE + INTERVAL '1 week'",
+        nullable: false,
     }),
     (0, class_validator_1.IsDate)(),
     (0, class_validator_1.MinDate)(new Date()),

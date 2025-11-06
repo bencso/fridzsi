@@ -17,6 +17,7 @@ const common_1 = require("@nestjs/common");
 const swagger_1 = require("@nestjs/swagger");
 const auth_guard_1 = require("../auth/auth.guard");
 const shoppinglist_service_1 = require("./shoppinglist.service");
+const create_shoppinglist_item_dto_1 = require("./dto/create-shoppinglist-item.dto");
 let ShoppingListController = class ShoppingListController {
     constructor(shoppinglistService) {
         this.shoppinglistService = shoppinglistService;
@@ -32,14 +33,18 @@ let ShoppingListController = class ShoppingListController {
             request: request,
         });
     }
+    async createItem(data, request) {
+        return this.shoppinglistService.createItem({ request, data });
+    }
 };
 exports.ShoppingListController = ShoppingListController;
 __decorate([
-    (0, common_1.Get)('/items/:date'),
+    (0, common_1.Get)('/items/date/:date'),
     (0, swagger_1.ApiBearerAuth)(),
     (0, common_1.UseGuards)(auth_guard_1.AuthGuard),
     (0, common_1.HttpCode)(common_1.HttpStatus.OK),
     __param(0, (0, common_1.Param)('date')),
+    __param(1, (0, common_1.Req)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String, Object]),
     __metadata("design:returntype", Promise)
@@ -49,10 +54,22 @@ __decorate([
     (0, swagger_1.ApiBearerAuth)(),
     (0, common_1.UseGuards)(auth_guard_1.AuthGuard),
     (0, common_1.HttpCode)(common_1.HttpStatus.OK),
+    __param(0, (0, common_1.Req)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Promise)
 ], ShoppingListController.prototype, "getItemDates", null);
+__decorate([
+    (0, common_1.Post)('/items/create'),
+    (0, swagger_1.ApiBearerAuth)(),
+    (0, common_1.UseGuards)(auth_guard_1.AuthGuard),
+    (0, common_1.HttpCode)(common_1.HttpStatus.OK),
+    __param(0, (0, common_1.Body)()),
+    __param(1, (0, common_1.Req)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [create_shoppinglist_item_dto_1.CreateShoppingListItemDto, Object]),
+    __metadata("design:returntype", Promise)
+], ShoppingListController.prototype, "createItem", null);
 exports.ShoppingListController = ShoppingListController = __decorate([
     (0, common_1.Controller)('shoppinglist'),
     __metadata("design:paramtypes", [shoppinglist_service_1.ShoppingListService])
