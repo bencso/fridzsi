@@ -44,7 +44,7 @@ export class ShoppingListService {
         return shoppingList;
       } else {
         return {
-          message: ['Nincs felvittt item-e a felhasználónak!'],
+          message: ['Nincs felvitt item-e a felhasználónak!'],
           statusCode: 401,
         };
       }
@@ -80,7 +80,7 @@ export class ShoppingListService {
         return dates;
       } else {
         return {
-          message: ['Nincs felvittt item-e a felhasználónak!'],
+          message: ['Nincs felvitt item-e a felhasználónak!'],
           statusCode: 401,
         };
       }

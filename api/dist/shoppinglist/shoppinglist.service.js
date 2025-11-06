@@ -42,7 +42,7 @@ let ShoppingListService = class ShoppingListService {
             }
             else {
                 return {
-                    message: ['Nincs felvittt item-e a felhasználónak!'],
+                    message: ['Nincs felvitt item-e a felhasználónak!'],
                     statusCode: 401,
                 };
             }
@@ -72,7 +72,7 @@ let ShoppingListService = class ShoppingListService {
             }
             else {
                 return {
-                    message: ['Nincs felvittt item-e a felhasználónak!'],
+                    message: ['Nincs felvitt item-e a felhasználónak!'],
                     statusCode: 401,
                 };
             }
