@@ -42,7 +42,6 @@ let ProductService = class ProductService {
             keyword: `%${keyword}%`,
         })
             .getMany();
-        console.log(product);
         if (product)
             return product.map((product) => ({
                 name: product.product_name,

@@ -38,7 +38,6 @@ export class ProductService {
       })
       .getMany();
 
-    console.log(product);
     if (product)
       return product.map((product: ProductDto) => ({
         name: product.product_name,

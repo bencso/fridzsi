@@ -15,12 +15,74 @@ const users_service_1 = require("../users/users.service");
 const typeorm_1 = require("typeorm");
 const sessions_service_1 = require("../sessions/sessions.service");
 const product_service_1 = require("../product/product.service");
+const shoppinglist_entity_1 = require("./entities/shoppinglist.entity");
 let ShoppingListService = class ShoppingListService {
     constructor(usersService, dataSource, sessionsService, productService) {
         this.usersService = usersService;
         this.dataSource = dataSource;
         this.sessionsService = sessionsService;
         this.productService = productService;
+    }
+    async getItemByDate({ date, request, }) {
+        try {
+            const convertedDate = new Date(date);
+            const requestUser = await this.sessionsService.validateAccessToken(request);
+            const user = await this.usersService.findUser(requestUser.email);
+            const shoppingList = await this.dataSource
+                .getRepository(shoppinglist_entity_1.ShoppingList)
+                .createQueryBuilder()
+                .select()
+                .where({
+                day: (0, typeorm_1.LessThanOrEqual)(convertedDate),
+                user: user,
+            })
+                .getMany();
+            if (shoppingList.length > 0) {
+                return shoppingList;
+            }
+            else {
+                return {
+                    message: ['Nincs felvittt item-e a felhasználónak!'],
+                    statusCode: 401,
+                };
+            }
+        }
+        catch {
+            return {
+                message: ['Hiba történt a lekérdezés során!'],
+                statusCode: 401,
+            };
+        }
+    }
+    async getItemDates({ request, }) {
+        try {
+            const requestUser = await this.sessionsService.validateAccessToken(request);
+            const user = await this.usersService.findUser(requestUser.email);
+            const dates = await this.dataSource
+                .getRepository(shoppinglist_entity_1.ShoppingList)
+                .createQueryBuilder()
+                .select(['date'])
+                .where({
+                user: user,
+            })
+                .groupBy('date')
+                .execute();
+            if (dates.length > 0) {
+                return dates;
+            }
+            else {
+                return {
+                    message: ['Nincs felvittt item-e a felhasználónak!'],
+                    statusCode: 401,
+                };
+            }
+        }
+        catch {
+            return {
+                message: ['Hiba történt a lekérdezés során!'],
+                statusCode: 401,
+            };
+        }
     }
 };
 exports.ShoppingListService = ShoppingListService;

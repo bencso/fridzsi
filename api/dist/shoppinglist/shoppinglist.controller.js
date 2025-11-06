@@ -8,17 +8,53 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
+var __param = (this && this.__param) || function (paramIndex, decorator) {
+    return function (target, key) { decorator(target, key, paramIndex); }
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ShoppingListController = void 0;
 const common_1 = require("@nestjs/common");
+const swagger_1 = require("@nestjs/swagger");
+const auth_guard_1 = require("../auth/auth.guard");
+const shoppinglist_service_1 = require("./shoppinglist.service");
 let ShoppingListController = class ShoppingListController {
     constructor(shoppinglistService) {
         this.shoppinglistService = shoppinglistService;
     }
+    async getItemByDate(date, request) {
+        return this.shoppinglistService.getItemByDate({
+            date: date,
+            request: request,
+        });
+    }
+    async getItemDates(request) {
+        return this.shoppinglistService.getItemDates({
+            request: request,
+        });
+    }
 };
 exports.ShoppingListController = ShoppingListController;
+__decorate([
+    (0, common_1.Get)('/items/:date'),
+    (0, swagger_1.ApiBearerAuth)(),
+    (0, common_1.UseGuards)(auth_guard_1.AuthGuard),
+    (0, common_1.HttpCode)(common_1.HttpStatus.OK),
+    __param(0, (0, common_1.Param)('date')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, Object]),
+    __metadata("design:returntype", Promise)
+], ShoppingListController.prototype, "getItemByDate", null);
+__decorate([
+    (0, common_1.Get)('/items/dates'),
+    (0, swagger_1.ApiBearerAuth)(),
+    (0, common_1.UseGuards)(auth_guard_1.AuthGuard),
+    (0, common_1.HttpCode)(common_1.HttpStatus.OK),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
+], ShoppingListController.prototype, "getItemDates", null);
 exports.ShoppingListController = ShoppingListController = __decorate([
     (0, common_1.Controller)('shoppinglist'),
-    __metadata("design:paramtypes", [ShoppingListController])
+    __metadata("design:paramtypes", [shoppinglist_service_1.ShoppingListService])
 ], ShoppingListController);
 //# sourceMappingURL=shoppinglist.controller.js.map
