@@ -33,7 +33,7 @@ let ShoppingListService = class ShoppingListService {
                 .createQueryBuilder()
                 .select()
                 .where({
-                day: (0, typeorm_1.MoreThanOrEqual)(convertedDate),
+                day: (0, typeorm_1.Equal)(convertedDate),
                 user: user,
             })
                 .getMany();

@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { UsersService } from 'src/users/users.service';
-import { DataSource, MoreThanOrEqual } from 'typeorm';
+import { DataSource, Equal, MoreThanOrEqual } from 'typeorm';
 import { SessionService } from 'src/sessions/sessions.service';
 import { ProductService } from 'src/product/product.service';
 import { ShoppingList } from './entities/shoppinglist.entity';
@@ -36,7 +36,7 @@ export class ShoppingListService {
         .createQueryBuilder()
         .select()
         .where({
-          day: MoreThanOrEqual(convertedDate),
+          day: Equal(convertedDate),
           user: user,
         })
         .getMany();
