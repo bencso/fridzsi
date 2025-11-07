@@ -62,6 +62,7 @@ let PantryService = class PantryService {
             const products = await this.dataSource
                 .getRepository(pantry_entity_1.Pantry)
                 .createQueryBuilder('pantry')
+                .innerJoin('pantry.product', 'product')
                 .select([
                 'pantry.id AS index',
                 'product.product_name AS name',
@@ -69,7 +70,6 @@ let PantryService = class PantryService {
                 'pantry.expiredAt AS expiredAt',
                 'product.code AS code',
             ])
-                .innerJoin('pantry.product', 'product')
                 .where('pantry.user = :userId', { userId: user.id })
                 .andWhere('pantry.expiredAt >= :now', { now: new Date() })
                 .getRawMany();
@@ -102,6 +102,7 @@ let PantryService = class PantryService {
             const products = await this.dataSource
                 .getRepository(pantry_entity_1.Pantry)
                 .createQueryBuilder('pantry')
+                .innerJoin('pantry.product', 'product')
                 .select([
                 'pantry.id AS index',
                 'product.product_name AS name',
@@ -109,7 +110,6 @@ let PantryService = class PantryService {
                 'pantry.expiredAt AS expiredAt',
                 'product.code AS code',
             ])
-                .innerJoin('pantry.product', 'product')
                 .where('pantry.user = :userId', { userId: user.id })
                 .andWhere('product.code = :code', { code })
                 .andWhere('pantry.expiredAt >= :now', { now: new Date() })

@@ -119,6 +119,6 @@ __decorate([
     __metadata("design:type", String)
 ], Product.prototype, "ingredients_text", void 0);
 exports.Product = Product = __decorate([
-    (0, typeorm_1.Entity)({ name: 'prorduct' })
+    (0, typeorm_1.Entity)({ name: 'product' })
 ], Product);
 //# sourceMappingURL=product.entity.js.map

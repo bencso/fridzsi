@@ -42,6 +42,7 @@ export const DaysNextTwoMonth = ({ selectedDay, setSelectedDay }: {
         }
 
         getItem();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [pantry]);
 
     return (
@@ -57,8 +58,12 @@ export const DaysNextTwoMonth = ({ selectedDay, setSelectedDay }: {
                     <TouchableOpacity
                         key={index}
                         onPress={() => {
-                            setSelectedDay({
-                                date: date
+                            setSelectedDay((prev) => {
+                                if (prev.date !== date)
+                                    return {
+                                        date: date
+                                    }
+                                else return prev;
                             });
                         }}>
                         <View style={selectedDay.date === date ? styles.activeCard : styles.card}>

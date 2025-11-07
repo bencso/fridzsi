@@ -1,7 +1,7 @@
 import { IsInt, IsNumber, IsUrl, Min, MinLength } from 'class-validator';
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
-@Entity({ name: 'prorduct' })
+@Entity({ name: 'product' })
 export class Product {
   @PrimaryGeneratedColumn('increment')
   id: string;

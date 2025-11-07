@@ -30,14 +30,23 @@ let ShoppingListService = class ShoppingListService {
             const user = await this.usersService.findUser(requestUser.email);
             const shoppingList = await this.dataSource
                 .getRepository(shoppinglist_entity_1.ShoppingList)
-                .createQueryBuilder()
-                .select()
+                .createQueryBuilder('shoppinglist')
+                .leftJoinAndSelect('shoppinglist.product', 'product')
+                .select([
+                "COALESCE(shoppinglist.customProductName, 'Unkown/Ismeretlen') as customProductName",
+                'product.product_name',
+                'product.quantity_metric',
+                'shoppinglist.id',
+                'shoppinglist.amount',
+                'shoppinglist.day',
+            ])
                 .where({
                 day: (0, typeorm_1.Equal)(convertedDate),
                 user: user,
             })
-                .getMany();
+                .getRawMany();
             if (shoppingList.length > 0) {
+                console.log(shoppingList);
                 return shoppingList;
             }
             else {

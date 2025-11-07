@@ -11,20 +11,12 @@ import { getShoppingListStyle } from "@/styles/shoppinglist";
 import { DaysNextTwoMonth } from "@/components/inventory/DaysList";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import StickyNote from "@/components/inventory/StickyNotes";
-import { Note } from "@/constants/note.interface";
 import { TFunction } from "i18next";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { Fonts } from "@/constants/theme";
 import AddShoppinglistModal from "@/components/inventory/AddShoppinglistModal";
 import api from "@/interceptor/api";
-
-type getItemDto = {
-  amount: number;
-  createdAt: string;
-  customProductName: string | null;
-  day: string;
-  id: number;
-}
+import { Note } from "@/types/noteClass";
 
 export default function ShoppingListScreen() {
   const { scheme: colorScheme } = useTheme();
@@ -43,46 +35,31 @@ export default function ShoppingListScreen() {
   }>({
     date: new Date()
   });
-  const [items, setItems] = useState<getItemDto[]>([]);
-  useEffect(() => {
-    async function getItemByDate() {
-      const response = await api.get(`/shoppinglist/items/date/${selectedDay.date}`, { withCredentials: true });
-      setItems(response.data);
+
+  async function getItemByDate() {
+    const response = await api.get(`/shoppinglist/items/date/${selectedDay.date}`, { withCredentials: true });
+    const responseData = response.data;
+    if (Array.isArray(responseData)) {
+      const newItems = responseData.map((data: { customproductname: string; product_quantity_metric: string | null; product_product_name: string | null; shoppinglist_amount: number; shoppinglist_day: Date; shoppinglist_id: number }) => {
+        const name = data.product_product_name !== null ? data.product_product_name : data.customproductname;
+        return new Note(data.shoppinglist_id, name, data.shoppinglist_amount, data.product_quantity_metric || "x", data.shoppinglist_day);
+      });
+      setNotes(newItems);
     }
+  }
+
+  useEffect(() => {
     getItemByDate()
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedDay]);
 
   useFocusEffect(
     useCallback(() => {
       loadPantry();
+       getItemByDate();
       // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
   );
-
-
-  //TODO: Bekötni az APIt!
-  useFocusEffect(
-    useCallback(() => {
-      function getRandomPosition() {
-        const MAX = 3;
-        const random = Math.random();
-        const maximumFive = Math.floor(random * MAX);
-        return `${random < 0.5 ? "-" : "+"}${maximumFive}deg`;
-      }
-
-      if(items){
-        items.map((item: any)=>{
-          console.log(item);
-        })
-      }
-
-      setNotes([
-        { id: 1, text: "Egész csirke", color: "#FFF9C4", textColor: "#795548", amount: 4, type: "db", rotate: getRandomPosition(), date: new Date() },
-        { id: 2, text: "Krumpli", color: "#FFECB3", textColor: "#6D4C41", amount: .85, type: "kg", rotate: getRandomPosition(), date: new Date() },
-        { id: 3, text: "Coca Cola", color: "#B3E5FC", textColor: "#01579B", amount: 1, type: "liter", rotate: getRandomPosition(), date: new Date() },
-      ]);
-    }, [])
-  )
 
   if (noteRefs.current.length !== notes.length) {
     noteRefs.current = notes.map((note: Note) => {
@@ -142,7 +119,7 @@ export default function ShoppingListScreen() {
 function deleteAlert({ t, note }: { t: TFunction<"translation", undefined>, note: Note }) {
   return Alert.alert(
     t('shoppinglist.deleteItem.title'),
-    `${t('shoppinglist.deleteItem.message')}${note.text}?`,
+    `${t('shoppinglist.deleteItem.message')}${note.name}?`,
     [
       {
         text: t('shoppinglist.deleteItem.cancel'),

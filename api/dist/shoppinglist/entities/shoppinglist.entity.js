@@ -29,7 +29,7 @@ __decorate([
     __metadata("design:type", Number)
 ], ShoppingList.prototype, "id", void 0);
 __decorate([
-    (0, typeorm_1.ManyToOne)(() => product_entity_1.Product, {
+    (0, typeorm_1.ManyToMany)(() => product_entity_1.Product, {
         cascade: true,
         nullable: true,
     }),
