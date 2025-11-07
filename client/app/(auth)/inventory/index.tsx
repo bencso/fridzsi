@@ -28,12 +28,13 @@ export default function InventoryScreen() {
   const navbarStyle = getNavbarStyles({ colorScheme });
 
   return (
-    <><View style={navbarStyle.navbar}>
+    <>
+    <ThemedView style={styles.container}>
+    <View style={navbarStyle.navbar}>
       <ThemedText type="title" style={navbarStyle.title}>
         {t("inventory.title")}
       </ThemedText>
     </View>
-      <ThemedView style={styles.container}>
         {
           (pantry !== null) && <ThemedView style={styles.content}>
             <ScrollView showsVerticalScrollIndicator={false} scrollToOverflowEnabled style={{ height: "100%", overflow: "hidden", width: "100%" }}>

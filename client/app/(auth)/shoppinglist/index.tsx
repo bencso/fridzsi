@@ -2,7 +2,7 @@ import { ThemedText } from "@/components/themed-text";
 import { ThemedView } from "@/components/themed-view";
 import { useTheme } from "@/contexts/theme-context";
 import { useTranslation } from "react-i18next";
-import { Alert, Animated, PanResponder, TouchableHighlight, View } from "react-native";
+import { Alert, Animated, PanResponder, ScrollView, TouchableHighlight, View } from "react-native";
 import { usePantry } from "@/contexts/pantry-context";
 import { useCallback, useEffect, useRef, useState } from "react";
 import getNavbarStyles from "@/styles/navbar";
@@ -80,14 +80,21 @@ export default function ShoppingListScreen() {
 
   return (
     <>
+      <ThemedView style={styles.container}>
+      <ScrollView
+        bounces={false}
+        overScrollMode="never"
+        showsVerticalScrollIndicator={false}
+        showsHorizontalScrollIndicator={false}
+        fadingEdgeLength={0}
+      >
       <View style={navbarStyle.navbar}>
         <ThemedText type="title" style={navbarStyle.title}>
           {t("shoppinglist.title")}
         </ThemedText>
       </View>
-      <ThemedView style={styles.container}>
         <DaysNextTwoMonth selectedDay={selectedDay} setSelectedDay={setSelectedDay} />
-        <SafeAreaProvider>
+         <SafeAreaProvider>
           <SafeAreaView style={{ flexDirection: "row", justifyContent: "center", gap: 24, flexWrap: "wrap", marginTop: 24 }}>
             {notes.map((note: Note, idx: number) => (
               <StickyNote noteRefs={noteRefs} note={note} idx={idx} styles={styles} key={note.id + "-" + idx} />
@@ -111,6 +118,7 @@ export default function ShoppingListScreen() {
             </TouchableHighlight>
           </SafeAreaView>
         </SafeAreaProvider>
+     </ScrollView>
       </ThemedView>
     </>
   );

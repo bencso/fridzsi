@@ -9,7 +9,7 @@ import getNavbarStyles from "@/styles/navbar";
 import { useFocusEffect } from "expo-router";
 import { useCallback } from "react";
 import { useTranslation } from "react-i18next";
-import { View } from "react-native";
+import { ScrollView, View } from "react-native";
 
 export default function AuthenticatedScreen() {
   const { scheme: colorScheme } = useTheme();
@@ -28,19 +28,24 @@ export default function AuthenticatedScreen() {
 
 
   return (
-    <ThemedView style={styles.container}>
-      <View style={{ ...navbarStyles.navbar, backgroundColor: `${Colors[colorScheme ?? "light"].tabIconDefault}` }}>
-        <ThemedText type="title" style={{ ...navbarStyles.title, color: `${Colors[colorScheme ?? "light"].background}`, }}>
-          {t("main.title")}
-        </ThemedText>
-        <ThemedText type="subtitle" style={{ ...navbarStyles.title, color: `${Colors[colorScheme ?? "light"].background}`, }}>
-          {userData && userData.username}
-        </ThemedText>
-      </View>
-      <ShoppingListSection />
-      <ThemedView style={styles.content}>
-        
-      </ThemedView >
-    </ThemedView >
+    <ThemedView style={[styles.container]}>
+      <ScrollView
+        bounces={false}
+        overScrollMode="never"
+        showsVerticalScrollIndicator={false}
+      >
+        <View style={{ ...navbarStyles.navbar, backgroundColor: `${Colors[colorScheme ?? "light"].tabIconDefault}` }}>
+          <ThemedText type="title" style={{ ...navbarStyles.title, color: `${Colors[colorScheme ?? "light"].background}` }}>
+            {t("main.title")}
+          </ThemedText>
+          <ThemedText type="subtitle" style={{ ...navbarStyles.title, color: `${Colors[colorScheme ?? "light"].background}` }}>
+            {userData && userData.username}
+          </ThemedText>
+        </View>
+        <ShoppingListSection />
+        <ThemedView style={styles.content}>
+        </ThemedView>
+      </ScrollView>
+    </ThemedView>
   );
 }

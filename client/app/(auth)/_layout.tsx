@@ -65,6 +65,9 @@ export default function AuthenticatedLayout() {
           ...screenOptions,
           headerShown: false,
           animation: "shift",
+           sceneStyle: {
+            backgroundColor: Colors[scheme ?? "light"].background,
+          }
         }}
       >
         <Tabs.Screen

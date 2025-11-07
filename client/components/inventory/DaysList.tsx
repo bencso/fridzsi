@@ -47,6 +47,7 @@ export const DaysNextTwoMonth = ({ selectedDay, setSelectedDay }: {
 
     return (
         <View style={{
+            marginTop: 24,
             paddingLeft: 12,
             paddingRight: 12
         }}>

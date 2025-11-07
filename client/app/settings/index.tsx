@@ -7,7 +7,7 @@ import { settingsStyles } from "@/styles/settings";
 import { getAuthenticatedStyles } from "@/styles/settings/authenticated";
 import { router } from "expo-router";
 import { useTranslation } from "react-i18next";
-import { View } from "react-native";
+import { ScrollView, View } from "react-native";
 
 export default function SettingsScreen() {
   const { isAuthenticated } = useAuth();
@@ -16,6 +16,8 @@ export default function SettingsScreen() {
   const styles = settingsStyles;
 
   return (
+    <ScrollView contentContainerStyle={{ flexGrow: 1 }} bounces={false}
+          overScrollMode="never">
     <ThemedView style={styles.container}>
       <ThemedView style={styles.content}>
         {isAuthenticated && <AuthenticatedSection />}
@@ -40,6 +42,7 @@ export default function SettingsScreen() {
         </View>
       </ThemedView>
     </ThemedView>
+    </ScrollView>
   );
 }
 

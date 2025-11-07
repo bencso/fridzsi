@@ -9,8 +9,7 @@ export default function getNavbarStyles({
   return StyleSheet.create({
     navbar: {
       flexDirection: "column",
-      backgroundColor: Colors[colorScheme ?? "light"].background,
-      paddingTop: 63,
+      paddingTop: 48,
       paddingLeft: 20,
       paddingRight: 20,
     },
