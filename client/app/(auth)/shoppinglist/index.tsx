@@ -4,11 +4,11 @@ import { useTheme } from "@/contexts/theme-context";
 import { useTranslation } from "react-i18next";
 import { Alert, Animated, PanResponder, TouchableHighlight, View } from "react-native";
 import { usePantry } from "@/contexts/pantry-context";
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import getNavbarStyles from "@/styles/navbar";
 import { useFocusEffect } from "expo-router";
 import { getShoppingListStyle } from "@/styles/shoppinglist";
-import { DaysNextTwoMonth } from "@/components/main/DaysList";
+import { DaysNextTwoMonth } from "@/components/inventory/DaysList";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import StickyNote from "@/components/inventory/StickyNotes";
 import { Note } from "@/constants/note.interface";
@@ -16,7 +16,15 @@ import { TFunction } from "i18next";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { Fonts } from "@/constants/theme";
 import AddShoppinglistModal from "@/components/inventory/AddShoppinglistModal";
+import api from "@/interceptor/api";
 
+type getItemDto = {
+  amount: number;
+  createdAt: string;
+  customProductName: string | null;
+  day: string;
+  id: number;
+}
 
 export default function ShoppingListScreen() {
   const { scheme: colorScheme } = useTheme();
@@ -30,6 +38,20 @@ export default function ShoppingListScreen() {
 
   const noteRefs = useRef<{ pan: Animated.ValueXY; panResponder: any }[]>([]);
 
+  const [selectedDay, setSelectedDay] = useState<{
+    date: Date
+  }>({
+    date: new Date()
+  });
+  const [items, setItems] = useState<getItemDto[]>([]);
+  useEffect(() => {
+    async function getItemByDate() {
+      const response = await api.get(`/shoppinglist/items/date/${selectedDay.date}`, { withCredentials: true });
+      setItems(response.data);
+    }
+    getItemByDate()
+  }, [selectedDay]);
+
   useFocusEffect(
     useCallback(() => {
       loadPantry();
@@ -38,7 +60,7 @@ export default function ShoppingListScreen() {
   );
 
 
-  //TODO: API integráció késöbbiekben!
+  //TODO: Bekötni az APIt!
   useFocusEffect(
     useCallback(() => {
       function getRandomPosition() {
@@ -46,6 +68,12 @@ export default function ShoppingListScreen() {
         const random = Math.random();
         const maximumFive = Math.floor(random * MAX);
         return `${random < 0.5 ? "-" : "+"}${maximumFive}deg`;
+      }
+
+      if(items){
+        items.map((item: any)=>{
+          console.log(item);
+        })
       }
 
       setNotes([
@@ -81,7 +109,7 @@ export default function ShoppingListScreen() {
         </ThemedText>
       </View>
       <ThemedView style={styles.container}>
-        <DaysNextTwoMonth />
+        <DaysNextTwoMonth selectedDay={selectedDay} setSelectedDay={setSelectedDay} />
         <SafeAreaProvider>
           <SafeAreaView style={{ flexDirection: "row", justifyContent: "center", gap: 24, flexWrap: "wrap", marginTop: 24 }}>
             {notes.map((note: Note, idx: number) => (
