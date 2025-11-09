@@ -46,6 +46,8 @@ export default function ShoppingListScreen() {
     }
   }
 
+  //TODO: Megcsinálni contextet a shoppinglistnek, mert van egy két dolog ami nem jó igy! (pl duplázodott meghívás stb.)
+
   async function getFirstDate() {
     const response = await api.get("/shoppinglist/items/dates", { withCredentials: true });
     const date = new Date(response.data[0]);
