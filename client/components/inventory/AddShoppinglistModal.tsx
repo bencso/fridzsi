@@ -1,21 +1,49 @@
 import { Colors } from "@/constants/theme";
-import { Modal, Text, TextInput, View, TouchableOpacity } from "react-native";
+import { Modal, Text, TextInput, View, TouchableOpacity, Alert } from "react-native";
 import { useTranslation } from "react-i18next";
 import { useTheme } from "@/contexts/theme-context";
 import { Dispatch, SetStateAction, useState } from "react";
 import { ThemedText } from "../themed-text";
 import { getShoppingListModalStyle } from "@/styles/shoppinglist/modal";
 import DateTimePicker from "@react-native-community/datetimepicker";
+import api from "@/interceptor/api";
 
 type ModalProp = {
     isOpen: boolean;
     setIsOpen: Dispatch<SetStateAction<boolean>>;
 }
 
+async function addNewShoppingItem({
+    product_name,
+    day,
+    amount,
+    code
+}: {
+    day: Date;
+    product_name?: string | null;
+    amount: number;
+    code?: string | null;
+}) {
+    try {
+        await api.post("/shoppinglist/items/create", {
+            product_name, day, amount, code
+        }, { withCredentials: true });
+    }
+    catch (error: any) {
+        Alert.alert(error);
+    }
+}
+
+//TODO: Késöbbiekben kellene a kódos felvétel!
 export default function AddShoppinglistModal({ isOpen, setIsOpen }: ModalProp) {
     const { t } = useTranslation();
     const { scheme: colorScheme } = useTheme();
     const styles = getShoppingListModalStyle({ colorScheme });
+    const [formState, setFormState] = useState<{
+        product_name?: string | null;
+        amount?: number | null;
+        code?: string | null;
+    }>();
     const [day, setDay] = useState<Date>(new Date());
 
     return (
@@ -52,7 +80,14 @@ export default function AddShoppinglistModal({ isOpen, setIsOpen }: ModalProp) {
                             style={{ ...styles.input }}
                             placeholderTextColor={`${Colors[colorScheme ?? "light"].text}80`}
                             maxLength={150}
+                            value={formState?.product_name ?? ""}
                             autoCorrect={false}
+                            onChangeText={(text: string) => {
+                                setFormState({
+                                    ...formState,
+                                    product_name: text
+                                })
+                            }}
                             clearButtonMode="while-editing"
                             keyboardType="default"
                             autoCapitalize="none"
@@ -66,9 +101,16 @@ export default function AddShoppinglistModal({ isOpen, setIsOpen }: ModalProp) {
                             placeholderTextColor={`${Colors[colorScheme ?? "light"].text}80`}
                             maxLength={10}
                             autoCorrect={false}
+                            value={formState?.amount != null ? String(formState.amount) : "1"}
                             clearButtonMode="while-editing"
                             keyboardType="decimal-pad"
                             autoCapitalize="none"
+                            onChangeText={(text: string) => {
+                                setFormState({
+                                    ...formState,
+                                    amount: Number(text)
+                                })
+                            }}
                             returnKeyType="next"
                             returnKeyLabel={t("buttons.next")}
                             placeholder={t("shoppinglist.amount")}
@@ -88,7 +130,14 @@ export default function AddShoppinglistModal({ isOpen, setIsOpen }: ModalProp) {
                     </View>
                 </View>
                 <View style={{ alignItems: "center", marginTop: 16, gap: 16 }}>
-                    <ModalButton title={t("shoppinglist.add")} action={() => { }} />
+                    <ModalButton title={t("shoppinglist.add")} action={() => {
+                        addNewShoppingItem({
+                            product_name: formState?.product_name,
+                            day: day,
+                            amount: formState?.amount != null ? Number(formState.amount) : 1,
+                            code: null
+                        });
+                    }} />
                     <ModalButton title={t("shoppinglist.cancel")} action={() => {
                         setIsOpen(false);
                     }} />
