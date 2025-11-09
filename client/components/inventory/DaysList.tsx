@@ -10,8 +10,8 @@ import api from "@/interceptor/api";
 
 export const DaysNextTwoMonth = ({ selectedDay, setSelectedDay }: {
     selectedDay: { date: Date }; setSelectedDay: Dispatch<SetStateAction<{
-        date: Date;
-    }>>
+        date: Date
+    } | undefined>>
 }) => {
     const { pantry, loadPantry } = usePantry();
     const { scheme: colorScheme } = useTheme();
@@ -60,7 +60,7 @@ export const DaysNextTwoMonth = ({ selectedDay, setSelectedDay }: {
                         key={index}
                         onPress={() => {
                             setSelectedDay((prev) => {
-                                if (prev.date !== date)
+                                if (prev?.date !== date)
                                     return {
                                         date: date
                                     }

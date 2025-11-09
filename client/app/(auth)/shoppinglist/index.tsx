@@ -3,7 +3,6 @@ import { ThemedView } from "@/components/themed-view";
 import { useTheme } from "@/contexts/theme-context";
 import { useTranslation } from "react-i18next";
 import { Alert, Animated, PanResponder, ScrollView, TouchableHighlight, View } from "react-native";
-import { usePantry } from "@/contexts/pantry-context";
 import { useCallback, useEffect, useRef, useState } from "react";
 import getNavbarStyles from "@/styles/navbar";
 import { useFocusEffect } from "expo-router";
@@ -21,7 +20,6 @@ import { Note } from "@/types/noteClass";
 export default function ShoppingListScreen() {
   const { scheme: colorScheme } = useTheme();
   const { t } = useTranslation();
-  const { loadPantry } = usePantry();
   const [notes, setNotes] = useState<Note[]>([]);
   const [addModalOpen, setAddModalOpen] = useState<boolean>(false);
 
@@ -32,32 +30,42 @@ export default function ShoppingListScreen() {
 
   const [selectedDay, setSelectedDay] = useState<{
     date: Date
-  }>({
-    date: new Date()
-  });
+  } | undefined>();
 
   async function getItemByDate() {
-    const response = await api.get(`/shoppinglist/items/date/${selectedDay.date}`, { withCredentials: true });
-    const responseData = response.data;
-    if (Array.isArray(responseData)) {
-      const newItems = responseData.map((data: { customproductname: string; product_quantity_metric: string | null; product_product_name: string | null; shoppinglist_amount: number; shoppinglist_day: Date; shoppinglist_id: number }) => {
-        const name = data.product_product_name !== null ? data.product_product_name : data.customproductname;
-        return new Note(data.shoppinglist_id, name, data.shoppinglist_amount, data.product_quantity_metric || "x", data.shoppinglist_day);
-      });
-      setNotes(newItems);
+    if (selectedDay?.date) {
+      const response = await api.get(`/shoppinglist/items/date/${selectedDay.date}`, { withCredentials: true });
+      const responseData = response.data;
+      if (Array.isArray(responseData)) {
+        const newItems = responseData.map((data: { customproductname: string; product_quantity_metric: string | null; product_product_name: string | null; shoppinglist_amount: number; shoppinglist_day: Date; shoppinglist_id: number }) => {
+          const name = data.product_product_name !== null ? data.product_product_name : data.customproductname;
+          return new Note(data.shoppinglist_id, name, data.shoppinglist_amount, data.product_quantity_metric || "x", data.shoppinglist_day);
+        });
+        setNotes(newItems);
+      }
     }
   }
 
-  useEffect(() => {
-    getItemByDate()
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedDay]);
+  async function getFirstDate() {
+    const response = await api.get("/shoppinglist/items/dates", { withCredentials: true });
+    const date = new Date(response.data[0]);
+    setSelectedDay({ date });
+  }
 
+  useEffect(() => {
+    if (selectedDay != null)getItemByDate();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedDay?.date]);
+
+  useEffect(() => {
+    getItemByDate();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [addModalOpen]);
+
+  //TODO: Contextet csinálni akár a shoppinglist-ből, mert az elején most kétszer jön át
   useFocusEffect(
     useCallback(() => {
-      loadPantry();
-       getItemByDate();
-      // eslint-disable-next-line react-hooks/exhaustive-deps
+      getFirstDate();
     }, [])
   );
 
@@ -81,44 +89,46 @@ export default function ShoppingListScreen() {
   return (
     <>
       <ThemedView style={styles.container}>
-      <ScrollView
-        bounces={false}
-        overScrollMode="never"
-        showsVerticalScrollIndicator={false}
-        showsHorizontalScrollIndicator={false}
-        fadingEdgeLength={0}
-      >
-      <View style={navbarStyle.navbar}>
-        <ThemedText type="title" style={navbarStyle.title}>
-          {t("shoppinglist.title")}
-        </ThemedText>
-      </View>
-        <DaysNextTwoMonth selectedDay={selectedDay} setSelectedDay={setSelectedDay} />
-         <SafeAreaProvider>
-          <SafeAreaView style={{ flexDirection: "row", justifyContent: "center", gap: 24, flexWrap: "wrap", marginTop: 24 }}>
-            {notes.map((note: Note, idx: number) => (
-              <StickyNote noteRefs={noteRefs} note={note} idx={idx} styles={styles} key={note.id + "-" + idx} />
-            ))}
-            <AddShoppinglistModal isOpen={addModalOpen} setIsOpen={setAddModalOpen} />
-            <TouchableHighlight
-              style={{
-                backgroundColor: "#B3E5FC",
-                ...styles.stickyNote,
-                justifyContent: "center",
-                alignItems: "center",
-              }}
-              onPress={() => {
-                setAddModalOpen(true);
-              }}
-              underlayColor="#B3E5FC"
-            >
-              <ThemedText style={{ fontWeight: "900", color: "#01579B", fontFamily: Fonts.bold }}>
-                <MaterialCommunityIcons size={50} name="plus" />
-              </ThemedText>
-            </TouchableHighlight>
-          </SafeAreaView>
-        </SafeAreaProvider>
-     </ScrollView>
+        <ScrollView
+          bounces={false}
+          overScrollMode="never"
+          showsVerticalScrollIndicator={false}
+          showsHorizontalScrollIndicator={false}
+          fadingEdgeLength={0}
+        >
+          <View style={navbarStyle.navbar}>
+            <ThemedText type="title" style={navbarStyle.title}>
+              {t("shoppinglist.title")}
+            </ThemedText>
+          </View>
+          {
+            selectedDay && <DaysNextTwoMonth selectedDay={selectedDay} setSelectedDay={setSelectedDay} />
+          }
+          <SafeAreaProvider>
+            <SafeAreaView style={{ flexDirection: "row", justifyContent: "center", gap: 24, flexWrap: "wrap", marginTop: 24 }}>
+              {notes.map((note: Note, idx: number) => (
+                <StickyNote noteRefs={noteRefs} note={note} idx={idx} styles={styles} key={note.id + "-" + idx} />
+              ))}
+              <AddShoppinglistModal isOpen={addModalOpen} setIsOpen={setAddModalOpen} />
+              <TouchableHighlight
+                style={{
+                  backgroundColor: "#B3E5FC",
+                  ...styles.stickyNote,
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
+                onPress={() => {
+                  setAddModalOpen(true);
+                }}
+                underlayColor="#B3E5FC"
+              >
+                <ThemedText style={{ fontWeight: "900", color: "#01579B", fontFamily: Fonts.bold }}>
+                  <MaterialCommunityIcons size={50} name="plus" />
+                </ThemedText>
+              </TouchableHighlight>
+            </SafeAreaView>
+          </SafeAreaProvider>
+        </ScrollView>
       </ThemedView>
     </>
   );

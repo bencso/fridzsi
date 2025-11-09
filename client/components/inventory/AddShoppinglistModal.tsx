@@ -135,8 +135,9 @@ export default function AddShoppinglistModal({ isOpen, setIsOpen }: ModalProp) {
                             product_name: formState?.product_name,
                             day: day,
                             amount: formState?.amount != null ? Number(formState.amount) : 1,
-                            code: null
+                            code: null,
                         });
+                        setIsOpen(false);
                     }} />
                     <ModalButton title={t("shoppinglist.cancel")} action={() => {
                         setIsOpen(false);
