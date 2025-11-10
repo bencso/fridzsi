@@ -47,7 +47,7 @@ export default function ShoppingListScreen() {
   }
 
   //TODO: Megcsinálni contextet a shoppinglistnek, mert van egy két dolog ami nem jó igy! (pl duplázodott meghívás stb.)
-
+  //TODO: Automatikusan majd törölni ha lejárt a nap, minden első lépésnél akár
   async function getFirstDate() {
     const response = await api.get("/shoppinglist/items/dates", { withCredentials: true });
     const date = new Date(response.data[0]);
@@ -55,7 +55,7 @@ export default function ShoppingListScreen() {
   }
 
   useEffect(() => {
-    if (selectedDay != null)getItemByDate();
+    if (selectedDay != null) getItemByDate();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedDay?.date]);
 
@@ -137,7 +137,7 @@ export default function ShoppingListScreen() {
 }
 
 function deleteAlert({ t, note }: { t: TFunction<"translation", undefined>, note: Note }) {
-  return Alert.alert(
+  return Alert.prompt(
     t('shoppinglist.deleteItem.title'),
     `${t('shoppinglist.deleteItem.message')}${note.name}?`,
     [
@@ -152,6 +152,7 @@ function deleteAlert({ t, note }: { t: TFunction<"translation", undefined>, note
 
         }
       }
-    ]
+    ],
+    "plain-text"
   );
 }

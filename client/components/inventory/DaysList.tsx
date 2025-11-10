@@ -7,12 +7,14 @@ import { ThemedText } from "../themed-text";
 import { usePantry } from "@/contexts/pantry-context";
 import { useFocusEffect } from "expo-router";
 import api from "@/interceptor/api";
+import { useLanguage } from "@/contexts/language-context";
 
 export const DaysNextTwoMonth = ({ selectedDay, setSelectedDay }: {
     selectedDay: { date: Date }; setSelectedDay: Dispatch<SetStateAction<{
         date: Date
     } | undefined>>
 }) => {
+    const { Language } = useLanguage();
     const { pantry, loadPantry } = usePantry();
     const { scheme: colorScheme } = useTheme();
     const styles = getAuthenticatedIndexStyles({ colorScheme });
@@ -73,7 +75,7 @@ export const DaysNextTwoMonth = ({ selectedDay, setSelectedDay }: {
                                     color: Colors[colorScheme ?? "light"].text,
                                     fontSize: 12,
                                     marginBottom: 3
-                                }}>{date.toLocaleDateString("en-us", { month: "short" })}</ThemedText>
+                                }}>{date.toLocaleDateString(Language === "en" ? "en-us" : "hu-hu", { month: "short" })}</ThemedText>
                                 <View
                                     style={{
                                         width: 30,
@@ -101,7 +103,7 @@ export const DaysNextTwoMonth = ({ selectedDay, setSelectedDay }: {
                                 </View>
                                 <ThemedText style={{
                                     marginTop: 2,
-                                }} type="defaultSemiBold">{date.toLocaleDateString("en-us", { weekday: "short" })}</ThemedText>
+                                }} type="defaultSemiBold">{date.toLocaleDateString(Language === "en" ? "en-us" : "hu-hu", { weekday: "short" })}</ThemedText>
                             </View>
                         </View>
                     </TouchableOpacity>

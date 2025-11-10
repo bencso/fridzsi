@@ -7,7 +7,7 @@
     "icon": "./assets/images/icon.png",
     "scheme": "client",
     "extra": {
-      "apiUrl": "http://127.0.0.1:3000",
+      "apiUrl": "http://192.168.23.132:3000",
       "router": {},
       "eas": {
         "projectId": "995035e0-4091-4bb5-9b6b-b23a273eebe3"
