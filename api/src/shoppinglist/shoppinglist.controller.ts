@@ -55,7 +55,15 @@ export class ShoppingListController {
   @ApiBearerAuth()
   @UseGuards(AuthGuard)
   @HttpCode(HttpStatus.OK)
-  async removeItem(@Param(':id') id: number, @Req() request: Request) {
-    return this.shoppinglistService.removeItem({ request, id });
+  async removeItem(
+    @Param('id') id: number,
+    @Body() body: { amount: number },
+    @Req() request: Request,
+  ) {
+    return this.shoppinglistService.removeItem({
+      request,
+      id,
+      body,
+    });
   }
 }

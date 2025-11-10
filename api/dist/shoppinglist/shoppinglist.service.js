@@ -69,13 +69,11 @@ let ShoppingListService = class ShoppingListService {
             const user = await this.usersService.findUser(requestUser.email);
             const dates = await this.dataSource
                 .getRepository(shoppinglist_entity_1.ShoppingList)
-                .createQueryBuilder()
-                .select(['day'])
-                .where({
-                user: user,
-                day: (0, typeorm_1.MoreThanOrEqual)(new Date()),
-            })
-                .groupBy('day')
+                .createQueryBuilder('shoppinglist')
+                .select('shoppinglist.day', 'day')
+                .where('shoppinglist.user = :userId', { userId: user.id })
+                .andWhere('shoppinglist.day >= :today', { today: new Date() })
+                .groupBy('shoppinglist.day')
                 .getRawMany();
             if (dates.length > 0) {
                 return [
@@ -146,18 +144,40 @@ let ShoppingListService = class ShoppingListService {
             };
         }
     }
-    async removeItem({ id, request }) {
+    async removeItem({ id, request, body, }) {
         try {
             const requestUser = await this.sessionsService.validateAccessToken(request);
             const user = await this.usersService.findUser(requestUser.email);
-            const haveThisItem = this.dataSource
+            const haveThisItem = await this.dataSource
                 .getRepository(shoppinglist_entity_1.ShoppingList)
-                .createQueryBuilder()
-                .select()
+                .createQueryBuilder('shoppinglist')
+                .select(['shoppinglist.id', 'shoppinglist.amount', 'shoppinglist.user'])
                 .where('shoppinglist.id = :id', { id: id })
                 .andWhere('shoppinglist.user = :userId', { userId: user.id })
-                .getCount();
+                .getOne();
             if (haveThisItem) {
+                if (haveThisItem.amount === body.amount) {
+                    await this.dataSource
+                        .createQueryBuilder()
+                        .delete()
+                        .from(shoppinglist_entity_1.ShoppingList)
+                        .where('id = :id', { id: id })
+                        .andWhere('user = :userId', { userId: user.id })
+                        .execute();
+                }
+                else {
+                    await this.dataSource
+                        .createQueryBuilder()
+                        .update(shoppinglist_entity_1.ShoppingList)
+                        .set({ amount: haveThisItem.amount - body.amount })
+                        .where('id = :id', { id: id })
+                        .andWhere('user = :userId', { userId: user.id })
+                        .execute();
+                }
+                return {
+                    message: ['Sikeres törlés'],
+                    statusCode: 200,
+                };
             }
             else {
                 return {

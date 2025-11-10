@@ -6,32 +6,11 @@ import { Dispatch, SetStateAction, useState } from "react";
 import { ThemedText } from "../themed-text";
 import { getShoppingListModalStyle } from "@/styles/shoppinglist/modal";
 import DateTimePicker from "@react-native-community/datetimepicker";
-import api from "@/interceptor/api";
+import { useShoppingList } from "@/contexts/shoppinglist-context";
 
 type ModalProp = {
     isOpen: boolean;
     setIsOpen: Dispatch<SetStateAction<boolean>>;
-}
-
-async function addNewShoppingItem({
-    product_name,
-    day,
-    amount,
-    code
-}: {
-    day: Date;
-    product_name?: string | null;
-    amount: number;
-    code?: string | null;
-}) {
-    try {
-        await api.post("/shoppinglist/items/create", {
-            product_name, day, amount, code
-        }, { withCredentials: true });
-    }
-    catch (error: any) {
-        Alert.alert(error);
-    }
 }
 
 //TODO: Késöbbiekben kellene a kódos felvétel!
@@ -45,6 +24,7 @@ export default function AddShoppinglistModal({ isOpen, setIsOpen }: ModalProp) {
         code?: string | null;
     }>();
     const [day, setDay] = useState<Date>(new Date());
+    const { addNewShoppingItem } = useShoppingList();
 
     return (
         <Modal
@@ -130,13 +110,19 @@ export default function AddShoppinglistModal({ isOpen, setIsOpen }: ModalProp) {
                     </View>
                 </View>
                 <View style={{ alignItems: "center", marginTop: 16, gap: 16 }}>
-                    <ModalButton title={t("shoppinglist.add")} action={() => {
-                        addNewShoppingItem({
-                            product_name: formState?.product_name,
-                            day: day,
-                            amount: formState?.amount != null ? Number(formState.amount) : 1,
-                            code: null,
-                        });
+                    <ModalButton title={t("shoppinglist.add")} action={async () => {
+                        try {
+                            await addNewShoppingItem({
+                                product_name: formState?.product_name,
+                                day: day,
+                                amount: formState?.amount != null ? Number(formState.amount) : 1,
+                                code: null,
+                            });
+                        }
+                        catch {
+                            //TODO: Magyarosítás
+                            Alert.alert("HIBA!");
+                        }
                         setIsOpen(false);
                     }} />
                     <ModalButton title={t("shoppinglist.cancel")} action={() => {

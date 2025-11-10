@@ -1,49 +1,23 @@
 import { Colors } from "@/constants/theme";
 import getAuthenticatedIndexStyles from "@/styles/authenticatedIndex";
 import { useTheme } from "@/contexts/theme-context";
-import { useState, useCallback, useEffect, Dispatch, SetStateAction } from "react";
+import { useEffect } from "react";
 import { View, ScrollView, TouchableOpacity } from "react-native";
 import { ThemedText } from "../themed-text";
 import { usePantry } from "@/contexts/pantry-context";
-import { useFocusEffect } from "expo-router";
-import api from "@/interceptor/api";
 import { useLanguage } from "@/contexts/language-context";
+import { useShoppingList } from "@/contexts/shoppinglist-context";
 
-export const DaysNextTwoMonth = ({ selectedDay, setSelectedDay }: {
-    selectedDay: { date: Date }; setSelectedDay: Dispatch<SetStateAction<{
-        date: Date
-    } | undefined>>
-}) => {
+export const DaysNextTwoMonth = () => {
     const { Language } = useLanguage();
-    const { pantry, loadPantry } = usePantry();
+    const { pantry } = usePantry();
     const { scheme: colorScheme } = useTheme();
     const styles = getAuthenticatedIndexStyles({ colorScheme });
+    const { selectedDay, changeDateItem, getItemDates, shoppingListDays } = useShoppingList();
 
-    const [days, setDays] = useState<{ date: Date; }[]>([]);
-
-    useFocusEffect(
-        useCallback(() => {
-            loadPantry();
-            // eslint-disable-next-line react-hooks/exhaustive-deps
-        }, [])
-    );
 
     useEffect(() => {
-        const generatedItems: { date: Date }[] = [];
-
-        async function getItem() {
-            const response = await api.get("/shoppinglist/items/dates", { withCredentials: true });
-            response.data.map((value: string) => {
-                const date = new Date(value);
-                generatedItems.push({
-                    date: date
-                });
-                setDays(generatedItems);
-                setSelectedDay(generatedItems[0]);
-            })
-        }
-
-        getItem();
+        getItemDates();
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [pantry]);
 
@@ -57,19 +31,13 @@ export const DaysNextTwoMonth = ({ selectedDay, setSelectedDay }: {
                 horizontal={true}
                 showsHorizontalScrollIndicator={false}
             >
-                {days && days.map(({ date }, index: number) => (
+                {shoppingListDays && shoppingListDays.map(({ date }, index: number) => (
                     <TouchableOpacity
                         key={index}
                         onPress={() => {
-                            setSelectedDay((prev) => {
-                                if (prev?.date !== date)
-                                    return {
-                                        date: date
-                                    }
-                                else return prev;
-                            });
+                            changeDateItem({ date });
                         }}>
-                        <View style={selectedDay.date === date ? styles.activeCard : styles.card}>
+                        <View style={selectedDay?.date.getDate() === date.getDate() ? styles.activeCard : styles.card}>
                             <View style={styles.cardTop}>
                                 <ThemedText style={{
                                     color: Colors[colorScheme ?? "light"].text,
@@ -87,7 +55,7 @@ export const DaysNextTwoMonth = ({ selectedDay, setSelectedDay }: {
                                         alignItems: "center",
                                         marginTop: 3,
                                         alignSelf: "center",
-                                        backgroundColor: selectedDay.date === date ? Colors[colorScheme ?? "light"].text : Colors[colorScheme ?? "light"].primary
+                                        backgroundColor: selectedDay?.date.getDate() === date.getDate() ? Colors[colorScheme ?? "light"].text : Colors[colorScheme ?? "light"].primary
                                     }}
                                 >
                                     <ThemedText
@@ -95,7 +63,7 @@ export const DaysNextTwoMonth = ({ selectedDay, setSelectedDay }: {
                                             fontSize: 18,
                                             textAlign: "center",
                                             padding: 0,
-                                            color: selectedDay.date === date ? Colors[colorScheme ?? "light"].primary : Colors[colorScheme ?? "light"].text
+                                            color: selectedDay?.date.getDate() === date.getDate() ? Colors[colorScheme ?? "light"].primary : Colors[colorScheme ?? "light"].text
                                         }}
                                     >
                                         {date.getDate()}
@@ -103,7 +71,8 @@ export const DaysNextTwoMonth = ({ selectedDay, setSelectedDay }: {
                                 </View>
                                 <ThemedText style={{
                                     marginTop: 2,
-                                }} type="defaultSemiBold">{date.toLocaleDateString(Language === "en" ? "en-us" : "hu-hu", { weekday: "short" })}</ThemedText>
+                                }} type="defaultSemiBold">
+                                    {date.toLocaleDateString(Language === "en" ? "en-us" : "hu-hu", { weekday: "short" })}</ThemedText>
                             </View>
                         </View>
                     </TouchableOpacity>

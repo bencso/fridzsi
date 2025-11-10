@@ -20,6 +20,7 @@ import { initReactI18next, useTranslation } from "react-i18next";
 import { ActivityIndicator, Text, TouchableOpacity, View } from "react-native";
 import "react-native-reanimated";
 import SplashScreenController from "./splash";
+import { ShoppingListProvider } from "@/contexts/shoppinglist-context";
 
 export const unstable_settings = {
   anchor: "(tabs)",
@@ -204,8 +205,10 @@ export default function RootLayout() {
     <AuthProvider>
       <LanguageProvider>
         <ThemeProvider>
-          <SplashScreenController />
-          <AppContent />
+          <ShoppingListProvider>
+            <SplashScreenController />
+            <AppContent />
+          </ShoppingListProvider>
         </ThemeProvider>
       </LanguageProvider>
     </AuthProvider>

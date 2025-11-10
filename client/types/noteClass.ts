@@ -1,4 +1,4 @@
-export class Note {
+export class ShoppingListItem {
   private MAX = 3;
   private COLORS = [
     {
