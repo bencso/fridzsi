@@ -19,7 +19,6 @@ export async function addItem({
 }) {
   try {
     if (!code || !product_name || !amount || !expiredAt) throw new Error();
-
     const response = await api.post(
       "/pantry",
       {
@@ -30,6 +29,8 @@ export async function addItem({
       },
       { withCredentials: true }
     );
+
+    console.log(response.data);
 
     if (response.data.statusCode !== 200) throw Error();
 

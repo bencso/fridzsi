@@ -6,7 +6,6 @@ import {
   CreateDateColumn,
   Entity,
   JoinTable,
-  ManyToMany,
   ManyToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
@@ -22,10 +21,9 @@ export class Pantry {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @ManyToMany(() => Product, {
+  @ManyToOne(() => Product, {
     cascade: true,
   })
-  @JoinTable()
   product: Product;
 
   @Column({

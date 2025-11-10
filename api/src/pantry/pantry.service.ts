@@ -74,6 +74,8 @@ export class PantryService {
         .andWhere('pantry.expiredAt >= :now', { now: new Date() })
         .getRawMany();
 
+      console.log(products);
+
       const returnProducts = [
         products.reduce((acc, curr) => {
           acc[curr.code] = acc[curr.code] || [];
