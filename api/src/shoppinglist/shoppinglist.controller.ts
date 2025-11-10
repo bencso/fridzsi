@@ -50,4 +50,12 @@ export class ShoppingListController {
   ) {
     return this.shoppinglistService.createItem({ request, data });
   }
+
+  @Post('/items/remove/:id')
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard)
+  @HttpCode(HttpStatus.OK)
+  async removeItem(@Param(':id') id: number, @Req() request: Request) {
+    return this.shoppinglistService.removeItem({ request, id });
+  }
 }

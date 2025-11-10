@@ -76,6 +76,15 @@ export class ShoppingListService {
         await this.sessionsService.validateAccessToken(request);
       const user = await this.usersService.findUser(requestUser.email);
 
+      //TODO: Egy jobb rendszert kell rá írni, csak most ideinglenesen, ez van
+      //await this.dataSource
+      // .createQueryBuilder()
+      // .delete()
+      // .from(ShoppingList)
+      // .where('shoppinglist.day < :now', { now: new Date() })
+      // .andWhere('shoppinglist.user = :userId', { userId: user.id })
+      // .execute();
+
       const dates = await this.dataSource
         .getRepository(ShoppingList)
         .createQueryBuilder()
@@ -162,6 +171,35 @@ export class ShoppingListService {
         ],
         statusCode: 200,
       };
+    } catch (error: any) {
+      return {
+        message: ['Hiba történt a létrehozás során! ' + error],
+        statusCode: 401,
+      };
+    }
+  }
+
+  async removeItem({ id, request }: { id: number; request: Request }) {
+    try {
+      const requestUser =
+        await this.sessionsService.validateAccessToken(request);
+      const user = await this.usersService.findUser(requestUser.email);
+
+      const haveThisItem = this.dataSource
+        .getRepository(ShoppingList)
+        .createQueryBuilder()
+        .select()
+        .where('shoppinglist.id = :id', { id: id })
+        .andWhere('shoppinglist.user = :userId', { userId: user.id })
+        .getCount();
+
+      if (haveThisItem) {
+      } else {
+        return {
+          message: ['Nem található ilyen item'],
+          statusCode: 401,
+        };
+      }
     } catch (error: any) {
       return {
         message: ['Hiba történt a létrehozás során! ' + error],

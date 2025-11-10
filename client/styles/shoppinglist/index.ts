@@ -21,7 +21,7 @@ export const getShoppingListStyle = ({
       elevation: 2,
       flexDirection: "column",
       alignItems: "flex-start",
-      gap: 10,
+      gap: 1,
       minWidth: 120,
       maxWidth: 160,
       borderRadius: 0,

@@ -31,7 +31,7 @@ export default function StickyNote({ note, idx, noteRefs, styles }: {
                 {note.name}
             </ThemedText>
             <ThemedText style={{ fontSize: 15, marginTop: 8, color: note.getColors().text, fontFamily: Fonts.rounded }}>
-                {note.amount} {note.metric}{t("shoppinglist.stickyNote")}
+                {note.amount}{note.metric}{t("shoppinglist.stickyNote")}
             </ThemedText>
         </Animated.View>
     )

@@ -146,6 +146,33 @@ let ShoppingListService = class ShoppingListService {
             };
         }
     }
+    async removeItem({ id, request }) {
+        try {
+            const requestUser = await this.sessionsService.validateAccessToken(request);
+            const user = await this.usersService.findUser(requestUser.email);
+            const haveThisItem = this.dataSource
+                .getRepository(shoppinglist_entity_1.ShoppingList)
+                .createQueryBuilder()
+                .select()
+                .where('shoppinglist.id = :id', { id: id })
+                .andWhere('shoppinglist.user = :userId', { userId: user.id })
+                .getCount();
+            if (haveThisItem) {
+            }
+            else {
+                return {
+                    message: ['Nem található ilyen item'],
+                    statusCode: 401,
+                };
+            }
+        }
+        catch (error) {
+            return {
+                message: ['Hiba történt a létrehozás során! ' + error],
+                statusCode: 401,
+            };
+        }
+    }
 };
 exports.ShoppingListService = ShoppingListService;
 exports.ShoppingListService = ShoppingListService = __decorate([

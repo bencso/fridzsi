@@ -39,7 +39,7 @@ export default function ShoppingListScreen() {
       if (Array.isArray(responseData)) {
         const newItems = responseData.map((data: { customproductname: string; product_quantity_metric: string | null; product_product_name: string | null; shoppinglist_amount: number; shoppinglist_day: Date; shoppinglist_id: number }) => {
           const name = data.product_product_name !== null ? data.product_product_name : data.customproductname;
-          return new Note(data.shoppinglist_id, name, data.shoppinglist_amount, data.product_quantity_metric || "x", data.shoppinglist_day);
+          return new Note(data.shoppinglist_id, name, data.shoppinglist_amount, data.product_quantity_metric || "", data.shoppinglist_day);
         });
         setNotes(newItems);
       }
@@ -149,7 +149,7 @@ function deleteAlert({ t, note }: { t: TFunction<"translation", undefined>, note
         text: t('shoppinglist.deleteItem.submit'),
         style: "default",
         onPress: async () => {
-
+          console.log(note.id);
         }
       }
     ],
