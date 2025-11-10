@@ -58,13 +58,17 @@ export function ShoppingListProvider({ children }: { children: ReactNode }) {
         const dateGeneratedItem: { date: Date }[] = [];
         const response = await api.get("/shoppinglist/items/dates", { withCredentials: true });
         console.log(response.data);
-        response.data.map((value: string) => {
-            const date = new Date(value);
-            dateGeneratedItem.push({
-                date: date
-            });
-            setShoppingListDays(dateGeneratedItem);
-        })
+        if (response.data) {
+            response.data.map((value: string) => {
+                const date = new Date(value);
+                dateGeneratedItem.push({
+                    date: date
+                });
+                setShoppingListDays(dateGeneratedItem);
+            })
+        } else {
+            setShoppingListDays([]);
+        }
     }
 
     async function addNewShoppingItem({
