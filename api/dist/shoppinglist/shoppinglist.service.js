@@ -25,6 +25,7 @@ let ShoppingListService = class ShoppingListService {
     }
     async getItemByDate({ date, request, }) {
         try {
+            console.log(date);
             const convertedDate = new Date(date);
             const requestUser = await this.sessionsService.validateAccessToken(request);
             const user = await this.usersService.findUser(requestUser.email);
@@ -156,7 +157,7 @@ let ShoppingListService = class ShoppingListService {
                 .andWhere('shoppinglist.user = :userId', { userId: user.id })
                 .getOne();
             if (haveThisItem) {
-                if (haveThisItem.amount === body.amount) {
+                if (haveThisItem.amount <= body.amount) {
                     await this.dataSource
                         .createQueryBuilder()
                         .delete()

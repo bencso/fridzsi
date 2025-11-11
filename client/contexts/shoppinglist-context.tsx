@@ -19,16 +19,16 @@ export function ShoppingListProvider({ children }: { children: ReactNode }) {
 
     async function getFirstDate(): Promise<void> {
         const response = await api.get("/shoppinglist/items/dates", { withCredentials: true });
-        const date = new Date(response.data[0]);
-        changeDateItem({ date });
+        if (response.data && !response.data.message) {
+            const date = new Date(response.data[0]);
+            console.log(date);
+            changeDateItem({ date });
+        }
     }
-
     async function getItemByDate(): Promise<void> {
-        const formattedDate = selectedDay?.date;
-        const response = await api.get(`/shoppinglist/items/date/${formattedDate}`, { withCredentials: true });
+        const response = await api.get(`/shoppinglist/items/date/${selectedDay?.date}`, { withCredentials: true });
         const responseData = response.data;
-        console.log(responseData);
-        if (Array.isArray(responseData)) {
+        if (responseData && !responseData.message && Array.isArray(responseData)) {
             const newItems = responseData.map((data: { customproductname: string; product_quantity_metric: string | null; product_product_name: string | null; shoppinglist_amount: number; shoppinglist_day: Date; shoppinglist_id: number }) => {
                 const name = data.product_product_name !== null ? data.product_product_name : data.customproductname;
                 return new ShoppingListItem(data.shoppinglist_id, name, data.shoppinglist_amount, data.product_quantity_metric || "", data.shoppinglist_day);
@@ -40,7 +40,8 @@ export function ShoppingListProvider({ children }: { children: ReactNode }) {
     async function deleteItem({ id, amount }: { id: number; amount: number }): Promise<void> {
         await api.post(`/shoppinglist/items/remove/${id}`, { amount }, { withCredentials: true });
         getItemDates();
-        getItemByDate();
+        if (selectedDay && selectedDay.date)
+            getItemByDate();
     }
 
     async function changeDateItem({ date }: { date: Date }): Promise<void> {
@@ -51,14 +52,13 @@ export function ShoppingListProvider({ children }: { children: ReactNode }) {
                 }
             else return prev;
         });
-        getItemByDate();
+        await getItemByDate();
     }
 
     async function getItemDates(): Promise<void> {
         const dateGeneratedItem: { date: Date }[] = [];
         const response = await api.get("/shoppinglist/items/dates", { withCredentials: true });
-        console.log(response.data);
-        if (response.data) {
+        if (response.data && !response.data.message) {
             response.data.map((value: string) => {
                 const date = new Date(value);
                 dateGeneratedItem.push({
@@ -68,6 +68,7 @@ export function ShoppingListProvider({ children }: { children: ReactNode }) {
             })
         } else {
             setShoppingListDays([]);
+            setShoppingList([]);
         }
     }
 
@@ -87,7 +88,9 @@ export function ShoppingListProvider({ children }: { children: ReactNode }) {
                 product_name, day, amount, code
             }, { withCredentials: true });
             getItemDates();
-            getItemByDate();
+            getFirstDate();
+            if (selectedDay && selectedDay.date)
+                getItemByDate();
         }
         catch (error: any) {
             return "Hiba történt létrehozás közben: " + error;

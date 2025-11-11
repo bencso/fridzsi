@@ -25,6 +25,7 @@ export class ShoppingListService {
     request: Request;
   }): Promise<ShoppingList[] | ReturnDto> {
     try {
+      console.log(date);
       const convertedDate = new Date(date);
 
       const requestUser =
@@ -191,7 +192,7 @@ export class ShoppingListService {
         .getOne();
 
       if (haveThisItem) {
-        if (haveThisItem.amount === body.amount) {
+        if (haveThisItem.amount <= body.amount) {
           await this.dataSource
             .createQueryBuilder()
             .delete()

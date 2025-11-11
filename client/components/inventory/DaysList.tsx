@@ -37,7 +37,7 @@ export const DaysNextTwoMonth = () => {
                         onPress={() => {
                             changeDateItem({ date });
                         }}>
-                        <View style={selectedDay?.date.getDate() === date.getDate() ? styles.activeCard : styles.card}>
+                        <View style={selectedDay?.date.toLocaleDateString() === date.toLocaleDateString() ? styles.activeCard : styles.card}>
                             <View style={styles.cardTop}>
                                 <ThemedText style={{
                                     color: Colors[colorScheme ?? "light"].text,
@@ -55,7 +55,7 @@ export const DaysNextTwoMonth = () => {
                                         alignItems: "center",
                                         marginTop: 3,
                                         alignSelf: "center",
-                                        backgroundColor: selectedDay?.date.getDate() === date.getDate() ? Colors[colorScheme ?? "light"].text : Colors[colorScheme ?? "light"].primary
+                                        backgroundColor: selectedDay?.date.toLocaleDateString() === date.toLocaleDateString() ? Colors[colorScheme ?? "light"].text : Colors[colorScheme ?? "light"].primary
                                     }}
                                 >
                                     <ThemedText
@@ -63,7 +63,7 @@ export const DaysNextTwoMonth = () => {
                                             fontSize: 18,
                                             textAlign: "center",
                                             padding: 0,
-                                            color: selectedDay?.date.getDate() === date.getDate() ? Colors[colorScheme ?? "light"].primary : Colors[colorScheme ?? "light"].text
+                                            color: selectedDay?.date.toLocaleDateString() === date.toLocaleDateString() ? Colors[colorScheme ?? "light"].primary : Colors[colorScheme ?? "light"].text
                                         }}
                                     >
                                         {date.getDate()}
