@@ -24,7 +24,7 @@ export default function ShoppingListScreen() {
 
   const styles = getShoppingListStyle({ colorScheme });
   const navbarStyle = getNavbarStyles({ colorScheme });
-  const { getFirstDate, shoppingList, deleteItem } = useShoppingList();
+  const { getFirstDate, shoppingList, deleteItem, getItemDates } = useShoppingList();
 
   const noteRefs = useRef<{ pan: Animated.ValueXY; panResponder: any }[]>([]);
 
@@ -33,17 +33,17 @@ export default function ShoppingListScreen() {
   useFocusEffect(
     useCallback(() => {
       getFirstDate();
+      getItemDates();
     }, [])
   );
 
-  if (noteRefs.current.length !== shoppingList.length) {
-    noteRefs.current = shoppingList.map((note: ShoppingListItem) => {
+      noteRefs.current = shoppingList.map((note: ShoppingListItem) => {
       const pan = new Animated.ValueXY();
       const panResponder = PanResponder.create({
         onMoveShouldSetPanResponder: () => true,
         onPanResponderMove: () => {
           Animated.event([null, { dx: pan.x, dy: pan.y }], { useNativeDriver: false });
-          deleteAlert({ t, note, deleteItem })
+          deleteAlert({ t, note, deleteItem });
         },
         onPanResponderRelease: () => {
           pan.extractOffset();
@@ -51,7 +51,8 @@ export default function ShoppingListScreen() {
       });
       return { pan, panResponder };
     });
-  }
+  
+
 
   return (
     <>

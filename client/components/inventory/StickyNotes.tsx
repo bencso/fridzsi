@@ -3,14 +3,14 @@ import { Animated } from "react-native";
 import { ThemedText } from "../themed-text";
 import { t } from "i18next";
 import { Fonts } from "@/constants/theme";
-import { Note } from "@/types/noteClass";
+import { ShoppingListItem } from "@/types/noteClass";
 
 export default function StickyNote({ note, idx, noteRefs, styles }: {
     noteRefs: RefObject<{
         pan: Animated.ValueXY;
         panResponder: any;
     }[]>,
-    note: Note,
+    note: ShoppingListItem,
     idx: number, styles: any
 }) {
     return (
@@ -27,7 +27,7 @@ export default function StickyNote({ note, idx, noteRefs, styles }: {
             }}
             {...noteRefs.current[idx].panResponder.panHandlers}
         >
-            <ThemedText style={{ fontSize: 18, fontWeight: "900", color: note.getColors().text, fontFamily: Fonts.bold }}>
+            <ThemedText style={{ fontSize: 18, fontWeight: "900", color: note.getColors().text, fontFamily: Fonts.bold, textOverflow: "clip", overflow: "hidden", maxWidth: 200 }}>
                 {note.name}
             </ThemedText>
             <ThemedText style={{ fontSize: 15, marginTop: 8, color: note.getColors().text, fontFamily: Fonts.rounded }}>

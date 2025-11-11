@@ -46,7 +46,7 @@ export default function AddShoppinglistModal({ isOpen, setIsOpen }: ModalProp) {
                     textShadowColor: "rgba(0,0,0,0.8)",
                     textShadowOffset: { width: 2, height: 3 },
                     textShadowRadius: 4,
-                    textAlign: "center"
+                    textAlign: "center",
                 }}>
                     {t("shoppinglist.add")}
                 </ThemedText>
@@ -99,6 +99,7 @@ export default function AddShoppinglistModal({ isOpen, setIsOpen }: ModalProp) {
                             mode="date"
                             display="default"
                             themeVariant="light"
+                            minimumDate={new Date()}
                             accentColor={Colors[colorScheme ?? "light"].text}
                             value={day}
                             onChange={(_, selectedDate) => {
@@ -118,9 +119,14 @@ export default function AddShoppinglistModal({ isOpen, setIsOpen }: ModalProp) {
                                 amount: formState?.amount != null ? Number(formState.amount) : 1,
                                 code: null,
                             });
+                            setFormState({
+                                product_name: "",
+                                amount: 1,
+                                code: ""
+                            });
+                            setDay(new Date());
                         }
                         catch {
-                            //TODO: Magyarosítás
                             Alert.alert("HIBA!");
                         }
                         setIsOpen(false);

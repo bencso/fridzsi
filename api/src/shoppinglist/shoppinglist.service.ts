@@ -115,6 +115,7 @@ export class ShoppingListService {
   }): Promise<ShoppingList | ReturnDto> {
     try {
       const convertedDate = new Date(data.day);
+      console.log('ASD:' + convertedDate);
 
       if (!data.code && !data.product_name)
         throw new Error('Kérem adja meg legalább a nevét vagy a kódját');
@@ -123,8 +124,20 @@ export class ShoppingListService {
         throw new Error('A mennyiségnek legalább 1 kell lennie');
 
       const today = new Date();
-      today.setHours(0, 0, 0, 0);
-      if (convertedDate < today) throw new Error('A dátum nem lehet a múltba!');
+
+      const convertedDateOnly = new Date(
+        convertedDate.getFullYear(),
+        convertedDate.getMonth(),
+        convertedDate.getDate(),
+      );
+      const todayOnly = new Date(
+        today.getFullYear(),
+        today.getMonth(),
+        today.getDate(),
+      );
+
+      if (convertedDateOnly < todayOnly)
+        throw new Error('A dátum nem lehet a múltba!');
 
       const requestUser =
         await this.sessionsService.validateAccessToken(request);

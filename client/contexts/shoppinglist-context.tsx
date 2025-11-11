@@ -3,6 +3,7 @@ import React, {
     createContext,
     ReactNode,
     useContext,
+    useEffect,
     useState,
 } from "react";
 import { ShoppingListItem } from "@/types/noteClass";
@@ -21,7 +22,6 @@ export function ShoppingListProvider({ children }: { children: ReactNode }) {
         const response = await api.get("/shoppinglist/items/dates", { withCredentials: true });
         if (response.data && !response.data.message) {
             const date = new Date(response.data[0]);
-            console.log(date);
             changeDateItem({ date });
         }
     }
@@ -34,14 +34,15 @@ export function ShoppingListProvider({ children }: { children: ReactNode }) {
                 return new ShoppingListItem(data.shoppinglist_id, name, data.shoppinglist_amount, data.product_quantity_metric || "", data.shoppinglist_day);
             });
             setShoppingList(newItems);
+        } else {
+            setShoppingList([]);
         }
     }
 
     async function deleteItem({ id, amount }: { id: number; amount: number }): Promise<void> {
         await api.post(`/shoppinglist/items/remove/${id}`, { amount }, { withCredentials: true });
         getItemDates();
-        if (selectedDay && selectedDay.date)
-            getItemByDate();
+        getFirstDate();
     }
 
     async function changeDateItem({ date }: { date: Date }): Promise<void> {
@@ -52,8 +53,12 @@ export function ShoppingListProvider({ children }: { children: ReactNode }) {
                 }
             else return prev;
         });
-        await getItemByDate();
     }
+
+    useEffect(() => {
+        getItemByDate()
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [selectedDay])
 
     async function getItemDates(): Promise<void> {
         const dateGeneratedItem: { date: Date }[] = [];
@@ -89,8 +94,7 @@ export function ShoppingListProvider({ children }: { children: ReactNode }) {
             }, { withCredentials: true });
             getItemDates();
             getFirstDate();
-            if (selectedDay && selectedDay.date)
-                getItemByDate();
+            getItemByDate();
         }
         catch (error: any) {
             return "Hiba történt létrehozás közben: " + error;
