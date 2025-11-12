@@ -34,6 +34,7 @@ export const ShoppingListSection = () => {
                     setLists(items);
                 } else setLists([]);
             })();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
         }, [search])
     );
 
