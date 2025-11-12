@@ -38,4 +38,5 @@ addNewShoppingItem: (params: {
   amount: number;
   code?: string | null;
 }) => Promise<void | string>;
+getNowList: (params: {q?:string| null}) => Promise<any>
 };

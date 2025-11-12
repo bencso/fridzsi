@@ -1,30 +1,41 @@
 import { Colors } from "@/constants/theme";
 import getAuthenticatedIndexStyles from "@/styles/authenticatedIndex";
 import { useTheme } from "@/contexts/theme-context";
-import { useDeferredValue, useState } from "react";
+import { useCallback, useDeferredValue, useState } from "react";
 import { View, ScrollView, TextInput } from "react-native";
 import { ThemedText } from "../themed-text";
 import { ThemedView } from "../themed-view";
 import { useTranslation } from "react-i18next";
+import { useShoppingList } from "@/contexts/shoppinglist-context";
+import { useFocusEffect } from "expo-router";
+import { ShoppingListItem } from "@/types/noteClass";
 
 export const ShoppingListSection = () => {
     const { scheme: colorScheme } = useTheme();
-    const styles = getAuthenticatedIndexStyles({ colorScheme });
+    const { getNowList } = useShoppingList();
 
     const { t } = useTranslation();
 
+    const [lists, setLists] = useState<any[]>([]);
     const [search, setSearch] = useState<string>("");
     const deferredQuery = useDeferredValue(search);
+    const styles = getAuthenticatedIndexStyles({ colorScheme });
 
-    const lists = [
-        {
-            name: "Krumpli",
-            amount: 2
-        },
-        {
-            name: "Coca cola Zero"
-        }
-    ]
+    useFocusEffect(
+        useCallback(() => {
+            (async () => {
+                const response = await getNowList({ q: search });
+                console.log(response);
+                if (!response.message) {
+                    const items = response.map((data: { customproductname: string; product_quantity_metric: string | null; product_product_name: string | null; shoppinglist_amount: number; shoppinglist_day: Date; shoppinglist_id: number }) => {
+                        const name = data.product_product_name !== null ? data.product_product_name : data.customproductname;
+                        return new ShoppingListItem(data.shoppinglist_id, name, data.shoppinglist_amount, data.product_quantity_metric || "", data.shoppinglist_day);
+                    });
+                    setLists(items);
+                } else setLists([]);
+            })();
+        }, [search])
+    );
 
     const filteredLists = deferredQuery.length > 0
         ? lists.filter((value) =>

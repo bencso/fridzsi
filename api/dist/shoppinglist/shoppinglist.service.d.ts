@@ -16,6 +16,10 @@ export declare class ShoppingListService {
         date: string;
         request: Request;
     }): Promise<ShoppingList[] | ReturnDto>;
+    getItemNow({ query, request, }: {
+        query: string;
+        request: Request;
+    }): Promise<ShoppingList[] | ReturnDto>;
     getItemDates({ request, }: {
         request: Request;
     }): Promise<Date[] | ReturnDto>;

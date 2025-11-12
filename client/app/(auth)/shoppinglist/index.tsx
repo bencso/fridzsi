@@ -34,24 +34,25 @@ export default function ShoppingListScreen() {
     useCallback(() => {
       getFirstDate();
       getItemDates();
+      // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
   );
 
-      noteRefs.current = shoppingList.map((note: ShoppingListItem) => {
-      const pan = new Animated.ValueXY();
-      const panResponder = PanResponder.create({
-        onMoveShouldSetPanResponder: () => true,
-        onPanResponderMove: () => {
-          Animated.event([null, { dx: pan.x, dy: pan.y }], { useNativeDriver: false });
-          deleteAlert({ t, note, deleteItem });
-        },
-        onPanResponderRelease: () => {
-          pan.extractOffset();
-        }
-      });
-      return { pan, panResponder };
+  noteRefs.current = shoppingList.map((note: ShoppingListItem) => {
+    const pan = new Animated.ValueXY();
+    const panResponder = PanResponder.create({
+      onMoveShouldSetPanResponder: () => true,
+      onPanResponderMove: () => {
+        Animated.event([null, { dx: pan.x, dy: pan.y }], { useNativeDriver: false });
+        deleteAlert({ t, note, deleteItem });
+      },
+      onPanResponderRelease: () => {
+        pan.extractOffset();
+      }
     });
-  
+    return { pan, panResponder };
+  });
+
 
 
   return (

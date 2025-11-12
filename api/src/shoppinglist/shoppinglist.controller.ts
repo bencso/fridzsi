@@ -31,6 +31,31 @@ export class ShoppingListController {
     });
   }
 
+  @Get('/items/now')
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard)
+  @HttpCode(HttpStatus.OK)
+  async getItemNow(@Req() request: Request) {
+    return this.shoppinglistService.getItemNow({
+      query: '',
+      request: request,
+    });
+  }
+
+  @Get('/items/now/:q')
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard)
+  @HttpCode(HttpStatus.OK)
+  async getItemNowWithQuery(
+    @Param('q') query: string,
+    @Req() request: Request,
+  ) {
+    return this.shoppinglistService.getItemNow({
+      query,
+      request: request,
+    });
+  }
+
   @Get('/items/dates')
   @ApiBearerAuth()
   @UseGuards(AuthGuard)

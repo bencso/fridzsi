@@ -29,6 +29,18 @@ let ShoppingListController = class ShoppingListController {
             request: request,
         });
     }
+    async getItemNow(request) {
+        return this.shoppinglistService.getItemNow({
+            query: '',
+            request: request,
+        });
+    }
+    async getItemNowWithQuery(query, request) {
+        return this.shoppinglistService.getItemNow({
+            query,
+            request: request,
+        });
+    }
     async getItemDates(request) {
         return this.shoppinglistService.getItemDates({
             request: request,
@@ -57,6 +69,27 @@ __decorate([
     __metadata("design:paramtypes", [String, Object]),
     __metadata("design:returntype", Promise)
 ], ShoppingListController.prototype, "getItemByDate", null);
+__decorate([
+    (0, common_1.Get)('/items/now'),
+    (0, swagger_1.ApiBearerAuth)(),
+    (0, common_1.UseGuards)(auth_guard_1.AuthGuard),
+    (0, common_1.HttpCode)(common_1.HttpStatus.OK),
+    __param(0, (0, common_1.Req)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
+], ShoppingListController.prototype, "getItemNow", null);
+__decorate([
+    (0, common_1.Get)('/items/now/:q'),
+    (0, swagger_1.ApiBearerAuth)(),
+    (0, common_1.UseGuards)(auth_guard_1.AuthGuard),
+    (0, common_1.HttpCode)(common_1.HttpStatus.OK),
+    __param(0, (0, common_1.Param)('q')),
+    __param(1, (0, common_1.Req)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, Object]),
+    __metadata("design:returntype", Promise)
+], ShoppingListController.prototype, "getItemNowWithQuery", null);
 __decorate([
     (0, common_1.Get)('/items/dates'),
     (0, swagger_1.ApiBearerAuth)(),

@@ -101,8 +101,18 @@ export function ShoppingListProvider({ children }: { children: ReactNode }) {
         }
     }
 
+    async function getNowList({ q }: { q?: string | null }) {
+        try {
+            const response = await api.get("/shoppinglist/items/now/" + (q ?? q), { withCredentials: true });
+            return response.data;
+        }
+        catch (error: any) {
+            return "Hiba történt létrehozás közben: " + error;
+        }
+    }
+
     return (
-        <ShoppingListContext.Provider value={{ shoppingList, getFirstDate, getItemByDate, selectedDay, setSelectedDay, getItemDates, shoppingListDays, setShoppingListDays, changeDateItem, deleteItem, addNewShoppingItem }}>
+        <ShoppingListContext.Provider value={{ shoppingList, getFirstDate, getItemByDate, selectedDay, setSelectedDay, getItemDates, shoppingListDays, setShoppingListDays, changeDateItem, deleteItem, addNewShoppingItem, getNowList }}>
             {children}
         </ShoppingListContext.Provider>
     );

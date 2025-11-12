@@ -67,6 +67,61 @@ export class ShoppingListService {
     }
   }
 
+  async getItemNow({
+    query,
+    request,
+  }: {
+    query: string;
+    request: Request;
+  }): Promise<ShoppingList[] | ReturnDto> {
+    try {
+      const requestUser =
+        await this.sessionsService.validateAccessToken(request);
+      const user = await this.usersService.findUser(requestUser.email);
+
+      const shoppingList = await this.dataSource
+        .getRepository(ShoppingList)
+        .createQueryBuilder('shoppinglist')
+        .leftJoinAndSelect('shoppinglist.product', 'product')
+        .select([
+          "COALESCE(shoppinglist.customProductName, 'Unkown/Ismeretlen') as customProductName",
+          'product.product_name',
+          'product.quantity_metric',
+          'shoppinglist.id',
+          'shoppinglist.amount',
+          'shoppinglist.day',
+        ])
+        .where({
+          day: Equal(new Date()),
+          user: user,
+        });
+
+      if (query.length > 0) {
+        shoppingList.andWhere(
+          'LOWER(product.product_name) LIKE :query OR LOWER(shoppinglist.customProductName) LIKE :query',
+          {
+            query: `%${query.toLowerCase()}%`,
+          },
+        );
+      }
+
+      const result = await shoppingList.getRawMany();
+      if (result.length > 0) {
+        return result;
+      } else {
+        return {
+          message: ['Nincs felvitt item-e a felhasználónak!'],
+          statusCode: 401,
+        };
+      }
+    } catch {
+      return {
+        message: ['Hiba történt a lekérdezés során!'],
+        statusCode: 401,
+      };
+    }
+  }
+
   async getItemDates({
     request,
   }: {
