@@ -31,7 +31,7 @@ export const DaysNextTwoMonth = () => {
                 horizontal={true}
                 showsHorizontalScrollIndicator={false}
             >
-                {shoppingListDays && shoppingListDays.map(({ date }, index: number) => (
+                {shoppingListDays && shoppingListDays.map(({ date }: { date: Date }, index: number) => (
                     <TouchableOpacity
                         key={index}
                         onPress={() => {

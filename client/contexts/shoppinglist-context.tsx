@@ -6,7 +6,7 @@ import React, {
     useEffect,
     useState,
 } from "react";
-import { ShoppingListItem } from "@/types/noteClass";
+import { ShoppingListItem } from "@/types/shoppinglist/noteClass";
 import { ShoppingListContextProp } from "@/types/shoppingListContextProp";
 
 const ShoppingListContext = createContext<ShoppingListContextProp | undefined>(undefined);

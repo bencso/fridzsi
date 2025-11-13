@@ -118,6 +118,7 @@ export default {
     search: {
       cta: "Search products",
       notHave: "No products found.",
+      clear: "Nothing on the shopping list for today.",
     },
     stickyNote: "you have to take it",
     name: "Name",

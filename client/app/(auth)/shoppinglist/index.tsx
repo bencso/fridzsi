@@ -15,7 +15,7 @@ import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { Fonts } from "@/constants/theme";
 import AddShoppinglistModal from "@/components/inventory/AddShoppinglistModal";
 import { useShoppingList } from "@/contexts/shoppinglist-context";
-import { ShoppingListItem } from "@/types/noteClass";
+import { ShoppingListItem } from "@/types/shoppinglist/noteClass";
 
 export default function ShoppingListScreen() {
   const { scheme: colorScheme } = useTheme();
@@ -29,7 +29,6 @@ export default function ShoppingListScreen() {
   const noteRefs = useRef<{ pan: Animated.ValueXY; panResponder: any }[]>([]);
 
   //TODO: Automatikusan majd törölni ha lejárt a nap, minden első lépésnél akár
-  //TODO: IDŐZÓNA hiba a JS datekezeléssel szóval kell majd egy jó dátumkezelés :)
   useFocusEffect(
     useCallback(() => {
       getFirstDate();

@@ -9,7 +9,7 @@ import { Fragment, useCallback } from "react";
 import getNavbarStyles from "@/styles/navbar";
 import { getInventoryStyle } from "@/styles/inventory";
 import { useFocusEffect } from "expo-router";
-import { PantryType } from "@/types/pantryType";
+import { PantryType } from "@/types/pantry/pantryType";
 import { InventoryItem } from "@/components/inventory/InventoryItem";
 
 export default function InventoryScreen() {

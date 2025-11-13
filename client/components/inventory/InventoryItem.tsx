@@ -1,6 +1,6 @@
 import { Colors } from "@/constants/theme";
 import { getInventoryStyle } from "@/styles/inventory";
-import { PantryType } from "@/types/pantryType";
+import { PantryType } from "@/types/pantry/pantryType";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { router } from "expo-router";
 import { TouchableOpacity, View } from "react-native";

@@ -1,5 +1,5 @@
 import api from "@/interceptor/api";
-import { AuthContextProp, UserData } from "@/types/authContextProp";
+import { AuthContextProp, UserData } from "@/types/auth/authContextProp";
 import { router } from "expo-router";
 import * as SecureStore from "expo-secure-store";
 import React, { createContext, ReactNode, useContext, useState } from "react";

@@ -10,7 +10,7 @@ import { Product } from "@/constants/product.interface"
 import { Alert } from "react-native";
 import { useTranslation } from "react-i18next";
 import { PantryContextProp } from "@/types/pantryContextProp";
-import { PantryType } from "@/types/pantryType";
+import { PantryType } from "@/types/pantry/pantryType";
 
 const PantryContext = createContext<PantryContextProp | undefined>(undefined);
 

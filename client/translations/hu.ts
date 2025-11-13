@@ -115,6 +115,7 @@ export default {
         search: {
             cta: "Termékek keresése",
             notHave: "Nincs találat.",
+            clear: "Nincs mára semmi a bevásárlólistán.",
         },
         stickyNote: "-t venni kell belőle",
         name: "Név",

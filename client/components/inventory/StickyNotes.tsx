@@ -3,7 +3,7 @@ import { Animated } from "react-native";
 import { ThemedText } from "../themed-text";
 import { t } from "i18next";
 import { Fonts } from "@/constants/theme";
-import { ShoppingListItem } from "@/types/noteClass";
+import { ShoppingListItem } from "@/types/shoppinglist/noteClass";
 
 export default function StickyNote({ note, idx, noteRefs, styles }: {
     noteRefs: RefObject<{

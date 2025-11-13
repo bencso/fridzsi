@@ -60,5 +60,11 @@ export const getShoppingListModalStyle = ({
       fontSize: 16,
       letterSpacing: 1,
     },
+    amountInput:{
+      display: "flex",
+      flexDirection: "row",
+      width: "100%",
+      gap: 6
+    }
   });
 };

@@ -8,7 +8,7 @@ import { ThemedView } from "../themed-view";
 import { useTranslation } from "react-i18next";
 import { useShoppingList } from "@/contexts/shoppinglist-context";
 import { useFocusEffect } from "expo-router";
-import { ShoppingListItem } from "@/types/noteClass";
+import { ShoppingListItem } from "@/types/shoppinglist/noteClass";
 
 export const ShoppingListSection = () => {
     const { scheme: colorScheme } = useTheme();
@@ -34,7 +34,7 @@ export const ShoppingListSection = () => {
                     setLists(items);
                 } else setLists([]);
             })();
-        // eslint-disable-next-line react-hooks/exhaustive-deps
+            // eslint-disable-next-line react-hooks/exhaustive-deps
         }, [search])
     );
 
@@ -60,7 +60,7 @@ export const ShoppingListSection = () => {
                         filteredLists.length === 0 && <ThemedText style={{
                             paddingHorizontal: 12,
                             paddingVertical: 24
-                        }}>{t("shoppinglist.search.notHave")}</ThemedText>
+                        }}>{search.length > 0 ? t("shoppinglist.search.notHave") : t("shoppinglist.search.clear")}</ThemedText>
 
                     }
                     {
