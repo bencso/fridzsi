@@ -1,5 +1,5 @@
 export type AmountTypeProp = {
-id: number;
+label: string;
 en: string;
 hu: string;
 }

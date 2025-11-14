@@ -9,7 +9,7 @@ import React, {
 import { Product } from "@/constants/product.interface"
 import { Alert } from "react-native";
 import { useTranslation } from "react-i18next";
-import { PantryContextProp } from "@/types/pantryContextProp";
+import { PantryContextProp } from "@/types/pantry/pantryContextProp";
 import { PantryType } from "@/types/pantry/pantryType";
 
 const PantryContext = createContext<PantryContextProp | undefined>(undefined);
@@ -95,7 +95,7 @@ export function PantryProvider({ children }: { children: ReactNode }) {
             const item = response.data;
             return item;
         } catch {
-           return null;
+            return null;
         }
         finally {
             setIsLoading(false);

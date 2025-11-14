@@ -67,7 +67,9 @@ export default {
         authMissingRePassword: "Kérjük, adja meg újra a jelszavát!",
         registrationMissingUsername: "Kérjük, adja meg a felhasználónevét!",
         loading: "Betöltés...",
-        authPasswordMatchMessage: "A megadott jelszavak nem egyeznek!"
+        authPasswordMatchMessage: "A megadott jelszavak nem egyeznek!",
+        errorTitle: "Hiba történt",
+        loadAuthErrorMessage: "A munkamenet lejárt, kérjük jelentkezz be újra"
     },
     inventory: {
         cta: "Kamra",

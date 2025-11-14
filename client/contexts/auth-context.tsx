@@ -39,6 +39,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       }
     } catch {
       setIsAuthenticated(false);
+      Alert.alert(t("alerts.errorTitle", "alerts.loadAuthErrorMessage"));
     } finally {
       setIsLoading(false);
     }

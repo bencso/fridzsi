@@ -55,7 +55,7 @@ export default {
     productName: "Product name",
     productCode: "Product code",
     send: "Add",
-    searchLabel: "Search products"
+    searchLabel: "Search products",
   },
   alerts: {
     authErrorTitle: "An error occurred during login!",
@@ -71,10 +71,12 @@ export default {
     authMissingUsername: "Please enter your username!",
     loading: "Loading...",
     authPasswordMatchMessage: "Passwords do not match!",
+    errorTitle: "An error occurred",
+    loadAuthErrorMessage: "Your session has expired, please log in again",
   },
   inventory: {
     cta: "Pantry",
-        title: "Your pantry",
+    title: "Your pantry",
     permission: {
       title: "Permission is required to use the camera.",
       description:
@@ -129,7 +131,7 @@ export default {
       title: "Delete item",
       message: "Are you sure you want to delete this product: {{name}}?",
       submit: "Delete",
-      cancel: "Cancel"
-    }
-  }
+      cancel: "Cancel",
+    },
+  },
 };

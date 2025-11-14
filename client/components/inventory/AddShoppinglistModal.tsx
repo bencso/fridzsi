@@ -1,19 +1,18 @@
 import { Colors } from "@/constants/theme";
-import { Modal, Text, TextInput, View, TouchableOpacity, Alert, Pressable } from "react-native";
+import { Modal, Text, TextInput, View, TouchableOpacity, Alert } from "react-native";
 import { useTranslation } from "react-i18next";
 import { useTheme } from "@/contexts/theme-context";
-import { Dispatch, SetStateAction, useState } from "react";
+import { useState } from "react";
 import { ThemedText } from "../themed-text";
 import { getShoppingListModalStyle } from "@/styles/shoppinglist/modal";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { useShoppingList } from "@/contexts/shoppinglist-context";
-import { Picker } from '@react-native-picker/picker';
 import { AmountTypeProp } from "@/types/shoppinglist/amountTypeProp";
 import { ModalProp } from "@/types/shoppinglist/addShoppingListProp";
-import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
-import Button from "../button";
+import { ModalAmountType } from "../shoppinglist/modalAmountType";
 
 //TODO: Késöbbiekben kellene a kódos felvétel, kamerával!
+//TODO: Tizedes számjegy is engedélyezett legyen!
 export default function AddShoppinglistModal({ isOpen, setIsOpen }: ModalProp) {
     const { t } = useTranslation();
     const { scheme: colorScheme } = useTheme();
@@ -24,7 +23,7 @@ export default function AddShoppinglistModal({ isOpen, setIsOpen }: ModalProp) {
         code?: string | null;
     }>();
     const [day, setDay] = useState<Date>(new Date());
-    const [amountType, setAmountType] = useState<AmountTypeProp>({ id: 1, en: "kilogram", hu: "kilogramm" });
+    const [amountType, setAmountType] = useState<AmountTypeProp>({ label: "kg", en: "kilogram", hu: "kilogramm" });
     const { addNewShoppingItem } = useShoppingList();
 
     return (
@@ -81,20 +80,20 @@ export default function AddShoppinglistModal({ isOpen, setIsOpen }: ModalProp) {
                                 style={{ ...styles.input, flex: 1 }}
                                 placeholderTextColor={`${Colors[colorScheme ?? "light"].text}80`}
                                 maxLength={150}
-                                value={formState?.product_name ?? ""}
+                                value={formState?.amount === undefined || Number.isNaN(formState.amount) ? "1" : String(formState.amount)}
                                 autoCorrect={false}
                                 onChangeText={(text: string) => {
                                     setFormState({
                                         ...formState,
-                                        product_name: text
+                                        amount: Number(text)
                                     })
                                 }}
                                 clearButtonMode="while-editing"
-                                keyboardType="default"
+                                keyboardType="numeric"
                                 autoCapitalize="none"
                                 returnKeyType="next"
                                 returnKeyLabel={t("buttons.next")}
-                                placeholder={t("shoppinglist.name")}
+                                placeholder={t("shoppinglist.amount")}
                             />
                             <View>
                                 <ModalAmountType setAmountType={setAmountType} amountType={amountType} />
@@ -165,78 +164,5 @@ function ModalButton({
                 {title}
             </Text>
         </TouchableOpacity>
-    )
-}
-
-function ModalAmountType({
-    amountType,
-    setAmountType
-}: {
-    amountType: AmountTypeProp,
-    setAmountType: Dispatch<SetStateAction<AmountTypeProp>>
-}) {
-    const [modalVisible, setModalVisible] = useState<boolean>(false);
-    //TODO: Késöbb DB-ből jön ugyis ez az adat is, csak még ott is fel kéne vinni ezeket :DDD
-    const amountTypes = [
-        { id: 1, en: "kilogram", hu: "kilogramm" },
-        { id: 2, en: "gram", hu: "gramm" },
-        { id: 3, en: "piece", hu: "darab" },
-        { id: 4, en: "liter", hu: "liter" },
-        { id: 5, en: "deciliter", hu: "deciliter" },
-        { id: 6, en: "milliliter", hu: "milliliter" },
-        { id: 7, en: "package", hu: "csomag" },
-        { id: 8, en: "bottle", hu: "üveg" },
-        { id: 9, en: "can", hu: "doboz" },
-        { id: 10, en: "bag", hu: "zacskó" },
-        { id: 11, en: "box", hu: "karton" },
-        { id: 12, en: "bunch", hu: "csokor" },
-        { id: 13, en: "slice", hu: "szelet" },
-    ];
-
-    return (
-        <SafeAreaProvider>
-            <SafeAreaView>
-                <Modal
-                    animationType="slide"
-                    transparent={true}
-                    visible={modalVisible}
-                    onRequestClose={() => {
-                        Alert.alert('Modal has been closed.');
-                        setModalVisible(!modalVisible);
-                    }}>
-                    <View style={{
-                        position: "absolute",
-                        bottom: 0,
-                        left: 0,
-                        right: 0,
-                        backgroundColor: "white",
-                        padding: 16,
-                        paddingTop: 16,
-                        borderTopLeftRadius: 30,
-                        borderTopRightRadius: 30
-                    }}>
-                        <Picker
-                            selectedValue={amountType}
-                            onValueChange={(value: AmountTypeProp) => {
-                                setAmountType(value);
-                            }}
-                            mode="dropdown"
-                        >
-                            {
-                                amountTypes.map((amountType: AmountTypeProp, idx: number) => {
-                                    return (
-                                        <Picker.Item label={amountType.hu} key={idx} value={amountType.id} />
-                                    )
-                                })
-                            }
-                        </Picker>
-                        <Button label="Kész" icon="check-circle" action={() => {
-                            setModalVisible(!modalVisible);
-                        }} />
-                    </View>
-                </Modal>
-                <Button action={() => setModalVisible(!modalVisible)} chevron={false} label={amountType.hu} />
-            </SafeAreaView>
-        </SafeAreaProvider>
     )
 }
