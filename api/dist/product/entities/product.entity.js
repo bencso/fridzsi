@@ -52,7 +52,7 @@ __decorate([
         default: 'kg',
     }),
     __metadata("design:type", String)
-], Product.prototype, "quantity_metric", void 0);
+], Product.prototype, "product_quantity_unit", void 0);
 __decorate([
     (0, typeorm_1.Column)({
         type: 'varchar',

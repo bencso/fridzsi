@@ -10,7 +10,7 @@ export declare class ShoppingListController {
     getItemDates(request: Request): Promise<import("../dto/return.dto").ReturnDto | Date[]>;
     createItem(data: CreateShoppingListItemDto, request: Request): Promise<import("../dto/return.dto").ReturnDto | import("./entities/shoppinglist.entity").ShoppingList>;
     removeItem(id: number, body: {
-        amount: number;
+        quantity: number;
     }, request: Request): Promise<{
         message: string[];
         statusCode: number;

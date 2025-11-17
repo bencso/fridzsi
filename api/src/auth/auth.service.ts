@@ -13,12 +13,12 @@ import { BodyRegistration, RegistrationDto } from './dto/registration.dto';
 import { ConfigService } from '@nestjs/config';
 import * as bcrypt from 'bcrypt';
 import { Request, Response } from 'express';
-import { ReturnUserDto } from 'src/users/dto/return.dto';
+import { ReturnUserDto } from '../users/dto/return.dto';
 import { randomUUID, UUID } from 'crypto';
-import { SessionService } from 'src/sessions/sessions.service';
-import { Sessions, UserData } from 'src/sessions/entities/sessions.entity';
-import { User } from 'src/users/entities/user.entity';
-import { ReturnDataDto, ReturnDto } from 'src/dto/return.dto';
+import { SessionService } from '../sessions/sessions.service';
+import { Sessions, UserData } from '../sessions/entities/sessions.entity';
+import { User } from '../users/entities/user.entity';
+import { ReturnDataDto, ReturnDto } from '../dto/return.dto';
 import { DataSource } from 'typeorm';
 import { PasswordChangeBody } from './dto/password.dto';
 

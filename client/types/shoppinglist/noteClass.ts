@@ -17,7 +17,7 @@ export class ShoppingListItem {
 
   public id: number;
   public name: string;
-  public amount: number;
+  public quantity: number;
   public metric: string;
   public day: Date;
   public random: number;
@@ -25,13 +25,13 @@ export class ShoppingListItem {
   constructor(
     id: number,
     name: string,
-    amount: number,
+    quantity: number,
     metric: string,
     day: Date
   ) {
     this.id = id;
     this.name = name;
-    this.amount = amount;
+    this.quantity = quantity;
     this.metric = metric;
     this.day = day;
 

@@ -1,7 +1,7 @@
 export interface PantryDto {
     index: number;
     name: string;
-    amount: number;
+    quantity: number;
     expiredAt: Date;
     code: string;
 }

@@ -4,6 +4,6 @@ export type PantryType = {
     code: string;
     name: string;
     expiredAt: string[];
-    amount: number[];
+    quantity: number[];
     products: Product[] | [];
 }

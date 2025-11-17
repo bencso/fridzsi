@@ -8,7 +8,7 @@ import {
 } from '@nestjs/common';
 import { ProductService } from './product.service';
 import { ApiBearerAuth } from '@nestjs/swagger';
-import { AuthGuard } from 'src/auth/auth.guard';
+import { AuthGuard } from '../auth/auth.guard';
 
 @Controller('product')
 export class ProductController {

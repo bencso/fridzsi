@@ -35,7 +35,7 @@ export type ShoppingListContextProp = {
 addNewShoppingItem: (params: {
   day: Date;
   product_name?: string | null;
-  amount: number;
+  quantity: number;
   code?: string | null;
 }) => Promise<void | string>;
 getNowList: (params: {q?:string| null}) => Promise<any>

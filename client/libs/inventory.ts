@@ -9,22 +9,22 @@ export const getItems = async (): Promise<[] | Product[]> => {
 export async function addItem({
   code,
   product_name,
-  amount,
+  quantity,
   expiredAt,
 }: {
   code: string;
   product_name: string;
-  amount: number;
+  quantity: number;
   expiredAt: Date;
 }) {
   try {
-    if (!code || !product_name || !amount || !expiredAt) throw new Error();
+    if (!code || !product_name || !quantity || !expiredAt) throw new Error();
     const response = await api.post(
       "/pantry",
       {
         code: code,
         product_name: product_name,
-        amount: amount,
+        quantity: quantity,
         expiredAt: expiredAt,
       },
       { withCredentials: true }
@@ -57,12 +57,12 @@ export async function deleteItem({ id }: { id: number[] }) {
   }
 }
 
-export async function editItem({ id, amount }: { id: number; amount: number }) {
+export async function editItem({ id, quantity }: { id: number; quantity: number }) {
   try {
     const response = await api.post(
       "/pantry/edit/" + id,
       {
-        amount,
+        quantity,
       },
       { withCredentials: true }
     );

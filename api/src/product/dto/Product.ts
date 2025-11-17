@@ -3,7 +3,7 @@ export class ProductDto {
   product_name: string;
   brands?: string;
   quantity?: number;
-  quantity_metric?: string;
+  product_quantity_unit?: string;
   categories?: string;
   serving_size?: string;
   energy_kcal_100g?: number;

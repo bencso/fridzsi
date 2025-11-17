@@ -38,7 +38,7 @@ export class ShoppingList {
   })
   @IsInt()
   @Min(1)
-  amount: number;
+  quantity: number;
 
   @Column({
     type: 'date',

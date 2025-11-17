@@ -31,19 +31,19 @@ export function PantryProvider({ children }: { children: ReactNode }) {
                     const dateMap: Record<string, number> = {};
                     item[key].forEach((product: Product) => {
                         const date = product.expiredat ? new Date(product.expiredat).toLocaleDateString() : new Date().toLocaleDateString();
-                        dateMap[date] = (dateMap[date] || 0) + Number(product.amount);
+                        dateMap[date] = (dateMap[date] || 0) + Number(product.quantity);
                     });
 
                     returnItems.push({
                         code: key,
                         products: item[key].map((product: Product) => ({
                             index: product.index,
-                            amount: product.amount,
+                            quantity: product.quantity,
                             expiredAt: product.expiredat
                         })),
                         name: item[key][0].name,
                         expiredAt: Object.keys(dateMap),
-                        amount: Object.values(dateMap),
+                        quantity: Object.values(dateMap),
                     });
                 });
             });
@@ -105,19 +105,19 @@ export function PantryProvider({ children }: { children: ReactNode }) {
     const addPantryItem = async ({
         code,
         product_name,
-        amount,
+        quantity,
         expiredAt,
     }: {
         code: string;
         product_name: string;
-        amount: number;
+        quantity: number;
         expiredAt: Date;
     }) => {
         try {
             await addItem({
                 code,
                 product_name,
-                amount,
+                quantity,
                 expiredAt,
             });
         } catch {
@@ -147,18 +147,18 @@ export function PantryProvider({ children }: { children: ReactNode }) {
 
     const editPantryItem = async ({
         id,
-        amount
+        quantity
     }: {
         id: number;
-        amount: number;
+        quantity: number;
     }) => {
         try {
             await editItem({
                 id,
-                amount
+                quantity
             });
         } catch {
-            Alert.alert(t("inventory.editItem.amountInput.error"), t("inventory.editItem.amountInput.errorTitle"));
+            Alert.alert(t("inventory.editItem.quantityInput.error"), t("inventory.editItem.quantityInput.errorTitle"));
         } finally {
             setIsLoading(false);
         }

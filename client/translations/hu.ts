@@ -94,7 +94,7 @@ export default {
         editItem: {
             title: "Termék szerkesztése",
             cta: "Szerkesztés",
-            amountInput: {
+            quantityInput: {
                 title: "Darabszám",
                 message: "Kérjük, adja meg az új darabszámot.",
                 submit: "Mentés",
@@ -106,7 +106,7 @@ export default {
         deleteItem: {
              title: "Termék törlése",
             cta: "db törlése",
-            amountInput: {
+            quantityInput: {
                 title: "Darabszám",
             },
         },
@@ -121,7 +121,7 @@ export default {
         },
         stickyNote: "-t venni kell belőle",
         name: "Név",
-        amount: "Mennyiség",
+        quantity: "Mennyiség",
         add: "Hozzáadás",
         cancel: "Mégse",
         deleteItem: {

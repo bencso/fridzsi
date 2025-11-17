@@ -31,7 +31,7 @@ export declare class ShoppingListService {
         id: number;
         request: Request;
         body: {
-            amount: number;
+            quantity: number;
         };
     }): Promise<{
         message: string[];

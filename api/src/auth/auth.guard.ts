@@ -5,7 +5,7 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { Request } from 'express';
-import { SessionService } from 'src/sessions/sessions.service';
+import { SessionService } from '../sessions/sessions.service';
 
 // @UseGuards(AuthGuard) - igy lehet majd használni a guardot, tulajdonképpen a Guard az egy őr, aki azt nézi hogy hozzáférhet-e az adott user a végponthoz.
 //! Ha jól értem: nest guard = express middleware

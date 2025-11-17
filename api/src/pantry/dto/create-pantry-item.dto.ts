@@ -8,7 +8,7 @@ export class CreatePantryItemDto {
   product_name?: string;
 
   @ApiProperty()
-  amount: number;
+  quantity: number;
 
   @ApiProperty()
   expiredAt?: Date;

@@ -5,7 +5,7 @@ export declare class ShoppingList {
     id: number;
     product?: Product;
     customProductName?: string;
-    amount: number;
+    quantity: number;
     day: Date;
     createdAt: Date;
 }

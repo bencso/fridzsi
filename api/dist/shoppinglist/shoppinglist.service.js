@@ -36,9 +36,9 @@ let ShoppingListService = class ShoppingListService {
                 .select([
                 "COALESCE(shoppinglist.customProductName, 'Unkown/Ismeretlen') as customProductName",
                 'product.product_name',
-                'product.quantity_metric',
+                'product.product_quantity_unit',
                 'shoppinglist.id',
-                'shoppinglist.amount',
+                'shoppinglist.quantity',
                 'shoppinglist.day',
             ])
                 .where({
@@ -75,9 +75,9 @@ let ShoppingListService = class ShoppingListService {
                 .select([
                 "COALESCE(shoppinglist.customProductName, 'Unkown/Ismeretlen') as customProductName",
                 'product.product_name',
-                'product.quantity_metric',
+                'product.product_quantity_unit',
                 'shoppinglist.id',
-                'shoppinglist.amount',
+                'shoppinglist.quantity',
                 'shoppinglist.day',
             ])
                 .where({
@@ -146,7 +146,7 @@ let ShoppingListService = class ShoppingListService {
             console.log('ASD:' + convertedDate);
             if (!data.code && !data.product_name)
                 throw new Error('Kérem adja meg legalább a nevét vagy a kódját');
-            if (data.amount <= 0)
+            if (data.quantity <= 0)
                 throw new Error('A mennyiségnek legalább 1 kell lennie');
             const today = new Date();
             const convertedDateOnly = new Date(convertedDate.getFullYear(), convertedDate.getMonth(), convertedDate.getDate());
@@ -172,7 +172,7 @@ let ShoppingListService = class ShoppingListService {
                 user: user,
                 product: product ? product : null,
                 customProductName: product ? null : data.product_name,
-                amount: data.amount,
+                quantity: data.quantity,
                 day: convertedDate,
             })
                 .execute();
@@ -197,12 +197,12 @@ let ShoppingListService = class ShoppingListService {
             const haveThisItem = await this.dataSource
                 .getRepository(shoppinglist_entity_1.ShoppingList)
                 .createQueryBuilder('shoppinglist')
-                .select(['shoppinglist.id', 'shoppinglist.amount', 'shoppinglist.user'])
+                .select(['shoppinglist.id', 'shoppinglist.quantity', 'shoppinglist.user'])
                 .where('shoppinglist.id = :id', { id: id })
                 .andWhere('shoppinglist.user = :userId', { userId: user.id })
                 .getOne();
             if (haveThisItem) {
-                if (haveThisItem.amount <= body.amount) {
+                if (haveThisItem.quantity <= body.quantity) {
                     await this.dataSource
                         .createQueryBuilder()
                         .delete()
@@ -215,7 +215,7 @@ let ShoppingListService = class ShoppingListService {
                     await this.dataSource
                         .createQueryBuilder()
                         .update(shoppinglist_entity_1.ShoppingList)
-                        .set({ amount: haveThisItem.amount - body.amount })
+                        .set({ quantity: haveThisItem.quantity - body.quantity })
                         .where('id = :id', { id: id })
                         .andWhere('user = :userId', { userId: user.id })
                         .execute();

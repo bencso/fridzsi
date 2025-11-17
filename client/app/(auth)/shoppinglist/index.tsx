@@ -107,7 +107,7 @@ const deleteAlert = ({
 }: {
   t: TFunction<"translation", undefined>;
   note: ShoppingListItem;
-  deleteItem: (params: { id: number; amount: number }) => Promise<void>;
+  deleteItem: (params: { id: number; quantity: number }) => Promise<void>;
 }) => {
   Alert.prompt(
     t('shoppinglist.deleteItem.title'),
@@ -122,7 +122,7 @@ const deleteAlert = ({
         style: "default",
         onPress: async (text: any) => {
           try {
-            await deleteItem({ id: Number(note.id), amount: Number(text) });
+            await deleteItem({ id: Number(note.id), quantity: Number(text) });
           } catch (error: any) {
             console.error(error);
           }

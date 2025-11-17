@@ -1,6 +1,6 @@
 export declare class CreatePantryItemDto {
     code: string;
     product_name?: string;
-    amount: number;
+    quantity: number;
     expiredAt?: Date;
 }

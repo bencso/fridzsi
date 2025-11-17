@@ -61,8 +61,8 @@ export
     //! Lehetett volna szebben és jobban ez az expiredAt mondjuk Date-ben visszadni, késöbb lehet ezt megcsinálni :)
     //TODO: Az expiredAt késöbbiekben Date-ben jöjjön vissza, könnyebb kezelhetőség
     return (
-        product.amount.map((amount, i) => ({
-            amount,
+        product.quantity.map((quantity, i) => ({
+            quantity,
             expiredAt: product.expiredAt[i],
         }))
             .sort((a, b) => {
@@ -113,7 +113,7 @@ export
                                 </ThemedText>
                             </View>
                             <ThemedText style={styles.productSecond}>
-                                {item.amount} x
+                                {item.quantity} x
                             </ThemedText>
                         </View>
                     </ReanimatedSwipeable>

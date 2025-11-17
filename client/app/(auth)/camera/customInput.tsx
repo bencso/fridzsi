@@ -24,7 +24,7 @@ export default function CustomInputScreen() {
     const [filtered, setFiltered] = useState<Product[]>([]);
     const [expired, setExpired] = useState<Date>(new Date());
     const [focusedInput, setFocusedInput] = useState<boolean>(false);
-    const [amount, setAmount] = useState<number>(1);
+    const [quantity, setquantity] = useState<number>(1);
     const { scheme } = useTheme();
     const { addPantryItem, product, setProduct, loadPantry, setScanned, searchProductByKeyword } = usePantry();
     const { t } = useTranslation();
@@ -46,16 +46,16 @@ export default function CustomInputScreen() {
     }
 
     useEffect(() => {
-        if (amount && amount <= 1) setAmount(1);
-    }, [amount]);
+        if (quantity && quantity <= 1) setquantity(1);
+    }, [quantity]);
 
     async function onSubmit() {
         try {
-            if (productCode && productName && amount)
+            if (productCode && productName && quantity)
                 await addPantryItem({
                     code: productCode,
                     product_name: productName,
-                    amount: amount,
+                    quantity: quantity,
                     expiredAt: expired
                 });
             else throw new Error(t("alerts.addPantryItemError"));
@@ -166,7 +166,7 @@ export default function CustomInputScreen() {
                     <TextInput
                         style={styles.input}
                         placeholderTextColor={`${Colors[scheme ?? "light"].text}80`}
-                        value={amount.toString()}
+                        value={quantity.toString()}
                         maxLength={3}
                         autoCorrect={false}
                         clearButtonMode="while-editing"
@@ -175,7 +175,7 @@ export default function CustomInputScreen() {
                         returnKeyLabel={t("buttons.done")}
                         autoCapitalize="none"
                         onChangeText={(text) => {
-                            setAmount(+text);
+                            setquantity(+text);
                         }}
                         placeholder={t("customInput.productName")}
                     />

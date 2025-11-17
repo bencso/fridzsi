@@ -11,7 +11,7 @@ export class CreateShoppingListItemDto {
   @Min(1)
   @IsNumber()
   @ApiProperty({ type: Number, minimum: 1, default: 1 })
-  amount: number;
+  quantity: number;
 
   @IsString()
   @ApiProperty({

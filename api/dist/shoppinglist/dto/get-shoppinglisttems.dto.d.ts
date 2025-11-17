@@ -1,6 +1,6 @@
 export interface ShoppingListDto {
     index: number;
     product_name: string;
-    amount: number;
+    quantity: number;
     day: Date;
 }

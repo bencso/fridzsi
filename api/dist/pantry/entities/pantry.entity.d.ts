@@ -4,7 +4,7 @@ export declare class Pantry {
     user: User;
     id: number;
     product: Product;
-    amount: number;
+    quantity: number;
     expiredAt: Date;
     createdAt: Date;
 }

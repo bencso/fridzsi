@@ -3,8 +3,8 @@ import { DataSource } from 'typeorm';
 import { ProductDto } from './dto/Product';
 import { Product } from './entities/product.entity';
 import { CreateProductDto } from './dto/CreateProductDto';
-import { SessionService } from 'src/sessions/sessions.service';
-import { UsersService } from 'src/users/users.service';
+import { SessionService } from '../sessions/sessions.service';
+import { UsersService } from '../users/users.service';
 import { Request } from 'express';
 import { SearchProductDto } from './dto/SearchProductDto';
 

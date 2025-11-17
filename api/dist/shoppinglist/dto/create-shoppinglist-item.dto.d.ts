@@ -1,6 +1,6 @@
 export declare class CreateShoppingListItemDto {
     code?: string;
     product_name?: string;
-    amount: number;
+    quantity: number;
     day?: Date;
 }

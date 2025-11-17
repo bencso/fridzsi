@@ -29,9 +29,9 @@ export function ShoppingListProvider({ children }: { children: ReactNode }) {
         const response = await api.get(`/shoppinglist/items/date/${selectedDay?.date}`, { withCredentials: true });
         const responseData = response.data;
         if (responseData && !responseData.message && Array.isArray(responseData)) {
-            const newItems = responseData.map((data: { customproductname: string; product_quantity_metric: string | null; product_product_name: string | null; shoppinglist_amount: number; shoppinglist_day: Date; shoppinglist_id: number }) => {
+            const newItems = responseData.map((data: { customproductname: string; product_product_quantity_unit: string | null; product_product_name: string | null; shoppinglist_quantity: number; shoppinglist_day: Date; shoppinglist_id: number }) => {
                 const name = data.product_product_name !== null ? data.product_product_name : data.customproductname;
-                return new ShoppingListItem(data.shoppinglist_id, name, data.shoppinglist_amount, data.product_quantity_metric || "", data.shoppinglist_day);
+                return new ShoppingListItem(data.shoppinglist_id, name, data.shoppinglist_quantity, data.product_product_quantity_unit || "", data.shoppinglist_day);
             });
             setShoppingList(newItems);
         } else {
@@ -39,8 +39,8 @@ export function ShoppingListProvider({ children }: { children: ReactNode }) {
         }
     }
 
-    async function deleteItem({ id, amount }: { id: number; amount: number }): Promise<void> {
-        await api.post(`/shoppinglist/items/remove/${id}`, { amount }, { withCredentials: true });
+    async function deleteItem({ id, quantity }: { id: number; quantity: number }): Promise<void> {
+        await api.post(`/shoppinglist/items/remove/${id}`, { quantity }, { withCredentials: true });
         getItemDates();
         getFirstDate();
     }
@@ -80,17 +80,17 @@ export function ShoppingListProvider({ children }: { children: ReactNode }) {
     async function addNewShoppingItem({
         product_name,
         day,
-        amount,
+        quantity,
         code
     }: {
         day: Date;
         product_name?: string | null;
-        amount: number;
+        quantity: number;
         code?: string | null;
     }): Promise<void | string> {
         try {
             await api.post("/shoppinglist/items/create", {
-                product_name, day, amount, code
+                product_name, day, quantity, code
             }, { withCredentials: true });
             getItemDates();
             getFirstDate();

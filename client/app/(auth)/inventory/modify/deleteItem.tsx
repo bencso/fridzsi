@@ -14,7 +14,7 @@ import { Colors } from "@/constants/theme";
 type ItemType = {
     index: number;
     name: string;
-    amount: number;
+    quantity: number;
     expiredat: string;
     code: string;
 }
@@ -95,7 +95,7 @@ export default function DeleteItemScreen() {
                                         <ThemedText>{new Date(product.expiredat).toLocaleDateString()}</ThemedText>
                                     </View>
                                     <View>
-                                        <ThemedText>{product.amount}x</ThemedText>
+                                        <ThemedText>{product.quantity}x</ThemedText>
                                     </View>
                                 </View>
                                 <MaterialCommunityIcons

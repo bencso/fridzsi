@@ -48,7 +48,7 @@ __decorate([
     (0, class_validator_1.IsInt)(),
     (0, class_validator_1.Min)(1),
     __metadata("design:type", Number)
-], ShoppingList.prototype, "amount", void 0);
+], ShoppingList.prototype, "quantity", void 0);
 __decorate([
     (0, typeorm_1.Column)({
         type: 'date',

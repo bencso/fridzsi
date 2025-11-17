@@ -60,7 +60,7 @@ export const getShoppingListModalStyle = ({
       fontSize: 16,
       letterSpacing: 1,
     },
-    amountInput:{
+    quantityInput:{
       display: "flex",
       flexDirection: "row",
       width: "100%",

@@ -28,7 +28,7 @@ __decorate([
     (0, class_validator_1.IsNumber)(),
     (0, swagger_1.ApiProperty)({ type: Number, minimum: 1, default: 1 }),
     __metadata("design:type", Number)
-], CreateShoppingListItemDto.prototype, "amount", void 0);
+], CreateShoppingListItemDto.prototype, "quantity", void 0);
 __decorate([
     (0, class_validator_1.IsString)(),
     (0, swagger_1.ApiProperty)({

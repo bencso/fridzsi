@@ -42,7 +42,7 @@ export class PantryService {
           .values({
             user: { id: user.id },
             product: { id: productId },
-            amount: createPantryItemDto.amount,
+            quantity: createPantryItemDto.quantity,
             expiredAt: createPantryItemDto.expiredAt || new Date(),
           })
           .execute();
@@ -66,7 +66,7 @@ export class PantryService {
         .select([
           'pantry.id AS index',
           'product.product_name AS name',
-          'pantry.amount AS amount',
+          'pantry.quantity AS quantity',
           'pantry.expiredAt AS expiredAt',
           'product.code AS code',
         ])
@@ -110,7 +110,7 @@ export class PantryService {
         .select([
           'pantry.id AS index',
           'product.product_name AS name',
-          'pantry.amount AS amount',
+          'pantry.quantity AS quantity',
           'pantry.expiredAt AS expiredAt',
           'product.code AS code',
         ])
@@ -164,8 +164,8 @@ export class PantryService {
     }
   }
 
-  async edit(request: Request, id: number, amount: number) {
-    if (amount <= 0) {
+  async edit(request: Request, id: number, quantity: number) {
+    if (quantity <= 0) {
       return {
         message: ['A mennyiség nem lehet kisebb vagy egyenlő nullával'],
         statusCode: 400,
@@ -190,7 +190,7 @@ export class PantryService {
             .getRepository(Pantry)
             .createQueryBuilder()
             .update({
-              amount: amount,
+              quantity: quantity,
             })
             .where({
               id: id,

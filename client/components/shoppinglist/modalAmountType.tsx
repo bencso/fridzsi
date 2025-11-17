@@ -1,20 +1,20 @@
-import { AmountTypeProp } from "@/types/shoppinglist/amountTypeProp";
+import { quantityTypeProp } from "@/types/shoppinglist/quantityTypeProp";
 import { Picker } from "@react-native-picker/picker";
 import { Dispatch, SetStateAction, useState } from "react";
-import {  Modal, View } from "react-native";
+import { Modal, View } from "react-native";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import Button from "../button";
 
-export function ModalAmountType({
-    amountType,
-    setAmountType
+export function ModalQuantityType({
+    quantityType,
+    setQuantityType
 }: {
-    amountType: AmountTypeProp,
-    setAmountType: Dispatch<SetStateAction<AmountTypeProp>>
+    quantityType: quantityTypeProp,
+    setQuantityType: Dispatch<SetStateAction<quantityTypeProp>>
 }) {
     const [modalVisible, setModalVisible] = useState<boolean>(false);
     //TODO: Késöbb DB-ből jön ugyis ez az adat is, csak még ott is fel kéne vinni ezeket :DDD
-    const amountTypes = [
+    const quantityTypes = [
         { label: "kg", en: "kilogram", hu: "kilogramm" },
         { label: "g", en: "gram", hu: "gramm" },
         { label: "db", en: "piece", hu: "darab" },
@@ -30,10 +30,10 @@ export function ModalAmountType({
         { label: "szelet", en: "slice", hu: "szelet" },
     ];
 
-    const selectItem = (value: string): AmountTypeProp => {
-        return amountTypes.find((selectedAmount) => {
-            if (value === selectedAmount.label) return selectedAmount;
-        }) || amountTypes[0];
+    const selectItem = (value: string): quantityTypeProp => {
+        return quantityTypes.find((selectedquantity) => {
+            if (value === selectedquantity.label) return selectedquantity;
+        }) || quantityTypes[0];
     }
 
     return (
@@ -58,16 +58,16 @@ export function ModalAmountType({
                         borderTopRightRadius: 30
                     }}>
                         <Picker
-                            selectedValue={amountType.label}
+                            selectedValue={quantityType.label}
                             onValueChange={(value: string) => {
-                                setAmountType(selectItem(value));
+                                setQuantityType(selectItem(value));
                             }}
                             mode="dropdown"
                         >
                             {
-                                amountTypes.map((amountType: AmountTypeProp, idx: number) => {
+                                quantityTypes.map((quantityType: quantityTypeProp, idx: number) => {
                                     return (
-                                        <Picker.Item label={amountType.label} key={idx} value={amountType.label} />
+                                        <Picker.Item label={quantityType.label} key={idx} value={quantityType.label} />
                                     )
                                 })
                             }
@@ -77,7 +77,7 @@ export function ModalAmountType({
                         }} />
                     </View>
                 </Modal>
-                <Button action={() => setModalVisible(!modalVisible)} chevron={false} label={amountType.label} />
+                <Button action={() => setModalVisible(!modalVisible)} chevron={false} label={quantityType.label} />
             </SafeAreaView>
         </SafeAreaProvider>
     )

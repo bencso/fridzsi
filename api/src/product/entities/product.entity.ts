@@ -31,9 +31,9 @@ export class Product {
   @Column({
     type: 'varchar',
     nullable: true,
-    default: 'kg',
+    default: 'g',
   })
-  quantity_metric: string;
+  product_quantity_unit: string;
 
   @Column({
     type: 'varchar',

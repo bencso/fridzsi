@@ -83,7 +83,7 @@ export class ShoppingListController {
   @HttpCode(HttpStatus.OK)
   async removeItem(
     @Param('id') id: number,
-    @Body() body: { amount: number },
+    @Body() body: { quantity: number },
     @Req() request: Request,
   ) {
     return this.shoppinglistService.removeItem({

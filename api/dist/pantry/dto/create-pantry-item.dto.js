@@ -25,7 +25,7 @@ __decorate([
 __decorate([
     (0, swagger_1.ApiProperty)(),
     __metadata("design:type", Number)
-], CreatePantryItemDto.prototype, "amount", void 0);
+], CreatePantryItemDto.prototype, "quantity", void 0);
 __decorate([
     (0, swagger_1.ApiProperty)(),
     __metadata("design:type", Date)

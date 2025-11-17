@@ -92,7 +92,7 @@ export default function getAuthenticatedIndexStyles({
       textAlign: "center",
     },
     flexRow: { flexDirection: "row", gap: 16, alignItems: "center" },
-    amountText: { fontSize: 14, color: Colors[colorScheme ?? "light"].text },
+    quantityText: { fontSize: 14, color: Colors[colorScheme ?? "light"].text },
     input: {
       color: Colors[colorScheme ?? "light"].text,
       paddingTop: 16,

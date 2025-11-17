@@ -97,20 +97,20 @@ export default {
     edititem: {
       title: "Edit item",
       cta: "Edit",
-      amountInput: {
-        title: "Amount",
-        message: "Please enter the new amount.",
+      quantityInput: {
+        title: "quantity",
+        message: "Please enter the new quantity.",
         submit: "Save",
         cancel: "Cancel",
-        error: "Invalid amount!",
+        error: "Invalid quantity!",
         errorTitle: "Error",
       },
     },
     deleteItem: {
       title: "Delete item",
-      cta: " amount delete",
-      amountInput: {
-        title: "Amount",
+      cta: " quantity delete",
+      quantityInput: {
+        title: "quantity",
       },
     },
   },
@@ -124,7 +124,7 @@ export default {
     },
     stickyNote: "you have to take it",
     name: "Name",
-    amount: "Amount",
+    quantity: "quantity",
     add: "Add",
     cancel: "Cancel",
     deleteItem: {

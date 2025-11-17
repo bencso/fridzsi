@@ -44,7 +44,7 @@ let PantryService = class PantryService {
                     .values({
                     user: { id: user.id },
                     product: { id: productId },
-                    amount: createPantryItemDto.amount,
+                    quantity: createPantryItemDto.quantity,
                     expiredAt: createPantryItemDto.expiredAt || new Date(),
                 })
                     .execute();
@@ -66,7 +66,7 @@ let PantryService = class PantryService {
                 .select([
                 'pantry.id AS index',
                 'product.product_name AS name',
-                'pantry.amount AS amount',
+                'pantry.quantity AS quantity',
                 'pantry.expiredAt AS expiredAt',
                 'product.code AS code',
             ])
@@ -107,7 +107,7 @@ let PantryService = class PantryService {
                 .select([
                 'pantry.id AS index',
                 'product.product_name AS name',
-                'pantry.amount AS amount',
+                'pantry.quantity AS quantity',
                 'pantry.expiredAt AS expiredAt',
                 'product.code AS code',
             ])
@@ -160,8 +160,8 @@ let PantryService = class PantryService {
                 return { message: ['Sikertelen törlés'], statusCode: 404 };
         }
     }
-    async edit(request, id, amount) {
-        if (amount <= 0) {
+    async edit(request, id, quantity) {
+        if (quantity <= 0) {
             return {
                 message: ['A mennyiség nem lehet kisebb vagy egyenlő nullával'],
                 statusCode: 400,
@@ -184,7 +184,7 @@ let PantryService = class PantryService {
                         .getRepository(pantry_entity_1.Pantry)
                         .createQueryBuilder()
                         .update({
-                        amount: amount,
+                        quantity: quantity,
                     })
                         .where({
                         id: id,

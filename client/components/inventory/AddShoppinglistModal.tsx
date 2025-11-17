@@ -7,9 +7,10 @@ import { ThemedText } from "../themed-text";
 import { getShoppingListModalStyle } from "@/styles/shoppinglist/modal";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { useShoppingList } from "@/contexts/shoppinglist-context";
-import { AmountTypeProp } from "@/types/shoppinglist/amountTypeProp";
+import { quantityTypeProp } from "@/types/shoppinglist/quantityTypeProp";
 import { ModalProp } from "@/types/shoppinglist/addShoppingListProp";
-import { ModalAmountType } from "../shoppinglist/modalAmountType";
+import { ModalQuantityType } from "../shoppinglist/modalAmountType";
+import { ProductParams } from "@/types/product/productClass";
 
 //TODO: Késöbbiekben kellene a kódos felvétel, kamerával!
 //TODO: Tizedes számjegy is engedélyezett legyen!
@@ -17,13 +18,9 @@ export default function AddShoppinglistModal({ isOpen, setIsOpen }: ModalProp) {
     const { t } = useTranslation();
     const { scheme: colorScheme } = useTheme();
     const styles = getShoppingListModalStyle({ colorScheme });
-    const [formState, setFormState] = useState<{
-        product_name?: string | null;
-        amount?: number | null;
-        code?: string | null;
-    }>();
+    const [formState, setFormState] = useState<ProductParams>();
     const [day, setDay] = useState<Date>(new Date());
-    const [amountType, setAmountType] = useState<AmountTypeProp>({ label: "kg", en: "kilogram", hu: "kilogramm" });
+    const [quantityType, setquantityType] = useState<quantityTypeProp>({ label: "kg", en: "kilogram", hu: "kilogramm" });
     const { addNewShoppingItem } = useShoppingList();
 
     return (
@@ -75,17 +72,17 @@ export default function AddShoppinglistModal({ isOpen, setIsOpen }: ModalProp) {
                             returnKeyLabel={t("buttons.next")}
                             placeholder={t("shoppinglist.name")}
                         />
-                        <View style={styles.amountInput}>
+                        <View style={styles.quantityInput}>
                             <TextInput
                                 style={{ ...styles.input, flex: 1 }}
                                 placeholderTextColor={`${Colors[colorScheme ?? "light"].text}80`}
                                 maxLength={150}
-                                value={formState?.amount === undefined || Number.isNaN(formState.amount) ? "1" : String(formState.amount)}
+                                value={formState?.quantity === undefined || Number.isNaN(formState.quantity) ? "1" : String(formState.quantity)}
                                 autoCorrect={false}
                                 onChangeText={(text: string) => {
                                     setFormState({
                                         ...formState,
-                                        amount: Number(text)
+                                        quantity: Number(text)
                                     })
                                 }}
                                 clearButtonMode="while-editing"
@@ -93,10 +90,10 @@ export default function AddShoppinglistModal({ isOpen, setIsOpen }: ModalProp) {
                                 autoCapitalize="none"
                                 returnKeyType="next"
                                 returnKeyLabel={t("buttons.next")}
-                                placeholder={t("shoppinglist.amount")}
+                                placeholder={t("shoppinglist.quantity")}
                             />
                             <View>
-                                <ModalAmountType setAmountType={setAmountType} amountType={amountType} />
+                                <ModalQuantityType setQuantityType={setquantityType} quantityType={quantityType} />
                             </View>
                         </View>
                         <DateTimePicker
@@ -120,12 +117,12 @@ export default function AddShoppinglistModal({ isOpen, setIsOpen }: ModalProp) {
                             await addNewShoppingItem({
                                 product_name: formState?.product_name,
                                 day: day,
-                                amount: formState?.amount != null ? Number(formState.amount) : 1,
+                                quantity: formState?.quantity != null ? Number(formState.quantity) : 1,
                                 code: null,
                             });
                             setFormState({
                                 product_name: "",
-                                amount: 1,
+                                quantity: 1,
                                 code: ""
                             });
                             setDay(new Date());

@@ -13,7 +13,7 @@ import { Colors } from "@/constants/theme";
 type ItemType = {
     index: number;
     name: string;
-    amount: number;
+    quantity: number;
     expiredat: string;
     code: string;
 }
@@ -76,7 +76,7 @@ export default function DeleteItemScreen() {
                                         <ThemedText>{new Date(product.expiredat).toLocaleDateString()}</ThemedText>
                                     </View>
                                     <View>
-                                        <ThemedText>{product.amount}x</ThemedText>
+                                        <ThemedText>{product.quantity}x</ThemedText>
                                     </View>
                                 </View>
                             </View>
@@ -92,20 +92,20 @@ export default function DeleteItemScreen() {
                         if (selectedItemId) {
                             try {
                                 Alert.prompt(
-                                    t('inventory.editItem.amountInput.title'),
-                                    t('inventory.editItem.amountInput.message'),
+                                    t('inventory.editItem.quantityInput.title'),
+                                    t('inventory.editItem.quantityInput.message'),
                                     [
                                         {
-                                            text: t('inventory.editItem.amountInput.cancel'),
+                                            text: t('inventory.editItem.quantityInput.cancel'),
                                             style: "cancel"
                                         },
                                         {
-                                            text: t('inventory.editItem.amountInput.submit'),
+                                            text: t('inventory.editItem.quantityInput.submit'),
                                             style: "default",
-                                            onPress: async (amount?: string) => {
+                                            onPress: async (quantity?: string) => {
                                                 await editPantryItem({
                                                     id: selectedItemId,
-                                                    amount: Number(amount)
+                                                    quantity: Number(quantity)
                                                 });
                                                 router.back();
                                             }

@@ -1,6 +1,6 @@
 import { IsDate, IsInt, Min, MinDate } from 'class-validator';
-import { Product } from 'src/product/entities/product.entity';
-import { User } from 'src/users/entities/user.entity';
+import { Product } from '../product/entities/product.entity';
+import { User } from '../users/entities/user.entity';
 import {
   Column,
   CreateDateColumn,
@@ -32,7 +32,7 @@ export class Pantry {
   })
   @IsInt()
   @Min(1)
-  amount: number;
+  quantity: number;
 
   @Column({
     type: 'date',
