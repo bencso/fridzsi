@@ -1,5 +1,6 @@
 import { IsInt, IsNumber, IsUrl, Min, MinLength } from 'class-validator';
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { QuantityUnits } from '../../quantityUnits/entities/productQuantityUnits.entity';
 
 @Entity({ name: 'product' })
 export class Product {
@@ -28,10 +29,8 @@ export class Product {
   @Min(1)
   quantity: number;
 
-  @Column({
-    type: 'varchar',
-    nullable: true,
-    default: 'g',
+  @ManyToOne(() => QuantityUnits, {
+    cascade: true,
   })
   product_quantity_unit: string;
 

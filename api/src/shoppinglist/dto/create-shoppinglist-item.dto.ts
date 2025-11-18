@@ -13,6 +13,10 @@ export class CreateShoppingListItemDto {
   @ApiProperty({ type: Number, minimum: 1, default: 1 })
   quantity: number;
 
+  @IsNumber()
+  @ApiProperty({ type: Number, default: 1 })
+  quantity_unit: number;
+
   @IsString()
   @ApiProperty({
     type: Date,

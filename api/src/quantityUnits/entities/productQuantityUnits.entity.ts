@@ -26,12 +26,12 @@ export class QuantityUnits {
 }
 
 export const quantityTypes: quantityTypesParams[] = [
-  { label: 'kg', en: 'kilogram', hu: 'kilogramm' },
-  { label: 'g', en: 'gram', hu: 'gramm' },
   { label: 'db', en: 'piece', hu: 'darab' },
-  { label: 'l', en: 'liter', hu: 'liter' },
+  { label: 'g', en: 'gram', hu: 'gramm' },
+  { label: 'kg', en: 'kilogram', hu: 'kilogramm' },
   { label: 'dl', en: 'deciliter', hu: 'deciliter' },
   { label: 'ml', en: 'milliliter', hu: 'milliliter' },
+  { label: 'l', en: 'liter', hu: 'liter' },
   { label: 'csomag', en: 'package', hu: 'csomag' },
   { label: 'üveg', en: 'bottle', hu: 'üveg' },
   { label: 'doboz', en: 'can', hu: 'doboz' },

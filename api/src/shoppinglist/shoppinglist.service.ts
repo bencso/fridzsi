@@ -7,6 +7,7 @@ import { ShoppingList } from './entities/shoppinglist.entity';
 import { Request } from 'express';
 import { ReturnDto } from 'src/dto/return.dto';
 import { CreateShoppingListItemDto } from './dto/create-shoppinglist-item.dto';
+import { QuantityUnits } from 'src/quantityUnits/entities/productQuantityUnits.entity';
 
 @Injectable()
 export class ShoppingListService {
@@ -210,6 +211,15 @@ export class ShoppingListService {
         if (productByName.length > 0) product = productByName[0];
       }
 
+      const quantityUnit = data.quantity_unit
+        ? await this.dataSource
+            .getRepository(QuantityUnits)
+            .createQueryBuilder('quantity_unit')
+            .select()
+            .where('quantity_unit.id = :id', { id: data.quantity_unit })
+            .execute()
+        : null;
+
       await this.dataSource
         .createQueryBuilder()
         .insert()
@@ -219,6 +229,7 @@ export class ShoppingListService {
           product: product ? product : null,
           customProductName: product ? null : data.product_name,
           quantity: data.quantity,
+          quanity_unit: quantityUnit,
           day: convertedDate,
         })
         .execute();
@@ -254,7 +265,11 @@ export class ShoppingListService {
       const haveThisItem = await this.dataSource
         .getRepository(ShoppingList)
         .createQueryBuilder('shoppinglist')
-        .select(['shoppinglist.id', 'shoppinglist.quantity', 'shoppinglist.user'])
+        .select([
+          'shoppinglist.id',
+          'shoppinglist.quantity',
+          'shoppinglist.user',
+        ])
         .where('shoppinglist.id = :id', { id: id })
         .andWhere('shoppinglist.user = :userId', { userId: user.id })
         .getOne();
