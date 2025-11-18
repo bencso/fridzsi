@@ -10,7 +10,6 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.quantityTypes = exports.QuantityUnits = void 0;
-exports.seedQuantityUnits = seedQuantityUnits;
 const typeorm_1 = require("typeorm");
 let QuantityUnits = class QuantityUnits {
 };
@@ -52,13 +51,4 @@ exports.quantityTypes = [
     { label: 'csokor', en: 'bunch', hu: 'csokor' },
     { label: 'szelet', en: 'slice', hu: 'szelet' },
 ];
-async function seedQuantityUnits(dataSource) {
-    const repository = dataSource.getRepository(QuantityUnits);
-    const existingCount = await repository.count();
-    if (existingCount > 0) {
-        return;
-    }
-    const entities = exports.quantityTypes.map((type) => repository.create(type));
-    await repository.save(entities);
-}
-//# sourceMappingURL=productQuantityUnits.entity.js.map
+//# sourceMappingURL=quantityUnits.entity.js.map

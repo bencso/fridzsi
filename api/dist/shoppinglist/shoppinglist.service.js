@@ -16,7 +16,7 @@ const typeorm_1 = require("typeorm");
 const sessions_service_1 = require("../sessions/sessions.service");
 const product_service_1 = require("../product/product.service");
 const shoppinglist_entity_1 = require("./entities/shoppinglist.entity");
-const productQuantityUnits_entity_1 = require("../quantityUnits/entities/productQuantityUnits.entity");
+const quantityUnits_entity_1 = require("../quantityUnits/entities/quantityUnits.entity");
 let ShoppingListService = class ShoppingListService {
     constructor(usersService, dataSource, sessionsService, productService) {
         this.usersService = usersService;
@@ -40,7 +40,6 @@ let ShoppingListService = class ShoppingListService {
                 'product.product_quantity_unit',
                 'shoppinglist.id',
                 'shoppinglist.quantity',
-                'shoppinglist.quanity_unit',
                 'shoppinglist.day',
             ])
                 .where({
@@ -80,7 +79,6 @@ let ShoppingListService = class ShoppingListService {
                 'product.product_quantity_unit',
                 'shoppinglist.id',
                 'shoppinglist.quantity',
-                'shoppinglist.quantity_unit',
                 'shoppinglist.day',
             ])
                 .where({
@@ -146,7 +144,6 @@ let ShoppingListService = class ShoppingListService {
     async createItem({ request, data, }) {
         try {
             const convertedDate = new Date(data.day);
-            console.log('ASD:' + convertedDate);
             if (!data.code && !data.product_name)
                 throw new Error('Kérem adja meg legalább a nevét vagy a kódját');
             if (data.quantity <= 0)
@@ -168,13 +165,14 @@ let ShoppingListService = class ShoppingListService {
                     product = productByName[0];
             }
             const quantityUnit = await this.dataSource
-                .getRepository(productQuantityUnits_entity_1.QuantityUnits)
+                .getRepository(quantityUnits_entity_1.QuantityUnits)
                 .createQueryBuilder('quantity_unit')
                 .select()
                 .where('quantity_unit.id = :id', {
                 id: data.quantity_unit ? data.quantity_unit : 1,
             })
-                .execute();
+                .getRawOne();
+            console.log(quantityUnit);
             await this.dataSource
                 .createQueryBuilder()
                 .insert()
@@ -184,7 +182,7 @@ let ShoppingListService = class ShoppingListService {
                 product: product ? product : null,
                 customProductName: product ? null : data.product_name,
                 quantity: data.quantity,
-                quanity_unit: quantityUnit,
+                quantity_unit: quantityUnit,
                 day: convertedDate,
             })
                 .execute();

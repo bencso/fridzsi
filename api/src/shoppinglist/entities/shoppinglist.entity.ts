@@ -41,12 +41,12 @@ export class ShoppingList {
   @Min(1)
   quantity: number;
 
-  @ManyToMany(() => QuantityUnits, {
+  @ManyToOne(() => QuantityUnits, {
     cascade: true,
     nullable: true,
   })
   @JoinTable()
-  quanity_unit?: QuantityUnits;
+  quantity_unit?: QuantityUnits;
 
   @Column({
     type: 'date',

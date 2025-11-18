@@ -8,7 +8,7 @@ export declare class ShoppingListController {
     getItemNow(request: Request): Promise<import("../dto/return.dto").ReturnDto | import("./entities/shoppinglist.entity").ShoppingList[]>;
     getItemNowWithQuery(query: string, request: Request): Promise<import("../dto/return.dto").ReturnDto | import("./entities/shoppinglist.entity").ShoppingList[]>;
     getItemDates(request: Request): Promise<import("../dto/return.dto").ReturnDto | Date[]>;
-    createItem(data: CreateShoppingListItemDto, request: Request): Promise<import("../dto/return.dto").ReturnDto | import("./entities/shoppinglist.entity").ShoppingList>;
+    createItem(data: CreateShoppingListItemDto, request: Request): Promise<import("./entities/shoppinglist.entity").ShoppingList | import("../dto/return.dto").ReturnDto>;
     removeItem(id: number, body: {
         quantity: number;
     }, request: Request): Promise<{

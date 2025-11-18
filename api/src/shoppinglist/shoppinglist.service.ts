@@ -217,7 +217,9 @@ export class ShoppingListService {
         .where('quantity_unit.id = :id', {
           id: data.quantity_unit ? data.quantity_unit : 1,
         })
-        .execute();
+        .getRawOne();
+
+      console.log(quantityUnit);
 
       await this.dataSource
         .createQueryBuilder()
@@ -228,7 +230,7 @@ export class ShoppingListService {
           product: product ? product : null,
           customProductName: product ? null : data.product_name,
           quantity: data.quantity,
-          quanity_unit: quantityUnit,
+          quantity_unit: quantityUnit,
           day: convertedDate,
         })
         .execute();

@@ -12,7 +12,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.Pantry = void 0;
 const class_validator_1 = require("class-validator");
 const product_entity_1 = require("../../product/entities/product.entity");
-const productQuantityUnits_entity_1 = require("../../quantityUnits/entities/productQuantityUnits.entity");
+const quantityUnits_entity_1 = require("../../quantityUnits/entities/quantityUnits.entity");
 const user_entity_1 = require("../../users/entities/user.entity");
 const typeorm_1 = require("typeorm");
 let Pantry = class Pantry {
@@ -45,10 +45,10 @@ __decorate([
     __metadata("design:type", Number)
 ], Pantry.prototype, "quantity", void 0);
 __decorate([
-    (0, typeorm_1.ManyToOne)(() => productQuantityUnits_entity_1.QuantityUnits, {
+    (0, typeorm_1.ManyToOne)(() => quantityUnits_entity_1.QuantityUnits, {
         cascade: true,
     }),
-    __metadata("design:type", productQuantityUnits_entity_1.QuantityUnits)
+    __metadata("design:type", quantityUnits_entity_1.QuantityUnits)
 ], Pantry.prototype, "quantity_unit", void 0);
 __decorate([
     (0, typeorm_1.Column)({

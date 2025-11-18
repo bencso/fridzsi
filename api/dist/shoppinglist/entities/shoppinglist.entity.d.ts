@@ -1,5 +1,5 @@
 import { Product } from 'src/product/entities/product.entity';
-import { QuantityUnits } from 'src/quantityUnits/entities/productQuantityUnits.entity';
+import { QuantityUnits } from 'src/quantityUnits/entities/quantityUnits.entity';
 import { User } from 'src/users/entities/user.entity';
 export declare class ShoppingList {
     user: User;
@@ -7,7 +7,7 @@ export declare class ShoppingList {
     product?: Product;
     customProductName?: string;
     quantity: number;
-    quanity_unit?: QuantityUnits;
+    quantity_unit?: QuantityUnits;
     day: Date;
     createdAt: Date;
 }
