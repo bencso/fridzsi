@@ -38,9 +38,8 @@ export function PantryProvider({ children }: { children: ReactNode }) {
                     } as quantityTypeProp);
                 });
                 setQuantityTypes(quantitytypes);
-                return data;
+                return quantityTypes;
             }
-            return null;
         } catch {
             return null;
         }

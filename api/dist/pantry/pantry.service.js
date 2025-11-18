@@ -16,6 +16,7 @@ const typeorm_1 = require("typeorm");
 const sessions_service_1 = require("../sessions/sessions.service");
 const product_service_1 = require("../product/product.service");
 const pantry_entity_1 = require("./entities/pantry.entity");
+const quantityUnits_entity_1 = require("../quantityUnits/entities/quantityUnits.entity");
 let PantryService = class PantryService {
     constructor(usersService, dataSource, sessionsService, productService) {
         this.usersService = usersService;
@@ -37,6 +38,12 @@ let PantryService = class PantryService {
                     });
                     productId = createdProduct?.id ?? createdProduct;
                 }
+                const quantityUnit = await this.dataSource
+                    .getRepository(quantityUnits_entity_1.QuantityUnits)
+                    .createQueryBuilder('quantity_unit')
+                    .select()
+                    .whereInIds(createPantryItemDto.quanity_units || 1)
+                    .getOne();
                 await this.dataSource
                     .getRepository(pantry_entity_1.Pantry)
                     .createQueryBuilder()
@@ -45,6 +52,7 @@ let PantryService = class PantryService {
                     user: { id: user.id },
                     product: { id: productId },
                     quantity: createPantryItemDto.quantity,
+                    quantity_unit: quantityUnit,
                     expiredAt: createPantryItemDto.expiredAt || new Date(),
                 })
                     .execute();
@@ -63,6 +71,7 @@ let PantryService = class PantryService {
                 .getRepository(pantry_entity_1.Pantry)
                 .createQueryBuilder('pantry')
                 .innerJoin('pantry.product', 'product')
+                .innerJoin('pantry.quantity_unit', 'quantity_unit')
                 .select([
                 'pantry.id AS index',
                 'product.product_name AS name',
@@ -70,6 +79,9 @@ let PantryService = class PantryService {
                 'pantry.quantity_unit AS quantityUnit',
                 'pantry.expiredAt AS expiredAt',
                 'product.code AS code',
+                'quantity_unit.label as quantityUnit',
+                'quantity_unit.en as quantityUnitEn',
+                'quantity_unit.hu as quantityUnitHu',
             ])
                 .where('pantry.user = :userId', { userId: user.id })
                 .andWhere('pantry.expiredAt >= :now', { now: new Date() })
@@ -105,6 +117,7 @@ let PantryService = class PantryService {
                 .getRepository(pantry_entity_1.Pantry)
                 .createQueryBuilder('pantry')
                 .innerJoin('pantry.product', 'product')
+                .innerJoin('pantry.quantity_unit', 'quantity_unit')
                 .select([
                 'pantry.id AS index',
                 'product.product_name AS name',
@@ -112,6 +125,9 @@ let PantryService = class PantryService {
                 'pantry.quantity_unit AS quantityUnit',
                 'pantry.expiredAt AS expiredAt',
                 'product.code AS code',
+                'quantity_unit.label as quantityUnit',
+                'quantity_unit.en as quantityUnitEn',
+                'quantity_unit.hu as quantityUnitHu',
             ])
                 .where('pantry.user = :userId', { userId: user.id })
                 .andWhere('product.code = :code', { code })

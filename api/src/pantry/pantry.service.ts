@@ -6,6 +6,7 @@ import { SessionService } from 'src/sessions/sessions.service';
 import { Request } from 'express';
 import { ProductService } from 'src/product/product.service';
 import { Pantry } from './entities/pantry.entity';
+import { QuantityUnits } from 'src/quantityUnits/entities/quantityUnits.entity';
 
 @Injectable()
 export class PantryService {
@@ -35,6 +36,13 @@ export class PantryService {
           productId = createdProduct?.id ?? createdProduct;
         }
 
+        const quantityUnit = await this.dataSource
+          .getRepository(QuantityUnits)
+          .createQueryBuilder('quantity_unit')
+          .select()
+          .whereInIds(createPantryItemDto.quanity_units || 1)
+          .getOne();
+
         await this.dataSource
           .getRepository(Pantry)
           .createQueryBuilder()
@@ -43,6 +51,7 @@ export class PantryService {
             user: { id: user.id },
             product: { id: productId },
             quantity: createPantryItemDto.quantity,
+            quantity_unit: quantityUnit,
             expiredAt: createPantryItemDto.expiredAt || new Date(),
           })
           .execute();
@@ -63,6 +72,7 @@ export class PantryService {
         .getRepository(Pantry)
         .createQueryBuilder('pantry')
         .innerJoin('pantry.product', 'product')
+        .innerJoin('pantry.quantity_unit', 'quantity_unit')
         .select([
           'pantry.id AS index',
           'product.product_name AS name',
@@ -70,6 +80,9 @@ export class PantryService {
           'pantry.quantity_unit AS quantityUnit',
           'pantry.expiredAt AS expiredAt',
           'product.code AS code',
+          'quantity_unit.label as quantityUnit',
+          'quantity_unit.en as quantityUnitEn',
+          'quantity_unit.hu as quantityUnitHu',
         ])
         .where('pantry.user = :userId', { userId: user.id })
         .andWhere('pantry.expiredAt >= :now', { now: new Date() })
@@ -108,6 +121,7 @@ export class PantryService {
         .getRepository(Pantry)
         .createQueryBuilder('pantry')
         .innerJoin('pantry.product', 'product')
+        .innerJoin('pantry.quantity_unit', 'quantity_unit')
         .select([
           'pantry.id AS index',
           'product.product_name AS name',
@@ -115,6 +129,9 @@ export class PantryService {
           'pantry.quantity_unit AS quantityUnit',
           'pantry.expiredAt AS expiredAt',
           'product.code AS code',
+          'quantity_unit.label as quantityUnit',
+          'quantity_unit.en as quantityUnitEn',
+          'quantity_unit.hu as quantityUnitHu',
         ])
         .where('pantry.user = :userId', { userId: user.id })
         .andWhere('product.code = :code', { code })

@@ -25,7 +25,6 @@ export const ShoppingListSection = () => {
         useCallback(() => {
             (async () => {
                 const response = await getNowList({ q: search });
-                console.log(response);
                 if (!response.message) {
                     const items = response.map((data: { customproductname: string; product_product_quantity_unit: string | null; product_product_name: string | null; shoppinglist_quantity: number; shoppinglist_day: Date; shoppinglist_id: number; quantityunithu: string; quantityuniten: string; quantityunit: string; }) => {
                         const name = data.product_product_name !== null ? data.product_product_name : data.customproductname;

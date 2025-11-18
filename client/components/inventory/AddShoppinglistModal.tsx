@@ -124,7 +124,6 @@ export default function AddShoppinglistModal({ isOpen, setIsOpen }: ModalProp) {
                 <View style={{ alignItems: "center", marginTop: 16, gap: 16 }}>
                     <ModalButton title={t("shoppinglist.add")} action={async () => {
                         try {
-                            console.log(quantityType);
                             await addNewShoppingItem({
                                 product_name: formState?.product_name,
                                 day: day,

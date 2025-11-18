@@ -10,13 +10,15 @@ import { ThemedText } from "@/components/themed-text";
 import { ThemedView } from "@/components/themed-view";
 import { Colors } from "@/constants/theme";
 import { useTheme } from "@/contexts/theme-context";
-import { Fragment, useEffect, useState } from "react";
+import { Fragment, useCallback, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { usePantry } from "@/contexts/pantry-context";
-import { router } from "expo-router";
+import { router, useFocusEffect } from "expo-router";
 import { getCustomInputStyles } from "@/styles/camera/customInput";
 import { Product } from "@/constants/product.interface";
+import { ModalQuantityType } from "@/components/shoppinglist/modalAmountType";
+import { quantityTypeProp } from "@/types/shoppinglist/quantityTypeProp";
 
 export default function CustomInputScreen() {
     const [productName, setProductName] = useState<string>("");
@@ -26,9 +28,16 @@ export default function CustomInputScreen() {
     const [focusedInput, setFocusedInput] = useState<boolean>(false);
     const [quantity, setquantity] = useState<number>(1);
     const { scheme } = useTheme();
-    const { addPantryItem, product, setProduct, loadPantry, setScanned, searchProductByKeyword } = usePantry();
+    const { addPantryItem, product, setProduct, loadPantry, setScanned, searchProductByKeyword, loadQuantityTypes } = usePantry();
     const { t } = useTranslation();
+    const [quantityTypes] = useState<quantityTypeProp[]>([]);
+    const [quantityType, setQuantityType] = useState<quantityTypeProp | null>(null);
 
+    useFocusEffect(useCallback(() => {
+        loadQuantityTypes();
+        setQuantityType(quantityTypes[0]);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []));
     const showSearch = (filtered
         && filtered.length > 0
         && !!focusedInput)
@@ -158,27 +167,33 @@ export default function CustomInputScreen() {
                         returnKeyLabel={t("buttons.next")}
                         autoCapitalize="none"
                         placeholder={t("customInput.productCode")}
-                        onChangeText={(text) => {
+                        onChangeText={async (text) => {
                             setProductCode(text);
-                            setFiltered(searchProductByKeyword(text));
+                            setFiltered(await searchProductByKeyword(text.toLowerCase()));
                         }}
                     />
-                    <TextInput
-                        style={styles.input}
-                        placeholderTextColor={`${Colors[scheme ?? "light"].text}80`}
-                        value={quantity.toString()}
-                        maxLength={3}
-                        autoCorrect={false}
-                        clearButtonMode="while-editing"
-                        keyboardType="number-pad"
-                        returnKeyType="done"
-                        returnKeyLabel={t("buttons.done")}
-                        autoCapitalize="none"
-                        onChangeText={(text) => {
-                            setquantity(+text);
-                        }}
-                        placeholder={t("customInput.productName")}
-                    />
+                    <View style={styles.quantityInput}>
+                        <TextInput
+                            style={{ ...styles.input, flex: 1 }}
+                            placeholderTextColor={`${Colors[scheme ?? "light"].text}80`}
+                            value={quantity.toString()}
+                            maxLength={3}
+                            autoCorrect={false}
+                            clearButtonMode="while-editing"
+                            keyboardType="number-pad"
+                            returnKeyType="done"
+                            returnKeyLabel={t("buttons.done")}
+                            autoCapitalize="none"
+                            onChangeText={(text) => {
+                                const parsed = parseInt(text, 10);
+                                setquantity(Number.isNaN(parsed) ? 1 : parsed);
+                            }}
+                            placeholder={t("customInput.quantity")}
+                        />
+                        <View>
+                            <ModalQuantityType setQuantityType={setQuantityType} quantityType={quantityType} />
+                        </View>
+                    </View>
                     <DateTimePicker
                         mode="date"
                         display="default"

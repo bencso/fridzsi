@@ -6,7 +6,7 @@ export declare class Pantry {
     id: number;
     product: Product;
     quantity: number;
-    quantity_unit: QuantityUnits;
+    quantity_unit?: QuantityUnits;
     expiredAt: Date;
     createdAt: Date;
 }

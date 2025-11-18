@@ -30,8 +30,6 @@ export async function addItem({
       { withCredentials: true }
     );
 
-    console.log(response.data);
-
     if (response.data.statusCode !== 200) throw Error();
 
     return true;

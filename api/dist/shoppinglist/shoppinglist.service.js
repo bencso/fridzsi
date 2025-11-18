@@ -176,7 +176,7 @@ let ShoppingListService = class ShoppingListService {
                 .getRepository(quantityUnits_entity_1.QuantityUnits)
                 .createQueryBuilder('quantity_unit')
                 .select()
-                .whereInIds(data.quantity_unit)
+                .whereInIds(data.quantity_unit || 1)
                 .getOne();
             await this.dataSource
                 .createQueryBuilder()

@@ -38,7 +38,8 @@ export class Pantry {
   @ManyToOne(() => QuantityUnits, {
     cascade: true,
   })
-  quantity_unit: QuantityUnits;
+  @JoinTable()
+  quantity_unit?: QuantityUnits;
 
   @Column({
     type: 'date',

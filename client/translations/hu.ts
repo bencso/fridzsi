@@ -124,6 +124,7 @@ export default {
         quantity: "Mennyiség",
         add: "Hozzáadás",
         cancel: "Mégse",
+        done: "Kész",
         deleteItem: {
             title: "Tétel törlése",
             message: "Biztosan törölni szeretné ezt a terméket: ",

@@ -127,6 +127,7 @@ export default {
     quantity: "quantity",
     add: "Add",
     cancel: "Cancel",
+    done: "Done",
     deleteItem: {
       title: "Delete item",
       message: "Are you sure you want to delete this product: {{name}}?",

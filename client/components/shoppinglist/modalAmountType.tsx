@@ -6,7 +6,9 @@ import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import Button from "../button";
 import { usePantry } from "@/contexts/pantry-context";
 import { useFocusEffect } from "expo-router";
+import { useTranslation } from "react-i18next";
 
+//TODO: Ezen javítaninm még, refaktorálni
 export function ModalQuantityType({
     quantityType,
     setQuantityType
@@ -16,17 +18,20 @@ export function ModalQuantityType({
 }) {
     const [modalVisible, setModalVisible] = useState<boolean>(false);
     const { quantityTypes, loadQuantityTypes } = usePantry();
-    //TODO: Késöbb DB-ből jön ugyis ez az adat is, csak még ott is fel kéne vinni ezeket :DDD
-    useFocusEffect(useCallback(() => {
-        loadQuantityTypes();
-        setQuantityType(quantityTypes[0]);
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []));
+    const { t } = useTranslation();
 
-    const selectItem = (value: string): quantityTypeProp => {
-        return quantityTypes.find((selectedQantity) => {
-            if (value === selectedQantity.label) return selectedQantity;
-        }) || quantityTypes[0];
+    useFocusEffect(
+        useCallback(() => {
+            (async () => {
+                const types = await loadQuantityTypes();
+                if (types && types.length > 0) setQuantityType(types[0]);
+            })();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+        }, []));
+
+
+    const selectItem = (value: number): quantityTypeProp => {
+        return quantityTypes.find((selectedQantity) => selectedQantity.id === value) || quantityTypes[0];
     }
 
     return (
@@ -51,8 +56,8 @@ export function ModalQuantityType({
                         borderTopRightRadius: 30
                     }}>
                         <Picker
-                            selectedValue={quantityType ? quantityType.label : quantityTypes[0].label}
-                            onValueChange={(value: string) => {
+                            selectedValue={quantityType?.id}
+                            onValueChange={(value: number) => {
                                 setQuantityType(selectItem(value));
                             }}
                             mode="dropdown"
@@ -60,17 +65,19 @@ export function ModalQuantityType({
                             {
                                 quantityTypes.map((quantityType: quantityTypeProp, idx: number) => {
                                     return (
-                                        <Picker.Item label={quantityType.label} key={idx} value={quantityType.label} />
+                                        <Picker.Item label={quantityType?.label} key={idx} value={quantityType?.id} />
                                     )
                                 })
                             }
                         </Picker>
-                        <Button label="Kész" icon="check-circle" action={() => {
+                        <Button label={t("shoppinglist.done")} icon="check-circle" action={() => {
                             setModalVisible(!modalVisible);
                         }} />
                     </View>
                 </Modal>
-                <Button action={() => setModalVisible(!modalVisible)} chevron={false} label={quantityType ? quantityType.label : quantityTypes[0].label} />
+                {
+                    quantityTypes && <Button action={() => setModalVisible(!modalVisible)} chevron={false} label={quantityType ? quantityType?.label : quantityTypes.length > 0 ? quantityTypes[0].label : t("shoppinglist.quantity")} />
+                }
             </SafeAreaView>
         </SafeAreaProvider>
     )

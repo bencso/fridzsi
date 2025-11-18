@@ -4,7 +4,7 @@ import { StyleSheet } from "react-native";
 //TODO: Több componens ugyanaz a style-al rendelkezik ezeket egyesíteni majd :)
 export const getCustomInputStyles = ({
   scheme,
-  disabledButton
+  disabledButton,
 }: {
   scheme: keyof typeof Colors;
   disabledButton: boolean;
@@ -56,6 +56,12 @@ export const getCustomInputStyles = ({
       gap: 4,
       justifyContent: "center",
       alignItems: "center",
+    },
+    quantityInput: {
+      display: "flex",
+      flexDirection: "row",
+      width: "100%",
+      gap: 6,
     },
   });
 };

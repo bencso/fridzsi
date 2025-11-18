@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 
+//TODO: Validáció majd
 export class CreatePantryItemDto {
   @ApiProperty()
   code: string;
@@ -9,6 +10,9 @@ export class CreatePantryItemDto {
 
   @ApiProperty()
   quantity: number;
+
+  @ApiProperty()
+  quanity_units?: number;
 
   @ApiProperty()
   expiredAt?: Date;

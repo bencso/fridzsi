@@ -222,7 +222,7 @@ export class ShoppingListService {
         .getRepository(QuantityUnits)
         .createQueryBuilder('quantity_unit')
         .select()
-        .whereInIds(data.quantity_unit)
+        .whereInIds(data.quantity_unit || 1)
         .getOne();
 
       await this.dataSource

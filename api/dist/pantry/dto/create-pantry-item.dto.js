@@ -28,6 +28,10 @@ __decorate([
 ], CreatePantryItemDto.prototype, "quantity", void 0);
 __decorate([
     (0, swagger_1.ApiProperty)(),
+    __metadata("design:type", Number)
+], CreatePantryItemDto.prototype, "quanity_units", void 0);
+__decorate([
+    (0, swagger_1.ApiProperty)(),
     __metadata("design:type", Date)
 ], CreatePantryItemDto.prototype, "expiredAt", void 0);
 //# sourceMappingURL=create-pantry-item.dto.js.map

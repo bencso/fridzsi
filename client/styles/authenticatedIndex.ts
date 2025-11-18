@@ -48,6 +48,7 @@ export default function getAuthenticatedIndexStyles({
       fontSize: 16,
       overflow: "scroll",
       minHeight: 180,
+      maxHeight: 180
     },
     topBarItem: {
       flexDirection: "row",
