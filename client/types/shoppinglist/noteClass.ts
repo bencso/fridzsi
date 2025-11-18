@@ -21,19 +21,28 @@ export class ShoppingListItem {
   public metric: string;
   public day: Date;
   public random: number;
+  public quantityUnitEn: string;
+  public quantityUnitHu: string;
+  public quantityUnit: string;
 
   constructor(
     id: number,
     name: string,
     quantity: number,
     metric: string,
-    day: Date
+    day: Date,
+    quantityUnitEn: string,
+    quantityUnitHu: string,
+    quantityUnit: string,
   ) {
     this.id = id;
     this.name = name;
     this.quantity = quantity;
     this.metric = metric;
     this.day = day;
+    this.quantityUnitEn = quantityUnitEn;
+    this.quantityUnitHu = quantityUnitHu;
+    this.quantityUnit = quantityUnit;
 
     this.random = Math.random();
   }

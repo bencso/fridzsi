@@ -52,8 +52,6 @@ export default function ShoppingListScreen() {
     return { pan, panResponder };
   });
 
-
-
   return (
     <>
       <ThemedView style={styles.container}>

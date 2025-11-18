@@ -4,6 +4,7 @@ import { ThemedText } from "../themed-text";
 import { t } from "i18next";
 import { Fonts } from "@/constants/theme";
 import { ShoppingListItem } from "@/types/shoppinglist/noteClass";
+import { useLanguage } from "@/contexts/language-context";
 
 export default function StickyNote({ note, idx, noteRefs, styles }: {
     noteRefs: RefObject<{
@@ -13,6 +14,8 @@ export default function StickyNote({ note, idx, noteRefs, styles }: {
     note: ShoppingListItem,
     idx: number, styles: any
 }) {
+    const { Language } = useLanguage();
+
     return (
         <Animated.View
             key={note.id + "-" + idx}
@@ -31,7 +34,7 @@ export default function StickyNote({ note, idx, noteRefs, styles }: {
                 {note.name}
             </ThemedText>
             <ThemedText style={{ fontSize: 15, marginTop: 8, color: note.getColors().text, fontFamily: Fonts.rounded }}>
-                {note.quantity}{note.metric}{t("shoppinglist.stickyNote")}
+                {note.quantity} {Language === "en" ? note.quantityUnitEn : note.quantityUnitHu}{t("shoppinglist.stickyNote")}
             </ThemedText>
         </Animated.View>
     )

@@ -7,7 +7,6 @@ import {
   CreateDateColumn,
   Entity,
   JoinTable,
-  ManyToMany,
   ManyToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
@@ -23,9 +22,8 @@ export class ShoppingList {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @ManyToMany(() => Product, {
+  @ManyToOne(() => Product, {
     cascade: true,
-    nullable: true,
   })
   @JoinTable()
   product?: Product;
@@ -43,7 +41,6 @@ export class ShoppingList {
 
   @ManyToOne(() => QuantityUnits, {
     cascade: true,
-    nullable: true,
   })
   @JoinTable()
   quantity_unit?: QuantityUnits;

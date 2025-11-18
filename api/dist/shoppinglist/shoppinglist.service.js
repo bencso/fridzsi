@@ -34,13 +34,16 @@ let ShoppingListService = class ShoppingListService {
                 .getRepository(shoppinglist_entity_1.ShoppingList)
                 .createQueryBuilder('shoppinglist')
                 .leftJoinAndSelect('shoppinglist.product', 'product')
+                .leftJoinAndSelect('shoppinglist.quantity_unit', 'quantity_unit')
                 .select([
                 "COALESCE(shoppinglist.customProductName, 'Unkown/Ismeretlen') as customProductName",
                 'product.product_name',
-                'product.product_quantity_unit',
                 'shoppinglist.id',
                 'shoppinglist.quantity',
                 'shoppinglist.day',
+                'quantity_unit.label as quantityUnit',
+                'quantity_unit.en as quantityUnitEn',
+                'quantity_unit.hu as quantityUnitHu',
             ])
                 .where({
                 day: (0, typeorm_1.Equal)(convertedDate),
@@ -73,13 +76,18 @@ let ShoppingListService = class ShoppingListService {
                 .getRepository(shoppinglist_entity_1.ShoppingList)
                 .createQueryBuilder('shoppinglist')
                 .leftJoinAndSelect('shoppinglist.product', 'product')
+                .leftJoinAndSelect('shoppinglist.quantity_unit', 'quantity_unit')
                 .select([
                 "COALESCE(shoppinglist.customProductName, 'Unkown/Ismeretlen') as customProductName",
                 'product.product_name',
                 'product.product_quantity_unit',
                 'shoppinglist.id',
                 'shoppinglist.quantity',
+                'shoppinglist.quantity_unit',
                 'shoppinglist.day',
+                'quantity_unit.label as quantityUnit',
+                'quantity_unit.en as quantityUnitEn',
+                'quantity_unit.hu as quantityUnitHu',
             ])
                 .where({
                 day: (0, typeorm_1.Equal)(new Date()),
@@ -164,14 +172,12 @@ let ShoppingListService = class ShoppingListService {
                 if (productByName.length > 0)
                     product = productByName[0];
             }
-            console.log('DATA: ');
-            console.log(data);
             const quantityUnit = await this.dataSource
                 .getRepository(quantityUnits_entity_1.QuantityUnits)
                 .createQueryBuilder('quantity_unit')
                 .select()
-                .getRawMany();
-            console.log('HALÓ: ' + quantityUnit);
+                .whereInIds(data.quantity_unit)
+                .getOne();
             await this.dataSource
                 .createQueryBuilder()
                 .insert()
@@ -181,7 +187,7 @@ let ShoppingListService = class ShoppingListService {
                 product: product ? product : null,
                 customProductName: product ? null : data.product_name,
                 quantity: data.quantity,
-                quantity_unit: quantityUnit[0],
+                quantity_unit: quantityUnit,
                 day: convertedDate,
             })
                 .execute();

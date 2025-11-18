@@ -27,9 +27,9 @@ export const ShoppingListSection = () => {
                 const response = await getNowList({ q: search });
                 console.log(response);
                 if (!response.message) {
-                    const items = response.map((data: { customproductname: string; product_product_quantity_unit: string | null; product_product_name: string | null; shoppinglist_quantity: number; shoppinglist_day: Date; shoppinglist_id: number }) => {
+                    const items = response.map((data: { customproductname: string; product_product_quantity_unit: string | null; product_product_name: string | null; shoppinglist_quantity: number; shoppinglist_day: Date; shoppinglist_id: number; quantityunithu: string; quantityuniten: string; quantityunit: string; }) => {
                         const name = data.product_product_name !== null ? data.product_product_name : data.customproductname;
-                        return new ShoppingListItem(data.shoppinglist_id, name, data.shoppinglist_quantity, data.product_product_quantity_unit || "", data.shoppinglist_day);
+                        return new ShoppingListItem(data.shoppinglist_id, name, data.shoppinglist_quantity, data.product_product_quantity_unit || "", data.shoppinglist_day, data.quantityuniten, data.quantityunithu, data.quantityunit);
                     });
                     setLists(items);
                 } else setLists([]);
@@ -64,7 +64,7 @@ export const ShoppingListSection = () => {
 
                     }
                     {
-                        filteredLists.map(({ name, quantity }: { name: string; quantity?: number }, idx: number) => (
+                        filteredLists.map(({ name, quantity, quantityUnit }: { name: string; quantity?: number; quantityUnit?: string; }, idx: number) => (
                             <ThemedView style={styles.topBarItem} key={idx}>
                                 <View style={styles.flexRow}>
                                     <View style={styles.topBarItemPicture} >
@@ -78,7 +78,7 @@ export const ShoppingListSection = () => {
                                     </ThemedText>
                                 </View>
                                 <ThemedText style={styles.quantityText}>
-                                    {quantity ? quantity : 1}x
+                                    {quantity ? quantity : 1} {quantityUnit}
                                 </ThemedText>
                             </ThemedView>
                         ))

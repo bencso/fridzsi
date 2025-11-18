@@ -29,9 +29,9 @@ export function ShoppingListProvider({ children }: { children: ReactNode }) {
         const response = await api.get(`/shoppinglist/items/date/${selectedDay?.date}`, { withCredentials: true });
         const responseData = response.data;
         if (responseData && !responseData.message && Array.isArray(responseData)) {
-            const newItems = responseData.map((data: { customproductname: string; product_product_quantity_unit: string | null; product_product_name: string | null; shoppinglist_quantity: number; shoppinglist_day: Date; shoppinglist_id: number }) => {
+            const newItems = responseData.map((data: { customproductname: string; product_product_quantity_unit: string | null; product_product_name: string | null; shoppinglist_quantity: number; shoppinglist_day: Date; shoppinglist_id: number; quantityuniten: string; quantityunithu: string; quantityunit: string; }) => {
                 const name = data.product_product_name !== null ? data.product_product_name : data.customproductname;
-                return new ShoppingListItem(data.shoppinglist_id, name, data.shoppinglist_quantity, data.product_product_quantity_unit || "", data.shoppinglist_day);
+                return new ShoppingListItem(data.shoppinglist_id, name, data.shoppinglist_quantity, data.product_product_quantity_unit || "", data.shoppinglist_day, data.quantityuniten, data.quantityunithu, data.quantityunit);
             });
             setShoppingList(newItems);
         } else {

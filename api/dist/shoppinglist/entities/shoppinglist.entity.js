@@ -30,9 +30,8 @@ __decorate([
     __metadata("design:type", Number)
 ], ShoppingList.prototype, "id", void 0);
 __decorate([
-    (0, typeorm_1.ManyToMany)(() => product_entity_1.Product, {
+    (0, typeorm_1.ManyToOne)(() => product_entity_1.Product, {
         cascade: true,
-        nullable: true,
     }),
     (0, typeorm_1.JoinTable)(),
     __metadata("design:type", product_entity_1.Product)
@@ -53,7 +52,6 @@ __decorate([
 __decorate([
     (0, typeorm_1.ManyToOne)(() => quantityUnits_entity_1.QuantityUnits, {
         cascade: true,
-        nullable: true,
     }),
     (0, typeorm_1.JoinTable)(),
     __metadata("design:type", quantityUnits_entity_1.QuantityUnits)
