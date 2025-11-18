@@ -209,17 +209,15 @@ export class ShoppingListService {
 
         if (productByName.length > 0) product = productByName[0];
       }
-
+      console.log('DATA: ');
+      console.log(data);
       const quantityUnit = await this.dataSource
         .getRepository(QuantityUnits)
         .createQueryBuilder('quantity_unit')
         .select()
-        .where('quantity_unit.id = :id', {
-          id: data.quantity_unit ? data.quantity_unit : 1,
-        })
-        .getRawOne();
+        .getRawMany();
 
-      console.log(quantityUnit);
+      console.log('HALÓ: ' + quantityUnit);
 
       await this.dataSource
         .createQueryBuilder()
@@ -230,7 +228,7 @@ export class ShoppingListService {
           product: product ? product : null,
           customProductName: product ? null : data.product_name,
           quantity: data.quantity,
-          quantity_unit: quantityUnit,
+          quantity_unit: quantityUnit[0],
           day: convertedDate,
         })
         .execute();
