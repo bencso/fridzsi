@@ -1,5 +1,4 @@
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
-import { DataSource } from 'typeorm';
 
 export interface quantityTypesParams {
   label: string;
@@ -40,15 +39,3 @@ export const quantityTypes: quantityTypesParams[] = [
   { label: 'csokor', en: 'bunch', hu: 'csokor' },
   { label: 'szelet', en: 'slice', hu: 'szelet' },
 ];
-
-export async function seedQuantityUnits(dataSource: DataSource): Promise<void> {
-  const repository = dataSource.getRepository(QuantityUnits);
-
-  const existingCount = await repository.count();
-  if (existingCount > 0) {
-    return;
-  }
-
-  const entities = quantityTypes.map((type) => repository.create(type));
-  await repository.save(entities);
-}

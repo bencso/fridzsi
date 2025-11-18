@@ -16,6 +16,7 @@ const typeorm_1 = require("typeorm");
 const sessions_service_1 = require("../sessions/sessions.service");
 const product_service_1 = require("../product/product.service");
 const shoppinglist_entity_1 = require("./entities/shoppinglist.entity");
+const productQuantityUnits_entity_1 = require("../quantityUnits/entities/productQuantityUnits.entity");
 let ShoppingListService = class ShoppingListService {
     constructor(usersService, dataSource, sessionsService, productService) {
         this.usersService = usersService;
@@ -39,6 +40,7 @@ let ShoppingListService = class ShoppingListService {
                 'product.product_quantity_unit',
                 'shoppinglist.id',
                 'shoppinglist.quantity',
+                'shoppinglist.quanity_unit',
                 'shoppinglist.day',
             ])
                 .where({
@@ -78,6 +80,7 @@ let ShoppingListService = class ShoppingListService {
                 'product.product_quantity_unit',
                 'shoppinglist.id',
                 'shoppinglist.quantity',
+                'shoppinglist.quantity_unit',
                 'shoppinglist.day',
             ])
                 .where({
@@ -164,6 +167,14 @@ let ShoppingListService = class ShoppingListService {
                 if (productByName.length > 0)
                     product = productByName[0];
             }
+            const quantityUnit = await this.dataSource
+                .getRepository(productQuantityUnits_entity_1.QuantityUnits)
+                .createQueryBuilder('quantity_unit')
+                .select()
+                .where('quantity_unit.id = :id', {
+                id: data.quantity_unit ? data.quantity_unit : 1,
+            })
+                .execute();
             await this.dataSource
                 .createQueryBuilder()
                 .insert()
@@ -173,6 +184,7 @@ let ShoppingListService = class ShoppingListService {
                 product: product ? product : null,
                 customProductName: product ? null : data.product_name,
                 quantity: data.quantity,
+                quanity_unit: quantityUnit,
                 day: convertedDate,
             })
                 .execute();
@@ -197,7 +209,11 @@ let ShoppingListService = class ShoppingListService {
             const haveThisItem = await this.dataSource
                 .getRepository(shoppinglist_entity_1.ShoppingList)
                 .createQueryBuilder('shoppinglist')
-                .select(['shoppinglist.id', 'shoppinglist.quantity', 'shoppinglist.user'])
+                .select([
+                'shoppinglist.id',
+                'shoppinglist.quantity',
+                'shoppinglist.user',
+            ])
                 .where('shoppinglist.id = :id', { id: id })
                 .andWhere('shoppinglist.user = :userId', { userId: user.id })
                 .getOne();

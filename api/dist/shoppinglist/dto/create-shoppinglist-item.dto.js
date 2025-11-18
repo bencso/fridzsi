@@ -30,6 +30,11 @@ __decorate([
     __metadata("design:type", Number)
 ], CreateShoppingListItemDto.prototype, "quantity", void 0);
 __decorate([
+    (0, class_validator_1.IsNumber)(),
+    (0, swagger_1.ApiProperty)({ type: Number, default: 1 }),
+    __metadata("design:type", Number)
+], CreateShoppingListItemDto.prototype, "quantity_unit", void 0);
+__decorate([
     (0, class_validator_1.IsString)(),
     (0, swagger_1.ApiProperty)({
         type: Date,

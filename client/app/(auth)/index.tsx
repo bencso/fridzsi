@@ -3,6 +3,7 @@ import { ThemedText } from "@/components/themed-text";
 import { ThemedView } from "@/components/themed-view";
 import { Colors } from "@/constants/theme";
 import { useAuth } from "@/contexts/auth-context";
+import { usePantry } from "@/contexts/pantry-context";
 import { useTheme } from "@/contexts/theme-context";
 import getAuthenticatedIndexStyles from "@/styles/authenticatedIndex";
 import getNavbarStyles from "@/styles/navbar";
@@ -14,6 +15,7 @@ import { ScrollView, View } from "react-native";
 export default function AuthenticatedScreen() {
   const { scheme: colorScheme } = useTheme();
   const { userData, loadAuth } = useAuth();
+  const { loadQuantityTypes } = usePantry();
   const { t } = useTranslation();
 
   const styles = getAuthenticatedIndexStyles({ colorScheme });
@@ -22,6 +24,7 @@ export default function AuthenticatedScreen() {
   useFocusEffect(
     useCallback(() => {
       loadAuth();
+      loadQuantityTypes();
       // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
   );

@@ -2,7 +2,7 @@ import { Colors } from "@/constants/theme";
 import { Modal, Text, TextInput, View, TouchableOpacity, Alert } from "react-native";
 import { useTranslation } from "react-i18next";
 import { useTheme } from "@/contexts/theme-context";
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import { ThemedText } from "../themed-text";
 import { getShoppingListModalStyle } from "@/styles/shoppinglist/modal";
 import DateTimePicker from "@react-native-community/datetimepicker";
@@ -11,6 +11,8 @@ import { quantityTypeProp } from "@/types/shoppinglist/quantityTypeProp";
 import { ModalProp } from "@/types/shoppinglist/addShoppingListProp";
 import { ModalQuantityType } from "../shoppinglist/modalAmountType";
 import { ProductParams } from "@/types/product/productClass";
+import { useFocusEffect } from "expo-router";
+import { usePantry } from "@/contexts/pantry-context";
 
 //TODO: Késöbbiekben kellene a kódos felvétel, kamerával!
 //TODO: Tizedes számjegy is engedélyezett legyen!
@@ -20,8 +22,16 @@ export default function AddShoppinglistModal({ isOpen, setIsOpen }: ModalProp) {
     const styles = getShoppingListModalStyle({ colorScheme });
     const [formState, setFormState] = useState<ProductParams>();
     const [day, setDay] = useState<Date>(new Date());
-    const [quantityType, setquantityType] = useState<quantityTypeProp>({ label: "kg", en: "kilogram", hu: "kilogramm" });
+    const [quantityTypes] = useState<quantityTypeProp[]>([]);
+    const [quantityType, setQuantityType] = useState<quantityTypeProp | null>(null);
     const { addNewShoppingItem } = useShoppingList();
+    const { loadQuantityTypes } = usePantry();
+
+    useFocusEffect(useCallback(() => {
+        loadQuantityTypes();
+        setQuantityType(quantityTypes[0]);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []));
 
     return (
         <Modal
@@ -93,7 +103,7 @@ export default function AddShoppinglistModal({ isOpen, setIsOpen }: ModalProp) {
                                 placeholder={t("shoppinglist.quantity")}
                             />
                             <View>
-                                <ModalQuantityType setQuantityType={setquantityType} quantityType={quantityType} />
+                                <ModalQuantityType setQuantityType={setQuantityType} quantityType={quantityType} />
                             </View>
                         </View>
                         <DateTimePicker
@@ -114,10 +124,12 @@ export default function AddShoppinglistModal({ isOpen, setIsOpen }: ModalProp) {
                 <View style={{ alignItems: "center", marginTop: 16, gap: 16 }}>
                     <ModalButton title={t("shoppinglist.add")} action={async () => {
                         try {
+                            console.log(quantityType);
                             await addNewShoppingItem({
                                 product_name: formState?.product_name,
                                 day: day,
                                 quantity: formState?.quantity != null ? Number(formState.quantity) : 1,
+                                quantity_unit: quantityType != null ? quantityType.id : 1,
                                 code: null,
                             });
                             setFormState({
@@ -126,6 +138,7 @@ export default function AddShoppinglistModal({ isOpen, setIsOpen }: ModalProp) {
                                 code: ""
                             });
                             setDay(new Date());
+                            setQuantityType(quantityTypes[0]);
                         }
                         catch {
                             Alert.alert("HIBA!");

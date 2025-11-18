@@ -1,38 +1,31 @@
 import { quantityTypeProp } from "@/types/shoppinglist/quantityTypeProp";
 import { Picker } from "@react-native-picker/picker";
-import { Dispatch, SetStateAction, useState } from "react";
+import { Dispatch, SetStateAction, useCallback, useState } from "react";
 import { Modal, View } from "react-native";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import Button from "../button";
+import { usePantry } from "@/contexts/pantry-context";
+import { useFocusEffect } from "expo-router";
 
 export function ModalQuantityType({
     quantityType,
     setQuantityType
 }: {
-    quantityType: quantityTypeProp,
-    setQuantityType: Dispatch<SetStateAction<quantityTypeProp>>
+    quantityType: quantityTypeProp | null,
+    setQuantityType: Dispatch<SetStateAction<quantityTypeProp | null>>
 }) {
     const [modalVisible, setModalVisible] = useState<boolean>(false);
+    const { quantityTypes, loadQuantityTypes } = usePantry();
     //TODO: Késöbb DB-ből jön ugyis ez az adat is, csak még ott is fel kéne vinni ezeket :DDD
-    const quantityTypes = [
-        { label: "kg", en: "kilogram", hu: "kilogramm" },
-        { label: "g", en: "gram", hu: "gramm" },
-        { label: "db", en: "piece", hu: "darab" },
-        { label: "l", en: "liter", hu: "liter" },
-        { label: "dl", en: "deciliter", hu: "deciliter" },
-        { label: "ml", en: "milliliter", hu: "milliliter" },
-        { label: "csomag", en: "package", hu: "csomag" },
-        { label: "üveg", en: "bottle", hu: "üveg" },
-        { label: "doboz", en: "can", hu: "doboz" },
-        { label: "zacskó", en: "bag", hu: "zacskó" },
-        { label: "karton", en: "box", hu: "karton" },
-        { label: "csokor", en: "bunch", hu: "csokor" },
-        { label: "szelet", en: "slice", hu: "szelet" },
-    ];
+    useFocusEffect(useCallback(() => {
+        loadQuantityTypes();
+        setQuantityType(quantityTypes[0]);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []));
 
     const selectItem = (value: string): quantityTypeProp => {
-        return quantityTypes.find((selectedquantity) => {
-            if (value === selectedquantity.label) return selectedquantity;
+        return quantityTypes.find((selectedQantity) => {
+            if (value === selectedQantity.label) return selectedQantity;
         }) || quantityTypes[0];
     }
 
@@ -58,7 +51,7 @@ export function ModalQuantityType({
                         borderTopRightRadius: 30
                     }}>
                         <Picker
-                            selectedValue={quantityType.label}
+                            selectedValue={quantityType ? quantityType.label : quantityTypes[0].label}
                             onValueChange={(value: string) => {
                                 setQuantityType(selectItem(value));
                             }}
@@ -77,7 +70,7 @@ export function ModalQuantityType({
                         }} />
                     </View>
                 </Modal>
-                <Button action={() => setModalVisible(!modalVisible)} chevron={false} label={quantityType.label} />
+                <Button action={() => setModalVisible(!modalVisible)} chevron={false} label={quantityType ? quantityType.label : quantityTypes[0].label} />
             </SafeAreaView>
         </SafeAreaProvider>
     )

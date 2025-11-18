@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Module, OnModuleInit } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -15,6 +15,9 @@ import { PantryController } from './pantry/pantry.controller';
 import { PantryService } from './pantry/pantry.service';
 import { ShoppingListService } from './shoppinglist/shoppinglist.service';
 import { ShoppingListController } from './shoppinglist/shoppinglist.controller';
+import { QuantityUnits } from './quantityUnits/entities/quantityUnits.entity';
+import { QuantityUnitsController } from './quantityUnits/quantityUnits.controller';
+import { QuantityUnitsSeedService } from './quantityUnits/seedQuantityUnits.service';
 
 @Module({
   imports: [
@@ -34,6 +37,7 @@ import { ShoppingListController } from './shoppinglist/shoppinglist.controller';
       logging: true,
     }),
     AuthModule,
+    TypeOrmModule.forFeature([QuantityUnits]),
   ],
   controllers: [
     AppController,
@@ -42,6 +46,7 @@ import { ShoppingListController } from './shoppinglist/shoppinglist.controller';
     ProductController,
     PantryController,
     ShoppingListController,
+    QuantityUnitsController,
   ],
   providers: [
     AppService,
@@ -50,7 +55,14 @@ import { ShoppingListController } from './shoppinglist/shoppinglist.controller';
     ProductService,
     PantryService,
     ShoppingListService,
+    QuantityUnitsSeedService,
   ],
   exports: [TypeOrmModule],
 })
-export class AppModule {}
+export class AppModule implements OnModuleInit {
+  constructor(private readonly quantityUnitsSeed: QuantityUnitsSeedService) {}
+
+  async onModuleInit() {
+    await this.quantityUnitsSeed.seedQuantityUnits();
+  }
+}

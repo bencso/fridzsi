@@ -67,13 +67,14 @@ let PantryService = class PantryService {
                 'pantry.id AS index',
                 'product.product_name AS name',
                 'pantry.quantity AS quantity',
+                'pantry.quantity_unit AS quantityUnit',
                 'pantry.expiredAt AS expiredAt',
                 'product.code AS code',
             ])
                 .where('pantry.user = :userId', { userId: user.id })
                 .andWhere('pantry.expiredAt >= :now', { now: new Date() })
                 .getRawMany();
-            console.log(products);
+                
             const returnProducts = [
                 products.reduce((acc, curr) => {
                     acc[curr.code] = acc[curr.code] || [];
@@ -108,6 +109,7 @@ let PantryService = class PantryService {
                 'pantry.id AS index',
                 'product.product_name AS name',
                 'pantry.quantity AS quantity',
+                'pantry.quantity_unit AS quantityUnit',
                 'pantry.expiredAt AS expiredAt',
                 'product.code AS code',
             ])

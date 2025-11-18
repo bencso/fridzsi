@@ -7,7 +7,7 @@ import React, {
     useState,
 } from "react";
 import { ShoppingListItem } from "@/types/shoppinglist/noteClass";
-import { ShoppingListContextProp } from "@/types/shoppingListContextProp";
+import { ShoppingListContextProp } from "@/types/shoppinglist/shoppingListContextProp";
 
 const ShoppingListContext = createContext<ShoppingListContextProp | undefined>(undefined);
 
@@ -81,16 +81,18 @@ export function ShoppingListProvider({ children }: { children: ReactNode }) {
         product_name,
         day,
         quantity,
-        code
+        code,
+        quantity_unit
     }: {
         day: Date;
         product_name?: string | null;
         quantity: number;
         code?: string | null;
+        quantity_unit?: number | null;
     }): Promise<void | string> {
         try {
             await api.post("/shoppinglist/items/create", {
-                product_name, day, quantity, code
+                product_name, day, quantity, code, quantity_unit
             }, { withCredentials: true });
             getItemDates();
             getFirstDate();

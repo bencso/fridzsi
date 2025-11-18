@@ -1,5 +1,6 @@
 import { Product } from "@/constants/product.interface";
 import { PantryType } from "./pantryType";
+import { quantityTypeProp } from "../shoppinglist/quantityTypeProp";
 
 export type PantryContextProp = {
   pantry: PantryType[];
@@ -15,4 +16,6 @@ export type PantryContextProp = {
   setScanned: any;
   setProduct: any;
   getItemsById: (code: number) => Promise<any | null>;
+  quantityTypes: quantityTypeProp[];
+  loadQuantityTypes: () => Promise<any | null>;
 };

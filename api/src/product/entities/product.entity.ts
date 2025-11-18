@@ -1,6 +1,6 @@
 import { IsInt, IsNumber, IsUrl, Min, MinLength } from 'class-validator';
 import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
-import { QuantityUnits } from '../../quantityUnits/entities/productQuantityUnits.entity';
+import { QuantityUnits } from '../../quantityUnits/entities/quantityUnits.entity';
 
 @Entity({ name: 'product' })
 export class Product {

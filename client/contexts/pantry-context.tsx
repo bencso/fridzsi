@@ -11,6 +11,7 @@ import { Alert } from "react-native";
 import { useTranslation } from "react-i18next";
 import { PantryContextProp } from "@/types/pantry/pantryContextProp";
 import { PantryType } from "@/types/pantry/pantryType";
+import { quantityTypeProp } from "@/types/shoppinglist/quantityTypeProp";
 
 const PantryContext = createContext<PantryContextProp | undefined>(undefined);
 
@@ -19,9 +20,33 @@ export function PantryProvider({ children }: { children: ReactNode }) {
     const [isLoading, setIsLoading] = useState<boolean>(true);
     const [scanned, setScanned] = useState<boolean>(false);
     const [product, setProduct] = useState<Product | null>(null);
+    const [quantityTypes, setQuantityTypes] = useState<quantityTypeProp[]>([]);
     const { t } = useTranslation();
 
-    const loadPantry = async () => {
+    const loadQuantityTypes = async (): Promise<any | null> => {
+        try {
+            const response = await api.get("/quantityTypes");
+            const data = response.data;
+            if (!data.statusCode && Array.isArray(data)) {
+                let quantitytypes = [] as quantityTypeProp[];
+                data.map((item) => {
+                    quantitytypes.push({
+                        id: item.id,
+                        label: item.label,
+                        en: item.en,
+                        hu: item.hu
+                    } as quantityTypeProp);
+                });
+                setQuantityTypes(quantitytypes);
+                return data;
+            }
+            return null;
+        } catch {
+            return null;
+        }
+    }
+
+    const loadPantry = async (): Promise<any | null> => {
         try {
             let returnItems = [] as PantryType[];
             const pantryItems = await getItems();
@@ -165,7 +190,7 @@ export function PantryProvider({ children }: { children: ReactNode }) {
     }
 
     return (
-        <PantryContext.Provider value={{ pantry, loadPantry, isLoading, addPantryItem, deletePantryItem, product, getItemsById, setProductItemByCode, searchProductByKeyword, scanned, setScanned, setProduct, editPantryItem }}>
+        <PantryContext.Provider value={{ pantry, loadPantry, isLoading, addPantryItem, deletePantryItem, product, getItemsById, setProductItemByCode, searchProductByKeyword, scanned, setScanned, setProduct, editPantryItem, loadQuantityTypes, quantityTypes }}>
             {children}
         </PantryContext.Provider>
     );

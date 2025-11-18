@@ -12,6 +12,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.ShoppingList = void 0;
 const class_validator_1 = require("class-validator");
 const product_entity_1 = require("../../product/entities/product.entity");
+const productQuantityUnits_entity_1 = require("../../quantityUnits/entities/productQuantityUnits.entity");
 const user_entity_1 = require("../../users/entities/user.entity");
 const typeorm_1 = require("typeorm");
 let ShoppingList = class ShoppingList {
@@ -49,6 +50,14 @@ __decorate([
     (0, class_validator_1.Min)(1),
     __metadata("design:type", Number)
 ], ShoppingList.prototype, "quantity", void 0);
+__decorate([
+    (0, typeorm_1.ManyToMany)(() => productQuantityUnits_entity_1.QuantityUnits, {
+        cascade: true,
+        nullable: true,
+    }),
+    (0, typeorm_1.JoinTable)(),
+    __metadata("design:type", productQuantityUnits_entity_1.QuantityUnits)
+], ShoppingList.prototype, "quanity_unit", void 0);
 __decorate([
     (0, typeorm_1.Column)({
         type: 'date',

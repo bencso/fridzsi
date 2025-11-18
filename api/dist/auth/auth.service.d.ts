@@ -5,11 +5,11 @@ import { JwtService } from '@nestjs/jwt';
 import { BodyRegistration, RegistrationDto } from './dto/registration.dto';
 import { ConfigService } from '@nestjs/config';
 import { Request, Response } from 'express';
-import { ReturnUserDto } from 'src/users/dto/return.dto';
+import { ReturnUserDto } from '../users/dto/return.dto';
 import { UUID } from 'crypto';
-import { SessionService } from 'src/sessions/sessions.service';
-import { UserData } from 'src/sessions/entities/sessions.entity';
-import { ReturnDataDto, ReturnDto } from 'src/dto/return.dto';
+import { SessionService } from '../sessions/sessions.service';
+import { UserData } from '../sessions/entities/sessions.entity';
+import { ReturnDataDto, ReturnDto } from '../dto/return.dto';
 import { DataSource } from 'typeorm';
 import { PasswordChangeBody } from './dto/password.dto';
 export declare class AuthService {

@@ -67,6 +67,7 @@ export class PantryService {
           'pantry.id AS index',
           'product.product_name AS name',
           'pantry.quantity AS quantity',
+          'pantry.quantity_unit AS quantityUnit',
           'pantry.expiredAt AS expiredAt',
           'product.code AS code',
         ])
@@ -111,6 +112,7 @@ export class PantryService {
           'pantry.id AS index',
           'product.product_name AS name',
           'pantry.quantity AS quantity',
+          'pantry.quantity_unit AS quantityUnit',
           'pantry.expiredAt AS expiredAt',
           'product.code AS code',
         ])

@@ -1,5 +1,3 @@
-import api from "@/interceptor/api";
-
 export interface quantityTypesParams {
   label: string;
   en: string;

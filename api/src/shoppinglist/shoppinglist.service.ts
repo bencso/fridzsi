@@ -7,7 +7,7 @@ import { ShoppingList } from './entities/shoppinglist.entity';
 import { Request } from 'express';
 import { ReturnDto } from 'src/dto/return.dto';
 import { CreateShoppingListItemDto } from './dto/create-shoppinglist-item.dto';
-import { QuantityUnits } from 'src/quantityUnits/entities/productQuantityUnits.entity';
+import { QuantityUnits } from 'src/quantityUnits/entities/quantityUnits.entity';
 
 @Injectable()
 export class ShoppingListService {
@@ -171,7 +171,6 @@ export class ShoppingListService {
   }): Promise<ShoppingList | ReturnDto> {
     try {
       const convertedDate = new Date(data.day);
-      console.log('ASD:' + convertedDate);
 
       if (!data.code && !data.product_name)
         throw new Error('Kérem adja meg legalább a nevét vagy a kódját');
@@ -211,14 +210,14 @@ export class ShoppingListService {
         if (productByName.length > 0) product = productByName[0];
       }
 
-      const quantityUnit = data.quantity_unit
-        ? await this.dataSource
-            .getRepository(QuantityUnits)
-            .createQueryBuilder('quantity_unit')
-            .select()
-            .where('quantity_unit.id = :id', { id: data.quantity_unit })
-            .execute()
-        : null;
+      const quantityUnit = await this.dataSource
+        .getRepository(QuantityUnits)
+        .createQueryBuilder('quantity_unit')
+        .select()
+        .where('quantity_unit.id = :id', {
+          id: data.quantity_unit ? data.quantity_unit : 1,
+        })
+        .execute();
 
       await this.dataSource
         .createQueryBuilder()
@@ -248,6 +247,7 @@ export class ShoppingListService {
     }
   }
 
+  //TODO: Késöbb itt is a mértékegységekkel játszani
   async removeItem({
     id,
     request,

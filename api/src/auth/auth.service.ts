@@ -301,7 +301,7 @@ export class AuthService {
               })
               .execute();
         } catch (error) {
-          console.error(error);
+          console.log(error);
         }
       }
       response.clearCookie('refreshToken', {
