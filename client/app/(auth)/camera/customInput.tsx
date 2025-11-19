@@ -65,6 +65,7 @@ export default function CustomInputScreen() {
                     code: productCode,
                     product_name: productName,
                     quantity: quantity,
+                    quantityUnit: quantityType,
                     expiredAt: expired
                 });
             else throw new Error(t("alerts.addPantryItemError"));

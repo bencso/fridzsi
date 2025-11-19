@@ -45,6 +45,7 @@ export function PantryProvider({ children }: { children: ReactNode }) {
         }
     }
 
+    //TODO: Késöbb átültetni backendre, illetve mértékegységekkel való játszadozás
     const loadPantry = async (): Promise<any | null> => {
         try {
             let returnItems = [] as PantryType[];
@@ -52,22 +53,25 @@ export function PantryProvider({ children }: { children: ReactNode }) {
 
             pantryItems.map((item: any) => {
                 Object.keys(item).forEach((key) => {
-                    const dateMap: Record<string, number> = {};
+                    const dateMap: Record<string, { quantity: number; quantityUnit: string; }> = {};
                     item[key].forEach((product: Product) => {
                         const date = product.expiredat ? new Date(product.expiredat).toLocaleDateString() : new Date().toLocaleDateString();
-                        dateMap[date] = (dateMap[date] || 0) + Number(product.quantity);
+                        dateMap[date] = { quantity: (dateMap[date]?.quantity || 0) + Number(product.quantity), quantityUnit: product.quantityunit ?? "" };
                     });
+
 
                     returnItems.push({
                         code: key,
                         products: item[key].map((product: Product) => ({
                             index: product.index,
                             quantity: product.quantity,
-                            expiredAt: product.expiredat
+                            expiredAt: product.expiredat,
+                            quantityUnit: product.quantityunit
                         })),
                         name: item[key][0].name,
                         expiredAt: Object.keys(dateMap),
-                        quantity: Object.values(dateMap),
+                        quantity: Object.values(dateMap).flatMap((test) => { return test.quantity }),
+                        quantityUnit: Object.values(dateMap).flatMap((test) => { return test.quantityUnit }),
                     });
                 });
             });
@@ -131,11 +135,13 @@ export function PantryProvider({ children }: { children: ReactNode }) {
         product_name,
         quantity,
         expiredAt,
+        quantityUnit
     }: {
         code: string;
         product_name: string;
         quantity: number;
         expiredAt: Date;
+        quantityUnit: number;
     }) => {
         try {
             await addItem({
@@ -143,6 +149,7 @@ export function PantryProvider({ children }: { children: ReactNode }) {
                 product_name,
                 quantity,
                 expiredAt,
+                quanity_units: quantityUnit
             });
         } catch {
             Alert.alert(t("inventory.addPantryItem.error"), t("inventory.addPantryItemitItem.errorTitle"));

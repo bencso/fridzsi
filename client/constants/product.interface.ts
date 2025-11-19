@@ -3,5 +3,6 @@ export interface Product {
     code?: string | null;
     name?: string | null;
     quantity?: number;
+    quantityunit?: string;
     expiredat?: string;
 }

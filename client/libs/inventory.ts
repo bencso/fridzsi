@@ -11,11 +11,13 @@ export async function addItem({
   product_name,
   quantity,
   expiredAt,
+  quanity_units
 }: {
   code: string;
   product_name: string;
   quantity: number;
   expiredAt: Date;
+  quanity_units: number;
 }) {
   try {
     if (!code || !product_name || !quantity || !expiredAt) throw new Error();
@@ -26,6 +28,7 @@ export async function addItem({
         product_name: product_name,
         quantity: quantity,
         expiredAt: expiredAt,
+        quanity_units: quanity_units
       },
       { withCredentials: true }
     );

@@ -8,7 +8,6 @@ import { usePantry } from "@/contexts/pantry-context";
 import { useFocusEffect } from "expo-router";
 import { useTranslation } from "react-i18next";
 
-//TODO: Ezen javítaninm még, refaktorálni
 export function ModalQuantityType({
     quantityType,
     setQuantityType
@@ -26,7 +25,7 @@ export function ModalQuantityType({
                 const types = await loadQuantityTypes();
                 if (types && types.length > 0) setQuantityType(types[0]);
             })();
-        // eslint-disable-next-line react-hooks/exhaustive-deps
+            // eslint-disable-next-line react-hooks/exhaustive-deps
         }, []));
 
 

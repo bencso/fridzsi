@@ -8,8 +8,8 @@ import { ThemedText } from "../themed-text";
 import { useTheme } from "@/contexts/theme-context";
 import ReanimatedSwipeable from 'react-native-gesture-handler/ReanimatedSwipeable';
 import Reanimated, {
-  SharedValue,
-  useAnimatedStyle,
+    SharedValue,
+    useAnimatedStyle,
 } from 'react-native-reanimated';
 
 export
@@ -58,11 +58,13 @@ export
         );
     };
 
+
     //! Lehetett volna szebben és jobban ez az expiredAt mondjuk Date-ben visszadni, késöbb lehet ezt megcsinálni :)
     //TODO: Az expiredAt késöbbiekben Date-ben jöjjön vissza, könnyebb kezelhetőség
     return (
         product.quantity.map((quantity, i) => ({
             quantity,
+            quantityUnit : product.quantityUnit[i],
             expiredAt: product.expiredAt[i],
         }))
             .sort((a, b) => {
@@ -113,7 +115,7 @@ export
                                 </ThemedText>
                             </View>
                             <ThemedText style={styles.productSecond}>
-                                {item.quantity} x
+                                {item.quantity} {item.quantityUnit}
                             </ThemedText>
                         </View>
                     </ReanimatedSwipeable>
