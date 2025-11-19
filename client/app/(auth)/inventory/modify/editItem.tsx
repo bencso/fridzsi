@@ -5,10 +5,11 @@ import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { usePantry } from "@/contexts/pantry-context";
 import { getInventoryModifyStyles } from "@/styles/inventory/modify";
-import Button from "@/components/button";
-import { router, useFocusEffect, useLocalSearchParams } from "expo-router";
-import { Alert, TouchableOpacity, View } from "react-native";
+import { useFocusEffect, useLocalSearchParams } from "expo-router";
+import { TouchableOpacity, View } from "react-native";
 import { Colors } from "@/constants/theme";
+import EditShoppingListItem from "@/components/inventory/EditShoppinglistItemModal";
+import Button from "@/components/button";
 
 type ItemType = {
     index: number;
@@ -19,11 +20,11 @@ type ItemType = {
 }
 
 //TODO: Loadingok megcsinálása, ezenfelül refaktorálás stb.
-export default function DeleteItemScreen() {
+export default function EditItemScreen() {
     const [selectedItemId, setSelectedItemId] = useState<number | null>(null);
     const [products, setProducts] = useState([]);
+    const [isOpen, setIsOpen] = useState<boolean>(false);
     const { scheme } = useTheme();
-    const { editPantryItem } = usePantry();
     const { t } = useTranslation();
     const params = useLocalSearchParams();
     const { getItemsById } = usePantry();
@@ -86,38 +87,15 @@ export default function DeleteItemScreen() {
             </ThemedView>
             <ThemedView style={{
                 gap: 12,
+                marginBottom: 40
             }}>
                 {
-                    selectedItemId && <Button disabled={!selectedItemId} label={t("inventory.editItem.cta")} icon="pen" action={async () => {
-                        if (selectedItemId) {
-                            try {
-                                Alert.prompt(
-                                    t('inventory.editItem.quantityInput.title'),
-                                    t('inventory.editItem.quantityInput.message'),
-                                    [
-                                        {
-                                            text: t('inventory.editItem.quantityInput.cancel'),
-                                            style: "cancel"
-                                        },
-                                        {
-                                            text: t('inventory.editItem.quantityInput.submit'),
-                                            style: "default",
-                                            onPress: async (quantity?: string) => {
-                                                await editPantryItem({
-                                                    id: selectedItemId,
-                                                    quantity: Number(quantity)
-                                                });
-                                                router.back();
-                                            }
-                                        }
-                                    ],
-                                    "plain-text"
-                                );
-                            } catch {
-                                console.log("Hiba történt a módosítás közben!");
-                            }
-                        }
-                    }} />
+                    selectedItemId && <>
+                        <Button label={t("editItem.cta")} action={()=>{
+                            setIsOpen(!isOpen);
+                        }}/>
+                           
+                       <EditShoppingListItem isOpen={isOpen} setIsOpen={setIsOpen} /></>
                 }
             </ThemedView>
         </ThemedView>

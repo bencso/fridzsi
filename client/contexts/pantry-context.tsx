@@ -28,13 +28,11 @@ export function PantryProvider({ children }: { children: ReactNode }) {
             const response = await api.get("/quantityTypes");
             const data = response.data;
             if (!data.statusCode && Array.isArray(data)) {
+                console.log(data);
                 let quantitytypes = [] as quantityTypeProp[];
                 data.map((item) => {
                     quantitytypes.push({
-                        id: item.id,
-                        label: item.label,
-                        en: item.en,
-                        hu: item.hu
+                        ...item
                     } as quantityTypeProp);
                 });
                 setQuantityTypes(quantitytypes);
@@ -58,7 +56,6 @@ export function PantryProvider({ children }: { children: ReactNode }) {
                         const date = product.expiredat ? new Date(product.expiredat).toLocaleDateString() : new Date().toLocaleDateString();
                         dateMap[date] = { quantity: (dateMap[date]?.quantity || 0) + Number(product.quantity), quantityUnit: product.quantityunit ?? "" };
                     });
-
 
                     returnItems.push({
                         code: key,
