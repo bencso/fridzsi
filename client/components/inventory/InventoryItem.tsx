@@ -98,7 +98,7 @@ export
                             <RightAction progress={progress} dragX={dragX} key={idx + "-" + index} code={product.code} />
                         )}
                     >
-                        <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", width: "100%" }}>
+                        <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
                             <View style={{ flexDirection: "row", gap: 16, alignItems: "center" }}>
                                 <View
                                     style={{

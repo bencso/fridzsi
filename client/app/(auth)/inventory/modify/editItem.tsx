@@ -8,8 +8,9 @@ import { getInventoryModifyStyles } from "@/styles/inventory/modify";
 import { useFocusEffect, useLocalSearchParams } from "expo-router";
 import { TouchableOpacity, View } from "react-native";
 import { Colors } from "@/constants/theme";
-import EditShoppingListItem from "@/components/inventory/ModifyShoppinglistItemModal";
+import EditShoppingListItem from "@/components/inventory/EditShoppinglistItemModal";
 import Button from "@/components/button";
+import { useLanguage } from "@/contexts/language-context";
 
 type ItemType = {
     index: number;
@@ -17,6 +18,8 @@ type ItemType = {
     quantity: number;
     expiredat: string;
     code: string;
+    quantityuniten: string;
+    quantityunithu: string;
 }
 
 //TODO: Loadingok megcsinálása, ezenfelül refaktorálás stb.
@@ -29,6 +32,7 @@ export default function EditItemScreen() {
     const params = useLocalSearchParams();
     const { getItemsById } = usePantry();
 
+    const { Language } = useLanguage();
     const disabledButton = !!selectedItemId;
 
     const styles = getInventoryModifyStyles({ scheme, disabledButton });
@@ -77,7 +81,7 @@ export default function EditItemScreen() {
                                         <ThemedText>{new Date(product.expiredat).toLocaleDateString()}</ThemedText>
                                     </View>
                                     <View>
-                                        <ThemedText>{product.quantity}x</ThemedText>
+                                        <ThemedText>{product.quantity} {Language === "en" ? product.quantityuniten : product.quantityunithu}</ThemedText>
                                     </View>
                                 </View>
                             </View>
@@ -91,11 +95,10 @@ export default function EditItemScreen() {
             }}>
                 {
                     selectedItemId && <>
-                        <Button label={t("editItem.cta")} action={()=>{
+                        <Button label={t("inventory.editItem.cta")} action={() => {
                             setIsOpen(!isOpen);
-                        }}/>
-                           
-                       <EditShoppingListItem isOpen={isOpen} setIsOpen={setIsOpen} /></>
+                        }} />
+                        <EditShoppingListItem isOpen={isOpen} setIsOpen={setIsOpen} /></>
                 }
             </ThemedView>
         </ThemedView>

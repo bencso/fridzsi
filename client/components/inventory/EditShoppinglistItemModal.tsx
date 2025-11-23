@@ -3,11 +3,9 @@ import { Modal, TextInput, View, Alert } from "react-native";
 import { useTranslation } from "react-i18next";
 import { useTheme } from "@/contexts/theme-context";
 import { useCallback, useState } from "react";
-import { useShoppingList } from "@/contexts/shoppinglist-context";
 import { quantityTypeProp } from "@/types/shoppinglist/quantityTypeProp";
 import { ModalProp } from "@/types/shoppinglist/addShoppingListProp";
 import { ModalQuantityType } from "../shoppinglist/modalAmountType";
-import { ProductParams } from "@/types/product/productClass";
 import { useFocusEffect } from "expo-router";
 import { usePantry } from "@/contexts/pantry-context";
 import Button from "../button";
@@ -18,9 +16,8 @@ export default function EditShoppingListItem({ isOpen, setIsOpen }: ModalProp) {
     const { t } = useTranslation();
     const { scheme: colorScheme } = useTheme();
     const styles = getModifyModalStyle({ colorScheme });
-    const [formState, setFormState] = useState<ProductParams>();
-    const [day, setDay] = useState<Date>(new Date());
     const [quantityTypes] = useState<quantityTypeProp[]>([]);
+    const [quantity, setQuantity] = useState<number>(1);
     const [quantityType, setQuantityType] = useState<quantityTypeProp | null>(null);
     const { loadQuantityTypes } = usePantry();
 
@@ -52,13 +49,10 @@ export default function EditShoppingListItem({ isOpen, setIsOpen }: ModalProp) {
                                 style={{ ...styles.input }}
                                 placeholderTextColor={`${Colors[colorScheme ?? "light"].text}80`}
                                 maxLength={150}
-                                value={formState?.quantity === undefined || Number.isNaN(formState.quantity) ? "1" : String(formState.quantity)}
+                                value={quantity === undefined || Number.isNaN(quantity) ? "1" : String(quantity)}
                                 autoCorrect={false}
                                 onChangeText={(text: string) => {
-                                    setFormState({
-                                        ...formState,
-                                        quantity: Number(text)
-                                    })
+                                    setQuantity(Number(text));
                                 }}
                                 clearButtonMode="while-editing"
                                 keyboardType="numeric"
@@ -74,15 +68,10 @@ export default function EditShoppingListItem({ isOpen, setIsOpen }: ModalProp) {
                         <View style={{
                             gap: 12
                         }}>
-                            <Button label={t("inventory.edititem.cta")} action={async () => {
+                            <Button label={t("inventory.editItem.cta")} action={async () => {
                                 try {
                                     Alert.alert(quantityType ? quantityType?.hu : "");
-                                    setFormState({
-                                        product_name: "",
-                                        quantity: 1,
-                                        code: ""
-                                    });
-                                    setDay(new Date());
+                                    setQuantity(1);
                                     setQuantityType(quantityTypes[0]);
                                 }
                                 catch {

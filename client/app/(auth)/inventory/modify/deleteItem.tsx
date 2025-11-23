@@ -10,6 +10,7 @@ import { router, useFocusEffect, useLocalSearchParams } from "expo-router";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { Text, TouchableOpacity, View } from "react-native";
 import { Colors } from "@/constants/theme";
+import { useLanguage } from "@/contexts/language-context";
 
 type ItemType = {
     index: number;
@@ -17,6 +18,8 @@ type ItemType = {
     quantity: number;
     expiredat: string;
     code: string;
+    quantityuniten: string;
+    quantityunithu: string;
 }
 
 //TODO: Loadingok megcsinálása, ezenfelül refaktorálás stb.
@@ -29,6 +32,7 @@ export default function DeleteItemScreen() {
     const params = useLocalSearchParams();
     const { getItemsById } = usePantry();
 
+    const { Language } = useLanguage();
     const disabledButton = selectedItemsId?.length === 0;
 
     const styles = getInventoryModifyStyles({ scheme, disabledButton });
@@ -95,7 +99,7 @@ export default function DeleteItemScreen() {
                                         <ThemedText>{new Date(product.expiredat).toLocaleDateString()}</ThemedText>
                                     </View>
                                     <View>
-                                        <ThemedText>{product.quantity}x</ThemedText>
+                                        <ThemedText>{product.quantity} {Language === "en" ? product.quantityuniten : product.quantityunithu}</ThemedText>
                                     </View>
                                 </View>
                                 <MaterialCommunityIcons

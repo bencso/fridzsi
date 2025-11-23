@@ -26,7 +26,8 @@ export const getInventoryStyle = ({colorScheme} : {colorScheme: keyof typeof Col
       textTransform: "uppercase",
       fontFamily: Fonts.bold,
       color: Colors[colorScheme ?? "light"].text,
-      width: "70%",
+      maxWidth: 300,
+      textOverflow: "clip"
     },
     productSecond: {
       fontSize: 16,
