@@ -159,16 +159,6 @@ exports.quantityTypes = [
     },
     {
         category: 'utensil',
-        label: 'csésze',
-        en: 'cup',
-        hu: 'csésze',
-        baseUnit: 'ml',
-        multiplyToBase: 240,
-        biggerUnit: null,
-        divideToBigger: null,
-    },
-    {
-        category: 'utensil',
         label: 'csipet',
         en: 'pinch',
         hu: 'csipet',
@@ -176,6 +166,16 @@ exports.quantityTypes = [
         multiplyToBase: 0.5,
         biggerUnit: 'kávéskanál',
         divideToBigger: 5,
+    },
+    {
+        category: 'utensil',
+        label: 'csésze',
+        en: 'cup',
+        hu: 'csésze',
+        baseUnit: 'ml',
+        multiplyToBase: 240,
+        biggerUnit: null,
+        divideToBigger: null,
     },
 ];
 //# sourceMappingURL=quantityUnits.entity.js.map

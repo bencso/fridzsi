@@ -23,7 +23,11 @@ let QuantityUnitsService = class QuantityUnitsService {
         this.dataSource = dataSource;
     }
     async findAll() {
-        return (await this.quantityUnitsRepo.find()) || [];
+        return ((await this.quantityUnitsRepo.find({
+            where: {
+                category: (0, typeorm_2.Not)('utensil'),
+            },
+        })) || []);
     }
     async convertToHighest() {
         const highestUnitByCategories = await this.dataSource

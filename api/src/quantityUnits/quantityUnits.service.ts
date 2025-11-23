@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { DataSource, Repository } from 'typeorm';
+import { DataSource, Not, Repository } from 'typeorm';
 import {
   quantityTypesParams,
   QuantityUnits,
@@ -15,7 +15,13 @@ export class QuantityUnitsService {
   ) {}
 
   async findAll(): Promise<quantityTypesParams[] | []> {
-    return (await this.quantityUnitsRepo.find()) || [];
+    return (
+      (await this.quantityUnitsRepo.find({
+        where: {
+          category: Not('utensil'),
+        },
+      })) || []
+    );
   }
 
   async convertToHighest(): Promise<any> {

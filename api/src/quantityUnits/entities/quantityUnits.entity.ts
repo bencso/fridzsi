@@ -150,16 +150,6 @@ export const quantityTypes: quantityTypesParams[] = [
   },
   {
     category: 'utensil',
-    label: 'csésze',
-    en: 'cup',
-    hu: 'csésze',
-    baseUnit: 'ml',
-    multiplyToBase: 240,
-    biggerUnit: null,
-    divideToBigger: null,
-  },
-  {
-    category: 'utensil',
     label: 'csipet',
     en: 'pinch',
     hu: 'csipet',
@@ -167,5 +157,15 @@ export const quantityTypes: quantityTypesParams[] = [
     multiplyToBase: 0.5,
     biggerUnit: 'kávéskanál',
     divideToBigger: 5,
+  },
+  {
+    category: 'utensil',
+    label: 'csésze',
+    en: 'cup',
+    hu: 'csésze',
+    baseUnit: 'ml',
+    multiplyToBase: 240,
+    biggerUnit: null,
+    divideToBigger: null,
   },
 ];
