@@ -11,14 +11,16 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.QuantityUnitsController = void 0;
 const common_1 = require("@nestjs/common");
-const quantityUnits_entity_1 = require("./entities/quantityUnits.entity");
-const typeorm_1 = require("typeorm");
+const quantityUnits_service_1 = require("./quantityUnits.service");
 let QuantityUnitsController = class QuantityUnitsController {
-    constructor(dataSource) {
-        this.dataSource = dataSource;
+    constructor(quantityUnitsService) {
+        this.quantityUnitsService = quantityUnitsService;
     }
     async getUnits() {
-        return (await this.dataSource.getRepository(quantityUnits_entity_1.QuantityUnits).find()) || [];
+        return await this.quantityUnitsService.findAll();
+    }
+    async getTest() {
+        return await this.quantityUnitsService.convertToHighest();
     }
 };
 exports.QuantityUnitsController = QuantityUnitsController;
@@ -28,8 +30,14 @@ __decorate([
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", Promise)
 ], QuantityUnitsController.prototype, "getUnits", null);
+__decorate([
+    (0, common_1.Get)('/quantityTypesTest'),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", []),
+    __metadata("design:returntype", Promise)
+], QuantityUnitsController.prototype, "getTest", null);
 exports.QuantityUnitsController = QuantityUnitsController = __decorate([
     (0, common_1.Controller)(),
-    __metadata("design:paramtypes", [typeorm_1.DataSource])
+    __metadata("design:paramtypes", [quantityUnits_service_1.QuantityUnitsService])
 ], QuantityUnitsController);
 //# sourceMappingURL=quantityUnits.controller.js.map

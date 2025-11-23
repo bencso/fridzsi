@@ -1,7 +1,8 @@
 import { OnModuleInit } from '@nestjs/common';
-import { QuantityUnitsSeedService } from './quantityUnits/seedQuantityUnits.service';
+import { QuantityUnits } from './quantityUnits/entities/quantityUnits.entity';
+import { Repository } from 'typeorm';
 export declare class AppModule implements OnModuleInit {
-    private readonly quantityUnitsSeed;
-    constructor(quantityUnitsSeed: QuantityUnitsSeedService);
+    private readonly repository;
+    constructor(repository: Repository<QuantityUnits>);
     onModuleInit(): Promise<void>;
 }

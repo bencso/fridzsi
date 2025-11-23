@@ -8,6 +8,7 @@ export interface quantityTypesParams {
   multiplyToBase: number;
   biggerUnit: string | null;
   divideToBigger: number;
+  category?: string | null;
 }
 
 @Entity({ name: 'quantity_units' })
@@ -20,6 +21,9 @@ export class QuantityUnits {
     nullable: true,
   })
   label: string;
+
+  @Column({ type: 'varchar', nullable: true })
+  category: string;
 
   @Column({ type: 'varchar', nullable: true })
   en: string;
@@ -42,9 +46,9 @@ export class QuantityUnits {
   @Column({ type: 'float', nullable: true })
   divideToBigger: number;
 }
-
 export const quantityTypes: quantityTypesParams[] = [
   {
+    category: 'mass',
     label: 'g',
     en: 'gram',
     hu: 'gramm',
@@ -54,6 +58,7 @@ export const quantityTypes: quantityTypesParams[] = [
     divideToBigger: 10,
   },
   {
+    category: 'mass',
     label: 'dkg',
     en: 'decagram',
     hu: 'dekagramm',
@@ -63,6 +68,7 @@ export const quantityTypes: quantityTypesParams[] = [
     divideToBigger: 100,
   },
   {
+    category: 'mass',
     label: 'kg',
     en: 'kilogram',
     hu: 'kilogramm',
@@ -71,7 +77,9 @@ export const quantityTypes: quantityTypesParams[] = [
     biggerUnit: null,
     divideToBigger: null,
   },
+
   {
+    category: 'volume',
     label: 'ml',
     en: 'milliliter',
     hu: 'milliliter',
@@ -81,6 +89,7 @@ export const quantityTypes: quantityTypesParams[] = [
     divideToBigger: 10,
   },
   {
+    category: 'volume',
     label: 'cl',
     en: 'centiliter',
     hu: 'centiliter',
@@ -90,6 +99,7 @@ export const quantityTypes: quantityTypesParams[] = [
     divideToBigger: 10,
   },
   {
+    category: 'volume',
     label: 'dl',
     en: 'deciliter',
     hu: 'deciliter',
@@ -99,6 +109,7 @@ export const quantityTypes: quantityTypesParams[] = [
     divideToBigger: 10,
   },
   {
+    category: 'volume',
     label: 'l',
     en: 'liter',
     hu: 'liter',
@@ -108,6 +119,7 @@ export const quantityTypes: quantityTypesParams[] = [
     divideToBigger: null,
   },
   {
+    category: 'utensil',
     label: 'kávéskanál',
     en: 'coffee spoon',
     hu: 'kávéskanál',
@@ -117,6 +129,7 @@ export const quantityTypes: quantityTypesParams[] = [
     divideToBigger: 2,
   },
   {
+    category: 'utensil',
     label: 'tk',
     en: 'teaspoon',
     hu: 'teáskanál',
@@ -126,6 +139,7 @@ export const quantityTypes: quantityTypesParams[] = [
     divideToBigger: 3,
   },
   {
+    category: 'utensil',
     label: 'ek',
     en: 'tablespoon',
     hu: 'evőkanál',
@@ -135,6 +149,7 @@ export const quantityTypes: quantityTypesParams[] = [
     divideToBigger: 16,
   },
   {
+    category: 'utensil',
     label: 'csésze',
     en: 'cup',
     hu: 'csésze',
@@ -144,6 +159,7 @@ export const quantityTypes: quantityTypesParams[] = [
     divideToBigger: null,
   },
   {
+    category: 'utensil',
     label: 'csipet',
     en: 'pinch',
     hu: 'csipet',

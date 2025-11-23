@@ -1,16 +1,17 @@
 import { Controller, Get } from '@nestjs/common';
-import {
-  quantityTypesParams,
-  QuantityUnits,
-} from './entities/quantityUnits.entity';
-import { DataSource } from 'typeorm';
+import { QuantityUnitsService } from './quantityUnits.service';
 
 @Controller()
 export class QuantityUnitsController {
-  constructor(private readonly dataSource: DataSource) {}
+  constructor(private readonly quantityUnitsService: QuantityUnitsService) {}
 
   @Get('/quantityTypes')
-  async getUnits(): Promise<quantityTypesParams[]> {
-    return (await this.dataSource.getRepository(QuantityUnits).find()) || [];
+  async getUnits() {
+    return await this.quantityUnitsService.findAll();
+  }
+
+  @Get('/quantityTypesTest')
+  async getTest(): Promise<any> {
+    return await this.quantityUnitsService.convertToHighest();
   }
 }

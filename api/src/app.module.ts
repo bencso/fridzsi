@@ -15,9 +15,14 @@ import { PantryController } from './pantry/pantry.controller';
 import { PantryService } from './pantry/pantry.service';
 import { ShoppingListService } from './shoppinglist/shoppinglist.service';
 import { ShoppingListController } from './shoppinglist/shoppinglist.controller';
-import { QuantityUnits } from './quantityUnits/entities/quantityUnits.entity';
+import {
+  quantityTypes,
+  QuantityUnits,
+} from './quantityUnits/entities/quantityUnits.entity';
+import { Repository } from 'typeorm';
+import { InjectRepository } from '@nestjs/typeorm';
 import { QuantityUnitsController } from './quantityUnits/quantityUnits.controller';
-import { QuantityUnitsSeedService } from './quantityUnits/seedQuantityUnits.service';
+import { QuantityUnitsService } from './quantityUnits/quantityUnits.service';
 
 @Module({
   imports: [
@@ -36,8 +41,9 @@ import { QuantityUnitsSeedService } from './quantityUnits/seedQuantityUnits.serv
       synchronize: true,
       logging: true,
     }),
-    AuthModule,
+    // Regisztráljuk az entitást, hogy a Repository elérhető legyen injektáláshoz
     TypeOrmModule.forFeature([QuantityUnits]),
+    AuthModule,
   ],
   controllers: [
     AppController,
@@ -55,14 +61,23 @@ import { QuantityUnitsSeedService } from './quantityUnits/seedQuantityUnits.serv
     ProductService,
     PantryService,
     ShoppingListService,
-    QuantityUnitsSeedService,
+    QuantityUnitsService,
   ],
   exports: [TypeOrmModule],
 })
 export class AppModule implements OnModuleInit {
-  constructor(private readonly quantityUnitsSeed: QuantityUnitsSeedService) {}
+  constructor(
+    @InjectRepository(QuantityUnits)
+    private readonly repository: Repository<QuantityUnits>,
+  ) {}
 
   async onModuleInit() {
-    await this.quantityUnitsSeed.seedQuantityUnits();
+    const existingCount = await this.repository.count();
+    if (existingCount > 0) {
+      return;
+    }
+
+    const entities = quantityTypes.map((type) => this.repository.create(type));
+    await this.repository.save(entities);
   }
 }

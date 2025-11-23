@@ -8,6 +8,9 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
+var __param = (this && this.__param) || function (paramIndex, decorator) {
+    return function (target, key) { decorator(target, key, paramIndex); }
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.AppModule = void 0;
 const common_1 = require("@nestjs/common");
@@ -28,14 +31,21 @@ const pantry_service_1 = require("./pantry/pantry.service");
 const shoppinglist_service_1 = require("./shoppinglist/shoppinglist.service");
 const shoppinglist_controller_1 = require("./shoppinglist/shoppinglist.controller");
 const quantityUnits_entity_1 = require("./quantityUnits/entities/quantityUnits.entity");
+const typeorm_2 = require("typeorm");
+const typeorm_3 = require("@nestjs/typeorm");
 const quantityUnits_controller_1 = require("./quantityUnits/quantityUnits.controller");
-const seedQuantityUnits_service_1 = require("./quantityUnits/seedQuantityUnits.service");
+const quantityUnits_service_1 = require("./quantityUnits/quantityUnits.service");
 let AppModule = class AppModule {
-    constructor(quantityUnitsSeed) {
-        this.quantityUnitsSeed = quantityUnitsSeed;
+    constructor(repository) {
+        this.repository = repository;
     }
     async onModuleInit() {
-        await this.quantityUnitsSeed.seedQuantityUnits();
+        const existingCount = await this.repository.count();
+        if (existingCount > 0) {
+            return;
+        }
+        const entities = quantityUnits_entity_1.quantityTypes.map((type) => this.repository.create(type));
+        await this.repository.save(entities);
     }
 };
 exports.AppModule = AppModule;
@@ -57,8 +67,8 @@ exports.AppModule = AppModule = __decorate([
                 synchronize: true,
                 logging: true,
             }),
-            auth_module_1.AuthModule,
             typeorm_1.TypeOrmModule.forFeature([quantityUnits_entity_1.QuantityUnits]),
+            auth_module_1.AuthModule,
         ],
         controllers: [
             app_controller_1.AppController,
@@ -76,10 +86,11 @@ exports.AppModule = AppModule = __decorate([
             product_service_1.ProductService,
             pantry_service_1.PantryService,
             shoppinglist_service_1.ShoppingListService,
-            seedQuantityUnits_service_1.QuantityUnitsSeedService,
+            quantityUnits_service_1.QuantityUnitsService,
         ],
         exports: [typeorm_1.TypeOrmModule],
     }),
-    __metadata("design:paramtypes", [seedQuantityUnits_service_1.QuantityUnitsSeedService])
+    __param(0, (0, typeorm_3.InjectRepository)(quantityUnits_entity_1.QuantityUnits)),
+    __metadata("design:paramtypes", [typeorm_2.Repository])
 ], AppModule);
 //# sourceMappingURL=app.module.js.map

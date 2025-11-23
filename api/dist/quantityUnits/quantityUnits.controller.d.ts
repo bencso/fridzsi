@@ -1,7 +1,7 @@
-import { quantityTypesParams } from './entities/quantityUnits.entity';
-import { DataSource } from 'typeorm';
+import { QuantityUnitsService } from './quantityUnits.service';
 export declare class QuantityUnitsController {
-    private readonly dataSource;
-    constructor(dataSource: DataSource);
-    getUnits(): Promise<quantityTypesParams[]>;
+    private readonly quantityUnitsService;
+    constructor(quantityUnitsService: QuantityUnitsService);
+    getUnits(): Promise<import("./entities/quantityUnits.entity").quantityTypesParams[] | []>;
+    getTest(): Promise<any>;
 }

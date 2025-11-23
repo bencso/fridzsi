@@ -28,6 +28,10 @@ __decorate([
 __decorate([
     (0, typeorm_1.Column)({ type: 'varchar', nullable: true }),
     __metadata("design:type", String)
+], QuantityUnits.prototype, "category", void 0);
+__decorate([
+    (0, typeorm_1.Column)({ type: 'varchar', nullable: true }),
+    __metadata("design:type", String)
 ], QuantityUnits.prototype, "en", void 0);
 __decorate([
     (0, typeorm_1.Column)({ type: 'varchar', nullable: true }),
@@ -54,6 +58,7 @@ exports.QuantityUnits = QuantityUnits = __decorate([
 ], QuantityUnits);
 exports.quantityTypes = [
     {
+        category: 'mass',
         label: 'g',
         en: 'gram',
         hu: 'gramm',
@@ -63,6 +68,7 @@ exports.quantityTypes = [
         divideToBigger: 10,
     },
     {
+        category: 'mass',
         label: 'dkg',
         en: 'decagram',
         hu: 'dekagramm',
@@ -72,6 +78,7 @@ exports.quantityTypes = [
         divideToBigger: 100,
     },
     {
+        category: 'mass',
         label: 'kg',
         en: 'kilogram',
         hu: 'kilogramm',
@@ -81,6 +88,7 @@ exports.quantityTypes = [
         divideToBigger: null,
     },
     {
+        category: 'volume',
         label: 'ml',
         en: 'milliliter',
         hu: 'milliliter',
@@ -90,6 +98,7 @@ exports.quantityTypes = [
         divideToBigger: 10,
     },
     {
+        category: 'volume',
         label: 'cl',
         en: 'centiliter',
         hu: 'centiliter',
@@ -99,6 +108,7 @@ exports.quantityTypes = [
         divideToBigger: 10,
     },
     {
+        category: 'volume',
         label: 'dl',
         en: 'deciliter',
         hu: 'deciliter',
@@ -108,6 +118,7 @@ exports.quantityTypes = [
         divideToBigger: 10,
     },
     {
+        category: 'volume',
         label: 'l',
         en: 'liter',
         hu: 'liter',
@@ -117,6 +128,7 @@ exports.quantityTypes = [
         divideToBigger: null,
     },
     {
+        category: 'utensil',
         label: 'kávéskanál',
         en: 'coffee spoon',
         hu: 'kávéskanál',
@@ -126,6 +138,7 @@ exports.quantityTypes = [
         divideToBigger: 2,
     },
     {
+        category: 'utensil',
         label: 'tk',
         en: 'teaspoon',
         hu: 'teáskanál',
@@ -135,6 +148,7 @@ exports.quantityTypes = [
         divideToBigger: 3,
     },
     {
+        category: 'utensil',
         label: 'ek',
         en: 'tablespoon',
         hu: 'evőkanál',
@@ -144,6 +158,7 @@ exports.quantityTypes = [
         divideToBigger: 16,
     },
     {
+        category: 'utensil',
         label: 'csésze',
         en: 'cup',
         hu: 'csésze',
@@ -153,6 +168,7 @@ exports.quantityTypes = [
         divideToBigger: null,
     },
     {
+        category: 'utensil',
         label: 'csipet',
         en: 'pinch',
         hu: 'csipet',

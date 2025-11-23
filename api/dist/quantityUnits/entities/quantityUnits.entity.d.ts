@@ -6,10 +6,12 @@ export interface quantityTypesParams {
     multiplyToBase: number;
     biggerUnit: string | null;
     divideToBigger: number;
+    category?: string | null;
 }
 export declare class QuantityUnits {
     id: string;
     label: string;
+    category: string;
     en: string;
     hu: string;
     baseUnit: string | null;
