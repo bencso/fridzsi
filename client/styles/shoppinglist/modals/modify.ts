@@ -1,7 +1,7 @@
 import { Colors } from "@/constants/theme";
 import { StyleSheet } from "react-native";
 
-export const getEditModalStyle = ({
+export const getModifyModalStyle = ({
   colorScheme,
 }: {
   colorScheme: keyof typeof Colors;

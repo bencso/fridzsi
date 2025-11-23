@@ -8,7 +8,7 @@ import { getInventoryModifyStyles } from "@/styles/inventory/modify";
 import { useFocusEffect, useLocalSearchParams } from "expo-router";
 import { TouchableOpacity, View } from "react-native";
 import { Colors } from "@/constants/theme";
-import EditShoppingListItem from "@/components/inventory/EditShoppinglistItemModal";
+import EditShoppingListItem from "@/components/inventory/ModifyShoppinglistItemModal";
 import Button from "@/components/button";
 
 type ItemType = {

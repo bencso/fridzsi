@@ -11,13 +11,13 @@ import { ProductParams } from "@/types/product/productClass";
 import { useFocusEffect } from "expo-router";
 import { usePantry } from "@/contexts/pantry-context";
 import Button from "../button";
-import { getEditModalStyle } from "@/styles/shoppinglist/modals/edit";
+import { getModifyModalStyle } from "@/styles/shoppinglist/modals/modify";
 
 
 export default function EditShoppingListItem({ isOpen, setIsOpen }: ModalProp) {
     const { t } = useTranslation();
     const { scheme: colorScheme } = useTheme();
-    const styles = getEditModalStyle({ colorScheme });
+    const styles = getModifyModalStyle({ colorScheme });
     const [formState, setFormState] = useState<ProductParams>();
     const [day, setDay] = useState<Date>(new Date());
     const [quantityTypes] = useState<quantityTypeProp[]>([]);
@@ -76,6 +76,7 @@ export default function EditShoppingListItem({ isOpen, setIsOpen }: ModalProp) {
                         }}>
                             <Button label={t("inventory.edititem.cta")} action={async () => {
                                 try {
+                                    Alert.alert(quantityType ? quantityType?.hu : "");
                                     setFormState({
                                         product_name: "",
                                         quantity: 1,
@@ -94,9 +95,6 @@ export default function EditShoppingListItem({ isOpen, setIsOpen }: ModalProp) {
                             }} />
                         </View>
                     </View>
-                </View>
-                <View style={{ alignItems: "center", marginTop: 16, gap: 16 }}>
-
                 </View>
             </View>
         </Modal>
