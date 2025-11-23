@@ -75,7 +75,6 @@ export function ModalQuantityType({
                     </View>
                 </Modal>
                 {
-                    //TODO: A styleon állítani majd!
                     quantityTypes && <Button action={() => setModalVisible(!modalVisible)} chevron={false} label={quantityType ? quantityType?.label : quantityTypes.length > 0 ? quantityTypes[0].label : t("shoppinglist.quantity")} />
                 }
             </SafeAreaView>

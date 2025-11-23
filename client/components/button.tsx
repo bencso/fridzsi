@@ -29,7 +29,7 @@ export default function Button({
 
   return (
     <TouchableOpacity style={styles.button} disabled={disabledButton} onPress={action} >
-      <View style={styles.buttonLeft}>
+        <View style={styles.row}>
         {icon && (
           <MaterialCommunityIcons
             name={icon}
@@ -40,10 +40,13 @@ export default function Button({
         )}
         {label && (<ThemedText style={
           {
-            color: Colors["light"].buttomText
+            color: Colors["light"].buttomText,
+            height: "auto",
+            display: "flex",
+            alignItems: "center"
           }
         }>{label}</ThemedText>)}
-      </View>
+        </View>
       {
         chevron ?? (
           <MaterialCommunityIcons

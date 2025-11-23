@@ -8,18 +8,18 @@ export const getButtonStyles = ({scheme, disabled}:{scheme: keyof typeof Colors,
       flexDirection: "row",
       alignItems: "center",
       borderRadius: 40,
-      padding: 20,
-      paddingTop: 18,
-      paddingBottom: 18,
       fontWeight: "bold",
       fontSize: 20,
       justifyContent: "space-between",
       backgroundColor: `${Colors[scheme ?? "light"].button}`,
       opacity: !disabled ? 1 : 0.7,
+      paddingHorizontal: 20,
+      paddingVertical: 14
     },
-    buttonLeft: {
+    row:{
+      display: "flex",
       flexDirection: "row",
-      alignItems: "center",
+      alignItems: "center"
     },
     chevron: {
       opacity: 0.9,
