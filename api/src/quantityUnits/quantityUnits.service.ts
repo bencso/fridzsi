@@ -80,6 +80,7 @@ export class QuantityUnitsService {
     return highestUnitByCategories;
   }
 
+  //TODO: és akkor ha megvan hogy mi a legmagassabb lekérni az ugyanilyen termékeket és akkor utána átalakítani őket :)
   async convertToHighest({
     request,
     productName,
