@@ -1,9 +1,20 @@
 import { DataSource, Repository } from 'typeorm';
 import { quantityTypesParams, QuantityUnits } from './entities/quantityUnits.entity';
+import { Request } from 'express';
+import { SessionService } from 'src/sessions/sessions.service';
+import { UsersService } from 'src/users/users.service';
 export declare class QuantityUnitsService {
     private readonly quantityUnitsRepo;
     private readonly dataSource;
-    constructor(quantityUnitsRepo: Repository<QuantityUnits>, dataSource: DataSource);
+    private readonly sessionsService;
+    private readonly usersService;
+    constructor(quantityUnitsRepo: Repository<QuantityUnits>, dataSource: DataSource, sessionsService: SessionService, usersService: UsersService);
     findAll(): Promise<quantityTypesParams[] | []>;
-    convertToHighest(): Promise<any>;
+    getHighest({ id }: {
+        id?: number;
+    }): Promise<any>;
+    convertToHighest({ request, productName, }: {
+        request: Request;
+        productName?: string;
+    }): Promise<any>;
 }
