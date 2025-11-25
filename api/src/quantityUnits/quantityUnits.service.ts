@@ -10,6 +10,7 @@ import { Pantry } from 'src/pantry/entities/pantry.entity';
 import { Product } from 'src/product/entities/product.entity';
 import { SessionService } from 'src/sessions/sessions.service';
 import { UsersService } from 'src/users/users.service';
+import { ReturnDataDto } from 'src/dto/return.dto';
 
 @Injectable()
 export class QuantityUnitsService {
@@ -85,7 +86,7 @@ export class QuantityUnitsService {
   }: {
     request: Request;
     productName?: string;
-  }): Promise<any> {
+  }): Promise<ReturnDataDto> {
     /**
      * SELECT quantity_units.name
      * FROM quantity_units
@@ -94,7 +95,6 @@ export class QuantityUnitsService {
      * WHERE pantry.productId = (SELECT product.id FROM product WHERE product.product_name LIKE %name%)
      * AND pantry.userId = (SELECT user.id FROM user WHERE user.id = :userId))
      */
-    console.log(request);
     const requestUser = await this.sessionsService.validateAccessToken(request);
     const user = await this.usersService.findUser(requestUser.email);
 
@@ -125,9 +125,17 @@ export class QuantityUnitsService {
           return `quantity_units.id = (${subQuery})`;
         })
         .getRawMany();
-      return highestUnitByUser;
+      return {
+        message: ['Sikeres lekérdezés!'],
+        statusCode: 200,
+        data: [highestUnitByUser],
+      };
     }
 
-    return null;
+    return {
+      message: ['Sikertelen lekérdezés!'],
+      statusCode: 404,
+      data: [],
+    };
   }
 }

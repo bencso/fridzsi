@@ -3,6 +3,7 @@ import { quantityTypesParams, QuantityUnits } from './entities/quantityUnits.ent
 import { Request } from 'express';
 import { SessionService } from 'src/sessions/sessions.service';
 import { UsersService } from 'src/users/users.service';
+import { ReturnDataDto } from 'src/dto/return.dto';
 export declare class QuantityUnitsService {
     private readonly quantityUnitsRepo;
     private readonly dataSource;
@@ -16,5 +17,5 @@ export declare class QuantityUnitsService {
     convertToHighest({ request, productName, }: {
         request: Request;
         productName?: string;
-    }): Promise<any>;
+    }): Promise<ReturnDataDto>;
 }

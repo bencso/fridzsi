@@ -82,7 +82,6 @@ let QuantityUnitsService = class QuantityUnitsService {
         return highestUnitByCategories;
     }
     async convertToHighest({ request, productName, }) {
-        console.log(request);
         const requestUser = await this.sessionsService.validateAccessToken(request);
         const user = await this.usersService.findUser(requestUser.email);
         if (user) {
@@ -112,9 +111,17 @@ let QuantityUnitsService = class QuantityUnitsService {
                 return `quantity_units.id = (${subQuery})`;
             })
                 .getRawMany();
-            return highestUnitByUser;
+            return {
+                message: ['Sikeres lekérdezés!'],
+                statusCode: 200,
+                data: [highestUnitByUser],
+            };
         }
-        return null;
+        return {
+            message: ['Sikertelen lekérdezés!'],
+            statusCode: 404,
+            data: [],
+        };
     }
 };
 exports.QuantityUnitsService = QuantityUnitsService;
