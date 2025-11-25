@@ -6,5 +6,5 @@ export declare class QuantityUnitsController {
     getUnits(): Promise<import("./entities/quantityUnits.entity").quantityTypesParams[] | []>;
     getTestById(id: number): Promise<any>;
     getTest(): Promise<any>;
-    getTestUser(request: Request, productName?: string): Promise<any>;
+    getTestUser(request: Request, productId?: string): Promise<any>;
 }

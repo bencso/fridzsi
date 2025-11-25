@@ -18,7 +18,6 @@ const typeorm_1 = require("@nestjs/typeorm");
 const typeorm_2 = require("typeorm");
 const quantityUnits_entity_1 = require("./entities/quantityUnits.entity");
 const pantry_entity_1 = require("../pantry/entities/pantry.entity");
-const product_entity_1 = require("../product/entities/product.entity");
 const sessions_service_1 = require("../sessions/sessions.service");
 const users_service_1 = require("../users/users.service");
 let QuantityUnitsService = class QuantityUnitsService {
@@ -81,7 +80,7 @@ let QuantityUnitsService = class QuantityUnitsService {
         console.log(highestUnitByCategories);
         return highestUnitByCategories;
     }
-    async convertToHighest({ request, productName, }) {
+    async convertToHighest({ request, productId, }) {
         const requestUser = await this.sessionsService.validateAccessToken(request);
         const user = await this.usersService.findUser(requestUser.email);
         if (user) {
@@ -95,22 +94,21 @@ let QuantityUnitsService = class QuantityUnitsService {
                     .subQuery()
                     .select('MAX(pantry.quantityUnitId)')
                     .from(pantry_entity_1.Pantry, 'pantry')
-                    .where((query) => {
-                    const productSubQuery = query
-                        .subQuery()
-                        .select('pr.id')
-                        .from(product_entity_1.Product, 'pr')
-                        .where('LOWER(pr.product_name) LIKE :name', {
-                        name: `%${productName.toLowerCase()}%`,
-                    })
-                        .getQuery();
-                    return `pantry.productId = (${productSubQuery})`;
-                })
+                    .where(`pantry.productId = :productId`, { productId })
                     .andWhere('pantry.userId = :userId', { userId })
                     .getQuery();
                 return `quantity_units.id = (${subQuery})`;
             })
                 .getRawMany();
+            const products = await this.dataSource
+                .getRepository(pantry_entity_1.Pantry)
+                .createQueryBuilder('pantry')
+                .select()
+                .where('pantry.productId = :productId', { productId })
+                .andWhere('pantry.user_id = :userId', { userId })
+                .getRawMany();
+            products.map((product) => {
+            });
             return {
                 message: ['Sikeres lekérdezés!'],
                 statusCode: 200,

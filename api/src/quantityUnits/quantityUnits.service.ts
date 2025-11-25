@@ -83,10 +83,10 @@ export class QuantityUnitsService {
   //TODO: és akkor ha megvan hogy mi a legmagassabb lekérni az ugyanilyen termékeket és akkor utána átalakítani őket :)
   async convertToHighest({
     request,
-    productName,
+    productId,
   }: {
     request: Request;
-    productName?: string;
+    productId?: string;
   }): Promise<ReturnDataDto> {
     /**
      * SELECT quantity_units.name
@@ -110,22 +110,40 @@ export class QuantityUnitsService {
             .subQuery()
             .select('MAX(pantry.quantityUnitId)')
             .from(Pantry, 'pantry')
-            .where((query) => {
-              const productSubQuery = query
-                .subQuery()
-                .select('pr.id')
-                .from(Product, 'pr')
-                .where('LOWER(pr.product_name) LIKE :name', {
-                  name: `%${productName.toLowerCase()}%`,
-                })
-                .getQuery();
-              return `pantry.productId = (${productSubQuery})`;
-            })
+            .where(`pantry.productId = :productId`, { productId })
             .andWhere('pantry.userId = :userId', { userId })
             .getQuery();
           return `quantity_units.id = (${subQuery})`;
         })
         .getRawMany();
+
+      const products = await this.dataSource
+        .getRepository(Pantry)
+        .createQueryBuilder('pantry')
+        .select()
+        .where('pantry.productId = :productId', { productId })
+        .andWhere('pantry.user_id = :userId', { userId })
+        .getRawMany();
+
+      products.map((product: Pantry) => {
+        //TODO: IDE KELL MAJD SZÁMOLÁST, HOGY ADDIG ÖSSZEADNI a dolgokat, ami nem az Id és
+        // utána azt az eredményt osztani és ennyi
+        // megvan a product_units és akkor az alapján emg tudjuk az id-t és utána megvan a dolog
+        // TODO: Hozzáaadni a pantry lekérdezéses függvényhez majd
+        /**
+         * Eredmény:
+         * SELECT SUM(quantity_units.divideToBigger)
+         * FROM quantity_units
+         * WHERE quanity_units.id > (SELECT quantity_units.id FROM quantity_units WHERE quanitity_units.hu LIKE %name%)
+         * */
+        //TODO: Azt kell csinálni hogy elsősorban inner joinozzuk a quantity_units táblát illetve a pantry-t
+        // lekérdezzük majd a quantity_units.id-vel csökkenő sorrendbe ugye ez mutatja a sorrendet
+        // Ezen felül group byoljuk majd a quantity_units.id alapján és azokat összesumoljuk SUM(pantry.quantity) és akkor
+        // ezekután lekérdezzük még a divide értékét, és végig megyünk ,majd ezen az eredményen egy reduce függvénnyel
+        // itt az elöző értéket (acc) osztjuk a divide értékkel, és hozzáadjuk azt a return acc-hoz, illetve hozzáadjuk ezekhez a lekérdezett értéket
+        //  és ezáltal meglesz majd a legnagyobb értékkel amivel fel van véve a dolog....
+      });
+
       return {
         message: ['Sikeres lekérdezés!'],
         statusCode: 200,

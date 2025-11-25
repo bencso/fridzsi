@@ -26,11 +26,11 @@ export class QuantityUnitsController {
   @Get('/quantityTypesTestUser/:product')
   async getTestUser(
     @Req() request: Request,
-    @Param('product') productName?: string,
+    @Param('product') productId?: string,
   ): Promise<any> {
     return await this.quantityUnitsService.convertToHighest({
       request,
-      productName,
+      productId,
     });
   }
 }
