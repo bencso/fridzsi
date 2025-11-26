@@ -80,7 +80,10 @@ export class QuantityUnitsService {
     return highestUnitByCategories;
   }
 
-  //TODO: és akkor ha megvan hogy mi a legmagassabb lekérni az ugyanilyen termékeket és akkor utána átalakítani őket :)
+  //TODO: Gyorsítás miatt: egyzere az összes id-t le kell kérni,
+  //  és azt átadni majd a reduce függvénynek,
+  // és akkor egy matrix tömbbel megcsinálni
+  // az egészet és azt vsiszaadni
   async convertToHighest({
     request,
     productId,
@@ -118,13 +121,7 @@ export class QuantityUnitsService {
         })
         .getOne();
 
-      //TODO: Azt kell csinálni hogy elsősorban inner joinozzuk a quantity_units táblát illetve a pantry-t
-      // lekérdezzük majd a quantity_units.id-vel csökkenő sorrendbe ugye ez mutatja a sorrendet
-      // Ezen felül group byoljuk majd a quantity_units.id alapján és azokat összesumoljuk SUM(pantry.quantity) és akkor
-      // ezekután lekérdezzük még a divide értékét, és végig megyünk ,majd ezen az eredményen egy reduce függvénnyel
-      // itt az elöző értéket (acc) osztjuk a divide értékkel, és hozzáadjuk azt a return acc-hoz, illetve hozzáadjuk ezekhez a lekérdezett értéket
-      //  és ezáltal meglesz majd a legnagyobb értékkel amivel fel van véve a dolog....
-      const productsTest = await this.dataSource
+      const productValues = await this.dataSource
         .getRepository(Pantry)
         .createQueryBuilder('pantry')
         .select('SUM(pantry.quantity)')
@@ -143,14 +140,23 @@ export class QuantityUnitsService {
         .orderBy('quantity_units.id')
         .getRawMany();
 
-      const highestValue = productsTest.pop();
-      //TODO: Ezen kell majd cisnálni a reduce-t és felette van a highest :) amihez hozzá kell adni majd ja
-      console.log(productsTest);
+      const highestValue = productValues.pop();
+
+      const productValue = productValues.reduce((acc, currentValue) => {
+        return (
+          acc + currentValue.sum / currentValue.quantity_units_divideToBigger
+        );
+      }, 0);
+
+      const returnData = {
+        amount: Number(highestValue.sum) + Number(productValue),
+        amountType: highestUnitByUser,
+      };
 
       return {
         message: ['Sikeres lekérdezés!'],
         statusCode: 200,
-        data: [highestUnitByUser],
+        data: [returnData],
       };
     }
 

@@ -102,7 +102,7 @@ let QuantityUnitsService = class QuantityUnitsService {
                 return `quantity_units.id = (${subQuery})`;
             })
                 .getOne();
-            const productsTest = await this.dataSource
+            const productValues = await this.dataSource
                 .getRepository(pantry_entity_1.Pantry)
                 .createQueryBuilder('pantry')
                 .select('SUM(pantry.quantity)')
@@ -116,12 +116,18 @@ let QuantityUnitsService = class QuantityUnitsService {
                 .groupBy('quantity_units.id, quantity_units.divideToBigger')
                 .orderBy('quantity_units.id')
                 .getRawMany();
-            const highestValue = productsTest.pop();
-            console.log(productsTest);
+            const highestValue = productValues.pop();
+            const productValue = productValues.reduce((acc, currentValue) => {
+                return (acc + currentValue.sum / currentValue.quantity_units_divideToBigger);
+            }, 0);
+            const returnData = {
+                amount: Number(highestValue.sum) + Number(productValue),
+                amountType: highestUnitByUser,
+            };
             return {
                 message: ['Sikeres lekérdezés!'],
                 statusCode: 200,
-                data: [highestUnitByUser],
+                data: [returnData],
             };
         }
         return {
