@@ -116,10 +116,7 @@ export class QuantityUnitsService {
             .getQuery();
           return `quantity_units.id = (${subQuery})`;
         })
-        .execute();
-
-      console.log(productId);
-      console.log(highestUnitByUser);
+        .getOne();
 
       //TODO: Azt kell csinálni hogy elsősorban inner joinozzuk a quantity_units táblát illetve a pantry-t
       // lekérdezzük majd a quantity_units.id-vel csökkenő sorrendbe ugye ez mutatja a sorrendet
@@ -139,10 +136,15 @@ export class QuantityUnitsService {
         )
         .where('pantry.userId = :userId', { userId })
         .andWhere('pantry.expiredAt >= :now', { now: new Date() })
+        .andWhere('pantry.quantityUnitId <= :highestUnitByUserId', {
+          highestUnitByUserId: highestUnitByUser.id,
+        })
         .groupBy('quantity_units.id, quantity_units.divideToBigger')
         .orderBy('quantity_units.id')
         .getRawMany();
 
+      const highestValue = productsTest.pop();
+      //TODO: Ezen kell majd cisnálni a reduce-t és felette van a highest :) amihez hozzá kell adni majd ja
       console.log(productsTest);
 
       return {

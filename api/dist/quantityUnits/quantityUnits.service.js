@@ -101,9 +101,7 @@ let QuantityUnitsService = class QuantityUnitsService {
                     .getQuery();
                 return `quantity_units.id = (${subQuery})`;
             })
-                .execute();
-            console.log(productId);
-            console.log(highestUnitByUser);
+                .getOne();
             const productsTest = await this.dataSource
                 .getRepository(pantry_entity_1.Pantry)
                 .createQueryBuilder('pantry')
@@ -112,9 +110,13 @@ let QuantityUnitsService = class QuantityUnitsService {
                 .innerJoin(quantityUnits_entity_1.QuantityUnits, 'quantity_units', 'pantry.quantityUnitId = quantity_units.id')
                 .where('pantry.userId = :userId', { userId })
                 .andWhere('pantry.expiredAt >= :now', { now: new Date() })
+                .andWhere('pantry.quantityUnitId <= :highestUnitByUserId', {
+                highestUnitByUserId: highestUnitByUser.id,
+            })
                 .groupBy('quantity_units.id, quantity_units.divideToBigger')
                 .orderBy('quantity_units.id')
                 .getRawMany();
+            const highestValue = productsTest.pop();
             console.log(productsTest);
             return {
                 message: ['Sikeres lekérdezés!'],
