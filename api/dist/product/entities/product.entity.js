@@ -18,6 +18,7 @@ let Product = class Product {
 exports.Product = Product;
 __decorate([
     (0, typeorm_1.PrimaryGeneratedColumn)('increment'),
+    (0, typeorm_1.JoinColumn)({ name: 'productId' }),
     __metadata("design:type", String)
 ], Product.prototype, "id", void 0);
 __decorate([

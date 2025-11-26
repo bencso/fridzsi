@@ -4,12 +4,14 @@ import { DataSource } from 'typeorm';
 import { SessionService } from 'src/sessions/sessions.service';
 import { Request } from 'express';
 import { ProductService } from 'src/product/product.service';
+import { QuantityUnitsService } from 'src/quantityUnits/quantityUnits.service';
 export declare class PantryService {
     private readonly usersService;
     private readonly dataSource;
     private readonly sessionsService;
     private readonly productService;
-    constructor(usersService: UsersService, dataSource: DataSource, sessionsService: SessionService, productService: ProductService);
+    private readonly quantityUnitsService;
+    constructor(usersService: UsersService, dataSource: DataSource, sessionsService: SessionService, productService: ProductService, quantityUnitsService: QuantityUnitsService);
     create(request: Request, createPantryItemDto: CreatePantryItemDto): Promise<{
         message: string[];
         statusCode: number;

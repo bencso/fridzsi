@@ -1,10 +1,17 @@
 import { IsInt, IsNumber, IsUrl, Min, MinLength } from 'class-validator';
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 import { QuantityUnits } from '../../quantityUnits/entities/quantityUnits.entity';
 
 @Entity({ name: 'product' })
 export class Product {
   @PrimaryGeneratedColumn('increment')
+  @JoinColumn({ name: 'productId' })
   id: string;
 
   @Column({ type: 'text', nullable: true, unique: true })

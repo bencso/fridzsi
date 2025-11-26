@@ -1,4 +1,4 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, JoinColumn, PrimaryGeneratedColumn } from 'typeorm';
 
 export interface quantityTypesParams {
   label: string;
@@ -14,6 +14,7 @@ export interface quantityTypesParams {
 @Entity({ name: 'quantity_units' })
 export class QuantityUnits {
   @PrimaryGeneratedColumn('increment')
+  @JoinColumn({ name: 'quantityUnitId' })
   id: string;
 
   @Column({

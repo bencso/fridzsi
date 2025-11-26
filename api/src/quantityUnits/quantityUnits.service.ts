@@ -110,39 +110,40 @@ export class QuantityUnitsService {
             .subQuery()
             .select('MAX(pantry.quantityUnitId)')
             .from(Pantry, 'pantry')
-            .where(`pantry.productId = :productId`, { productId })
-            .andWhere('pantry.userId = :userId', { userId })
+            .innerJoin(Product, 'product', 'pantry.productId = product.id')
+            .where('pantry.userId = :userId', { userId })
+            .andWhere('pantry.productId = :productId', { productId })
             .getQuery();
           return `quantity_units.id = (${subQuery})`;
         })
-        .getRawMany();
+        .execute();
 
-      const products = await this.dataSource
+      console.log(productId);
+      console.log(highestUnitByUser);
+
+      //TODO: Azt kell csinálni hogy elsősorban inner joinozzuk a quantity_units táblát illetve a pantry-t
+      // lekérdezzük majd a quantity_units.id-vel csökkenő sorrendbe ugye ez mutatja a sorrendet
+      // Ezen felül group byoljuk majd a quantity_units.id alapján és azokat összesumoljuk SUM(pantry.quantity) és akkor
+      // ezekután lekérdezzük még a divide értékét, és végig megyünk ,majd ezen az eredményen egy reduce függvénnyel
+      // itt az elöző értéket (acc) osztjuk a divide értékkel, és hozzáadjuk azt a return acc-hoz, illetve hozzáadjuk ezekhez a lekérdezett értéket
+      //  és ezáltal meglesz majd a legnagyobb értékkel amivel fel van véve a dolog....
+      const productsTest = await this.dataSource
         .getRepository(Pantry)
         .createQueryBuilder('pantry')
-        .select()
-        .where('pantry.productId = :productId', { productId })
-        .andWhere('pantry.user_id = :userId', { userId })
+        .select('SUM(pantry.quantity)')
+        .addSelect('quantity_units.divideToBigger')
+        .innerJoin(
+          QuantityUnits,
+          'quantity_units',
+          'pantry.quantityUnitId = quantity_units.id',
+        )
+        .where('pantry.userId = :userId', { userId })
+        .andWhere('pantry.expiredAt >= :now', { now: new Date() })
+        .groupBy('quantity_units.id, quantity_units.divideToBigger')
+        .orderBy('quantity_units.id')
         .getRawMany();
 
-      products.map((product: Pantry) => {
-        //TODO: IDE KELL MAJD SZÁMOLÁST, HOGY ADDIG ÖSSZEADNI a dolgokat, ami nem az Id és
-        // utána azt az eredményt osztani és ennyi
-        // megvan a product_units és akkor az alapján emg tudjuk az id-t és utána megvan a dolog
-        // TODO: Hozzáaadni a pantry lekérdezéses függvényhez majd
-        /**
-         * Eredmény:
-         * SELECT SUM(quantity_units.divideToBigger)
-         * FROM quantity_units
-         * WHERE quanity_units.id > (SELECT quantity_units.id FROM quantity_units WHERE quanitity_units.hu LIKE %name%)
-         * */
-        //TODO: Azt kell csinálni hogy elsősorban inner joinozzuk a quantity_units táblát illetve a pantry-t
-        // lekérdezzük majd a quantity_units.id-vel csökkenő sorrendbe ugye ez mutatja a sorrendet
-        // Ezen felül group byoljuk majd a quantity_units.id alapján és azokat összesumoljuk SUM(pantry.quantity) és akkor
-        // ezekután lekérdezzük még a divide értékét, és végig megyünk ,majd ezen az eredményen egy reduce függvénnyel
-        // itt az elöző értéket (acc) osztjuk a divide értékkel, és hozzáadjuk azt a return acc-hoz, illetve hozzáadjuk ezekhez a lekérdezett értéket
-        //  és ezáltal meglesz majd a legnagyobb értékkel amivel fel van véve a dolog....
-      });
+      console.log(productsTest);
 
       return {
         message: ['Sikeres lekérdezés!'],

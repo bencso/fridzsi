@@ -17,12 +17,14 @@ const sessions_service_1 = require("../sessions/sessions.service");
 const product_service_1 = require("../product/product.service");
 const pantry_entity_1 = require("./entities/pantry.entity");
 const quantityUnits_entity_1 = require("../quantityUnits/entities/quantityUnits.entity");
+const quantityUnits_service_1 = require("../quantityUnits/quantityUnits.service");
 let PantryService = class PantryService {
-    constructor(usersService, dataSource, sessionsService, productService) {
+    constructor(usersService, dataSource, sessionsService, productService, quantityUnitsService) {
         this.usersService = usersService;
         this.dataSource = dataSource;
         this.sessionsService = sessionsService;
         this.productService = productService;
+        this.quantityUnitsService = quantityUnitsService;
     }
     async create(request, createPantryItemDto) {
         const requestUser = await this.sessionsService.validateAccessToken(request);
@@ -79,6 +81,7 @@ let PantryService = class PantryService {
                 'pantry.quantity_unit AS quantityUnit',
                 'pantry.expiredAt AS expiredAt',
                 'product.code AS code',
+                'product.id AS productId',
                 'quantity_unit.label as quantityUnit',
                 'quantity_unit.en as quantityUnitEn',
                 'quantity_unit.hu as quantityUnitHu',
@@ -86,6 +89,12 @@ let PantryService = class PantryService {
                 .where('pantry.user = :userId', { userId: user.id })
                 .andWhere('pantry.expiredAt >= :now', { now: new Date() })
                 .getRawMany();
+            products.map(async (product) => {
+                await this.quantityUnitsService.convertToHighest({
+                    request,
+                    productId: product.productid,
+                });
+            });
             const returnProducts = [
                 products.reduce((acc, curr) => {
                     acc[curr.code] = acc[curr.code] || [];
@@ -225,6 +234,7 @@ exports.PantryService = PantryService = __decorate([
     __metadata("design:paramtypes", [users_service_1.UsersService,
         typeorm_1.DataSource,
         sessions_service_1.SessionService,
-        product_service_1.ProductService])
+        product_service_1.ProductService,
+        quantityUnits_service_1.QuantityUnitsService])
 ], PantryService);
 //# sourceMappingURL=pantry.service.js.map

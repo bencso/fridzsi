@@ -18,6 +18,7 @@ const typeorm_1 = require("@nestjs/typeorm");
 const typeorm_2 = require("typeorm");
 const quantityUnits_entity_1 = require("./entities/quantityUnits.entity");
 const pantry_entity_1 = require("../pantry/entities/pantry.entity");
+const product_entity_1 = require("../product/entities/product.entity");
 const sessions_service_1 = require("../sessions/sessions.service");
 const users_service_1 = require("../users/users.service");
 let QuantityUnitsService = class QuantityUnitsService {
@@ -94,21 +95,27 @@ let QuantityUnitsService = class QuantityUnitsService {
                     .subQuery()
                     .select('MAX(pantry.quantityUnitId)')
                     .from(pantry_entity_1.Pantry, 'pantry')
-                    .where(`pantry.productId = :productId`, { productId })
-                    .andWhere('pantry.userId = :userId', { userId })
+                    .innerJoin(product_entity_1.Product, 'product', 'pantry.productId = product.id')
+                    .where('pantry.userId = :userId', { userId })
+                    .andWhere('pantry.productId = :productId', { productId })
                     .getQuery();
                 return `quantity_units.id = (${subQuery})`;
             })
-                .getRawMany();
-            const products = await this.dataSource
+                .execute();
+            console.log(productId);
+            console.log(highestUnitByUser);
+            const productsTest = await this.dataSource
                 .getRepository(pantry_entity_1.Pantry)
                 .createQueryBuilder('pantry')
-                .select()
-                .where('pantry.productId = :productId', { productId })
-                .andWhere('pantry.user_id = :userId', { userId })
+                .select('SUM(pantry.quantity)')
+                .addSelect('quantity_units.divideToBigger')
+                .innerJoin(quantityUnits_entity_1.QuantityUnits, 'quantity_units', 'pantry.quantityUnitId = quantity_units.id')
+                .where('pantry.userId = :userId', { userId })
+                .andWhere('pantry.expiredAt >= :now', { now: new Date() })
+                .groupBy('quantity_units.id, quantity_units.divideToBigger')
+                .orderBy('quantity_units.id')
                 .getRawMany();
-            products.map((product) => {
-            });
+            console.log(productsTest);
             return {
                 message: ['Sikeres lekérdezés!'],
                 statusCode: 200,

@@ -16,6 +16,7 @@ let QuantityUnits = class QuantityUnits {
 exports.QuantityUnits = QuantityUnits;
 __decorate([
     (0, typeorm_1.PrimaryGeneratedColumn)('increment'),
+    (0, typeorm_1.JoinColumn)({ name: 'quantityUnitId' }),
     __metadata("design:type", String)
 ], QuantityUnits.prototype, "id", void 0);
 __decorate([

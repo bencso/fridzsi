@@ -7,6 +7,9 @@ import { Request } from 'express';
 import { ProductService } from 'src/product/product.service';
 import { Pantry } from './entities/pantry.entity';
 import { QuantityUnits } from 'src/quantityUnits/entities/quantityUnits.entity';
+import { Product } from 'src/product/entities/product.entity';
+import { QuantityUnitsService } from 'src/quantityUnits/quantityUnits.service';
+import { ProductDto } from 'src/product/dto/Product';
 
 @Injectable()
 export class PantryService {
@@ -15,6 +18,7 @@ export class PantryService {
     private readonly dataSource: DataSource,
     private readonly sessionsService: SessionService,
     private readonly productService: ProductService,
+    private readonly quantityUnitsService: QuantityUnitsService,
   ) {}
   async create(request: Request, createPantryItemDto: CreatePantryItemDto) {
     const requestUser = await this.sessionsService.validateAccessToken(request);
@@ -80,6 +84,7 @@ export class PantryService {
           'pantry.quantity_unit AS quantityUnit',
           'pantry.expiredAt AS expiredAt',
           'product.code AS code',
+          'product.id AS productId',
           'quantity_unit.label as quantityUnit',
           'quantity_unit.en as quantityUnitEn',
           'quantity_unit.hu as quantityUnitHu',
@@ -87,6 +92,13 @@ export class PantryService {
         .where('pantry.user = :userId', { userId: user.id })
         .andWhere('pantry.expiredAt >= :now', { now: new Date() })
         .getRawMany();
+
+      products.map(async (product) => {
+        await this.quantityUnitsService.convertToHighest({
+          request,
+          productId: product.productid,
+        });
+      });
 
       const returnProducts = [
         products.reduce((acc, curr) => {
