@@ -104,7 +104,6 @@ export class QuantityUnitsService {
 
     if (user) {
       const userId = user.id;
-      const haveHighestUnit = new Set();
 
       const units = await this.dataSource
         .getRepository(QuantityUnits)
@@ -112,15 +111,15 @@ export class QuantityUnitsService {
         .select()
         .getMany();
 
-      //TODO: Nagyon nem hatékony kód, ez csak tesztnek irtam,
-      //Batch már kész
-      /*
-      products.reduce((acc, curr) => {
-          acc[curr.code] = acc[curr.code] || [];
-          acc[curr.code].push(curr);
-          return acc;
-        }, {}),
+      const productsBatch = products.reduce((acc, curr) => {
+        acc[curr.code] = acc[curr.code] || [];
+        acc[curr.code].push(curr);
+        return acc;
+      }, {});
 
+      //TODO: Nagyon nem hatékony kód, ez csak tesztnek irtam,
+      //Batch már kész a termékekre
+      /*
         ezek után az összesnél le kell kérdezni a highestUnitot
         ezt is batchelhetjük (mátrixos megoldásban)
 

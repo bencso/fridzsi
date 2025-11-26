@@ -84,12 +84,16 @@ let QuantityUnitsService = class QuantityUnitsService {
         const user = await this.usersService.findUser(requestUser.email);
         if (user) {
             const userId = user.id;
-            const haveHighestUnit = new Set();
             const units = await this.dataSource
                 .getRepository(quantityUnits_entity_1.QuantityUnits)
                 .createQueryBuilder('quantity_units')
                 .select()
                 .getMany();
+            const productsBatch = products.reduce((acc, curr) => {
+                acc[curr.code] = acc[curr.code] || [];
+                acc[curr.code].push(curr);
+                return acc;
+            }, {});
             return {
                 message: ['Sikeres lekérdezés!'],
                 statusCode: 200,
