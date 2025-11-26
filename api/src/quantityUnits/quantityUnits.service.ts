@@ -126,65 +126,67 @@ export class QuantityUnitsService {
 
         és ezt követően pedig konvertálás
     */
-      const returnProducts = await products.reduce(async (acc, curr) => {
-        const accumulated = await acc;
-        const entry = accumulated[curr.code] ?? {
-          items: [],
-          highestUnit: null,
-        };
-        let highestUnit = entry.highestUnit;
-        if (!haveHighestUnit.has(curr.code)) {
-          highestUnit = await this.dataSource
-            .getRepository(QuantityUnits)
-            .createQueryBuilder('quantity_units')
-            .select()
-            .where((query) => {
-              const subQuery = query
-                .subQuery()
-                .select('MAX(pantry.quantityUnitId)')
-                .from(Pantry, 'pantry')
-                .innerJoin(Product, 'product', 'pantry.productId = product.id')
-                .where('pantry.userId = :userId', { userId })
-                .andWhere('product.id = :productId', {
-                  productId: curr.productid,
-                })
-                .getQuery();
-              return `quantity_units.id = (${subQuery})`;
-            })
-            .getOne();
-          entry.highestUnit = highestUnit ?? entry.highestUnit;
-          haveHighestUnit.add(curr.code);
-        }
 
-        if (highestUnit) {
-          const highestUnitId = highestUnit.id ? highestUnit.id : -1;
+      // Nem hatékony kód:
+      //   const returnProducts = await products.reduce(async (acc, curr) => {
+      //   const accumulated = await acc;
+      //   const entry = accumulated[curr.code] ?? {
+      //     items: [],
+      //     highestUnit: null,
+      //   };
+      //   let highestUnit = entry.highestUnit;
+      //   if (!haveHighestUnit.has(curr.code)) {
+      //     highestUnit = await this.dataSource
+      //       .getRepository(QuantityUnits)
+      //       .createQueryBuilder('quantity_units')
+      //       .select()
+      //       .where((query) => {
+      //         const subQuery = query
+      //           .subQuery()
+      //           .select('MAX(pantry.quantityUnitId)')
+      //           .from(Pantry, 'pantry')
+      //           .innerJoin(Product, 'product', 'pantry.productId = product.id')
+      //           .where('pantry.userId = :userId', { userId })
+      //           .andWhere('product.id = :productId', {
+      //             productId: curr.productid,
+      //           })
+      //           .getQuery();
+      //         return `quantity_units.id = (${subQuery})`;
+      //       })
+      //       .getOne();
+      //     entry.highestUnit = highestUnit ?? entry.highestUnit;
+      //     haveHighestUnit.add(curr.code);
+      //   }
 
-          const different = Number(highestUnitId) - Number(curr.quantityunitid);
+      //   if (highestUnit) {
+      //     const highestUnitId = highestUnit.id ? highestUnit.id : -1;
 
-          if (different === 0) {
-            entry.items.push(curr);
-          } else {
-            const quantity = curr.quantity;
+      //     const different = Number(highestUnitId) - Number(curr.quantityunitid);
 
-            const lowerUnits = units.filter((unit) => {
-              return unit.id < highestUnit.id;
-            });
+      //     if (different === 0) {
+      //       entry.items.push(curr);
+      //     } else {
+      //       const quantity = curr.quantity;
 
-            const convertedQuantity = lowerUnits.reduce((unitAcc, unitCurr) => {
-              return unitAcc / unitCurr.divideToBigger;
-            }, quantity);
+      //       const lowerUnits = units.filter((unit) => {
+      //         return unit.id < highestUnit.id;
+      //       });
 
-            entry.items.push({
-              ...curr,
-              converted_quantity: convertedQuantity.toFixed(4),
-            });
-          }
-        }
-        accumulated[curr.code] = entry;
-        return accumulated;
-      }, Promise.resolve({}));
+      //       const convertedQuantity = lowerUnits.reduce((unitAcc, unitCurr) => {
+      //         return unitAcc / unitCurr.divideToBigger;
+      //       }, quantity);
 
-      console.log(returnProducts);
+      //       entry.items.push({
+      //         ...curr,
+      //         converted_quantity: convertedQuantity.toFixed(4),
+      //       });
+      //     }
+      //   }
+      //   accumulated[curr.code] = entry;
+      //   return accumulated;
+      // }, Promise.resolve({}));
+
+      // console.log(returnProducts);
 
       // const productValues = await this.dataSource
       //   .getRepository(Pantry)

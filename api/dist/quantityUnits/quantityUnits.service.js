@@ -19,8 +19,6 @@ const typeorm_2 = require("typeorm");
 const quantityUnits_entity_1 = require("./entities/quantityUnits.entity");
 const sessions_service_1 = require("../sessions/sessions.service");
 const users_service_1 = require("../users/users.service");
-const pantry_entity_1 = require("../pantry/entities/pantry.entity");
-const product_entity_1 = require("../product/entities/product.entity");
 let QuantityUnitsService = class QuantityUnitsService {
     constructor(quantityUnitsRepo, dataSource, sessionsService, usersService) {
         this.quantityUnitsRepo = quantityUnitsRepo;
@@ -92,59 +90,6 @@ let QuantityUnitsService = class QuantityUnitsService {
                 .createQueryBuilder('quantity_units')
                 .select()
                 .getMany();
-            const returnProducts = await products.reduce(async (acc, curr) => {
-                const accumulated = await acc;
-                const entry = accumulated[curr.code] ?? {
-                    items: [],
-                    highestUnit: null,
-                };
-                let highestUnit = entry.highestUnit;
-                if (!haveHighestUnit.has(curr.code)) {
-                    highestUnit = await this.dataSource
-                        .getRepository(quantityUnits_entity_1.QuantityUnits)
-                        .createQueryBuilder('quantity_units')
-                        .select()
-                        .where((query) => {
-                        const subQuery = query
-                            .subQuery()
-                            .select('MAX(pantry.quantityUnitId)')
-                            .from(pantry_entity_1.Pantry, 'pantry')
-                            .innerJoin(product_entity_1.Product, 'product', 'pantry.productId = product.id')
-                            .where('pantry.userId = :userId', { userId })
-                            .andWhere('product.id = :productId', {
-                            productId: curr.productid,
-                        })
-                            .getQuery();
-                        return `quantity_units.id = (${subQuery})`;
-                    })
-                        .getOne();
-                    entry.highestUnit = highestUnit ?? entry.highestUnit;
-                    haveHighestUnit.add(curr.code);
-                }
-                if (highestUnit) {
-                    const highestUnitId = highestUnit.id ? highestUnit.id : -1;
-                    const different = Number(highestUnitId) - Number(curr.quantityunitid);
-                    if (different === 0) {
-                        entry.items.push(curr);
-                    }
-                    else {
-                        const quantity = curr.quantity;
-                        const lowerUnits = units.filter((unit) => {
-                            return unit.id < highestUnit.id;
-                        });
-                        const convertedQuantity = lowerUnits.reduce((unitAcc, unitCurr) => {
-                            return unitAcc / unitCurr.divideToBigger;
-                        }, quantity);
-                        entry.items.push({
-                            ...curr,
-                            converted_quantity: convertedQuantity.toFixed(4),
-                        });
-                    }
-                }
-                accumulated[curr.code] = entry;
-                return accumulated;
-            }, Promise.resolve({}));
-            console.log(returnProducts);
             return {
                 message: ['Sikeres lekérdezés!'],
                 statusCode: 200,
