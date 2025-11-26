@@ -28,9 +28,6 @@ export class QuantityUnitsController {
     @Req() request: Request,
     @Param('product') productId?: string,
   ): Promise<any> {
-    return await this.quantityUnitsService.convertToHighest({
-      request,
-      productId,
-    });
+    return { request, productId };
   }
 }

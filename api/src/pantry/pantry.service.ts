@@ -93,11 +93,13 @@ export class PantryService {
         .andWhere('pantry.expiredAt >= :now', { now: new Date() })
         .getRawMany();
 
-      products.map(async (product) => {
-        await this.quantityUnitsService.convertToHighest({
-          request,
-          productId: product.productid,
-        });
+      // const returnProducts = await this.quantityUnitsService.convertToHighest({
+      //   request,
+      //   products: products,
+      // });
+      await this.quantityUnitsService.convertToHighest({
+        request,
+        products: products,
       });
 
       const returnProducts = [

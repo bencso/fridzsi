@@ -17,10 +17,10 @@ const common_1 = require("@nestjs/common");
 const typeorm_1 = require("@nestjs/typeorm");
 const typeorm_2 = require("typeorm");
 const quantityUnits_entity_1 = require("./entities/quantityUnits.entity");
-const pantry_entity_1 = require("../pantry/entities/pantry.entity");
-const product_entity_1 = require("../product/entities/product.entity");
 const sessions_service_1 = require("../sessions/sessions.service");
 const users_service_1 = require("../users/users.service");
+const pantry_entity_1 = require("../pantry/entities/pantry.entity");
+const product_entity_1 = require("../product/entities/product.entity");
 let QuantityUnitsService = class QuantityUnitsService {
     constructor(quantityUnitsRepo, dataSource, sessionsService, usersService) {
         this.quantityUnitsRepo = quantityUnitsRepo;
@@ -81,53 +81,49 @@ let QuantityUnitsService = class QuantityUnitsService {
         console.log(highestUnitByCategories);
         return highestUnitByCategories;
     }
-    async convertToHighest({ request, productId, }) {
+    async convertToHighest({ request, products, }) {
         const requestUser = await this.sessionsService.validateAccessToken(request);
         const user = await this.usersService.findUser(requestUser.email);
         if (user) {
             const userId = user.id;
-            const highestUnitByUser = await this.dataSource
-                .getRepository(quantityUnits_entity_1.QuantityUnits)
-                .createQueryBuilder('quantity_units')
-                .select()
-                .where((query) => {
-                const subQuery = query
-                    .subQuery()
-                    .select('MAX(pantry.quantityUnitId)')
-                    .from(pantry_entity_1.Pantry, 'pantry')
-                    .innerJoin(product_entity_1.Product, 'product', 'pantry.productId = product.id')
-                    .where('pantry.userId = :userId', { userId })
-                    .andWhere('pantry.productId = :productId', { productId })
-                    .getQuery();
-                return `quantity_units.id = (${subQuery})`;
-            })
-                .getOne();
-            const productValues = await this.dataSource
-                .getRepository(pantry_entity_1.Pantry)
-                .createQueryBuilder('pantry')
-                .select('SUM(pantry.quantity)')
-                .addSelect('quantity_units.divideToBigger')
-                .innerJoin(quantityUnits_entity_1.QuantityUnits, 'quantity_units', 'pantry.quantityUnitId = quantity_units.id')
-                .where('pantry.userId = :userId', { userId })
-                .andWhere('pantry.expiredAt >= :now', { now: new Date() })
-                .andWhere('pantry.quantityUnitId <= :highestUnitByUserId', {
-                highestUnitByUserId: highestUnitByUser.id,
-            })
-                .groupBy('quantity_units.id, quantity_units.divideToBigger')
-                .orderBy('quantity_units.id')
-                .getRawMany();
-            const highestValue = productValues.pop();
-            const productValue = productValues.reduce((acc, currentValue) => {
-                return (acc + currentValue.sum / currentValue.quantity_units_divideToBigger);
-            }, 0);
-            const returnData = {
-                amount: Number(highestValue.sum) + Number(productValue),
-                amountType: highestUnitByUser,
-            };
+            const haveHighestUnit = new Set();
+            const returnProducts = await products.reduce(async (acc, curr) => {
+                const accumulated = await acc;
+                const entry = accumulated[curr.code] ?? {
+                    items: [],
+                    highestUnit: null,
+                };
+                entry.items.push(curr);
+                accumulated[curr.code] = entry;
+                if (!haveHighestUnit.has(curr.code)) {
+                    const highestUnit = await this.dataSource
+                        .getRepository(quantityUnits_entity_1.QuantityUnits)
+                        .createQueryBuilder('quantity_units')
+                        .select()
+                        .where((query) => {
+                        const subQuery = query
+                            .subQuery()
+                            .select('MAX(pantry.quantityUnitId)')
+                            .from(pantry_entity_1.Pantry, 'pantry')
+                            .innerJoin(product_entity_1.Product, 'product', 'pantry.productId = product.id')
+                            .where('pantry.userId = :userId', { userId })
+                            .andWhere('product.id = :productId', {
+                            productId: curr.productid,
+                        })
+                            .getQuery();
+                        return `quantity_units.id = (${subQuery})`;
+                    })
+                        .getOne();
+                    entry.highestUnit = highestUnit ?? entry.highestUnit;
+                    haveHighestUnit.add(curr.code);
+                }
+                return accumulated;
+            }, Promise.resolve({}));
+            console.log(returnProducts);
             return {
                 message: ['Sikeres lekérdezés!'],
                 statusCode: 200,
-                data: [returnData],
+                data: [user],
             };
         }
         return {

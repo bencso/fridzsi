@@ -31,10 +31,7 @@ let QuantityUnitsController = class QuantityUnitsController {
         return await this.quantityUnitsService.getHighest({});
     }
     async getTestUser(request, productId) {
-        return await this.quantityUnitsService.convertToHighest({
-            request,
-            productId,
-        });
+        return { request, productId };
     }
 };
 exports.QuantityUnitsController = QuantityUnitsController;

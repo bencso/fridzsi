@@ -6,11 +6,11 @@ import {
   QuantityUnits,
 } from './entities/quantityUnits.entity';
 import { Request } from 'express';
-import { Pantry } from 'src/pantry/entities/pantry.entity';
-import { Product } from 'src/product/entities/product.entity';
 import { SessionService } from 'src/sessions/sessions.service';
 import { UsersService } from 'src/users/users.service';
 import { ReturnDataDto } from 'src/dto/return.dto';
+import { Pantry } from 'src/pantry/entities/pantry.entity';
+import { Product } from 'src/product/entities/product.entity';
 
 @Injectable()
 export class QuantityUnitsService {
@@ -86,10 +86,10 @@ export class QuantityUnitsService {
   // az egészet és azt vsiszaadni
   async convertToHighest({
     request,
-    productId,
+    products,
   }: {
     request: Request;
-    productId?: string;
+    products?: any[];
   }): Promise<ReturnDataDto> {
     /**
      * SELECT quantity_units.name
@@ -104,59 +104,82 @@ export class QuantityUnitsService {
 
     if (user) {
       const userId = user.id;
-      const highestUnitByUser = await this.dataSource
-        .getRepository(QuantityUnits)
-        .createQueryBuilder('quantity_units')
-        .select()
-        .where((query) => {
-          const subQuery = query
-            .subQuery()
-            .select('MAX(pantry.quantityUnitId)')
-            .from(Pantry, 'pantry')
-            .innerJoin(Product, 'product', 'pantry.productId = product.id')
-            .where('pantry.userId = :userId', { userId })
-            .andWhere('pantry.productId = :productId', { productId })
-            .getQuery();
-          return `quantity_units.id = (${subQuery})`;
-        })
-        .getOne();
+      const haveHighestUnit = new Set();
 
-      const productValues = await this.dataSource
-        .getRepository(Pantry)
-        .createQueryBuilder('pantry')
-        .select('SUM(pantry.quantity)')
-        .addSelect('quantity_units.divideToBigger')
-        .innerJoin(
-          QuantityUnits,
-          'quantity_units',
-          'pantry.quantityUnitId = quantity_units.id',
-        )
-        .where('pantry.userId = :userId', { userId })
-        .andWhere('pantry.expiredAt >= :now', { now: new Date() })
-        .andWhere('pantry.quantityUnitId <= :highestUnitByUserId', {
-          highestUnitByUserId: highestUnitByUser.id,
-        })
-        .groupBy('quantity_units.id, quantity_units.divideToBigger')
-        .orderBy('quantity_units.id')
-        .getRawMany();
+      //TODO: Itemsnél már csak az átváltást megcsinálni, és talán gyorsabb lesz és slálázhatóbb ez a meogldás!
+      const returnProducts = await products.reduce(async (acc, curr) => {
+        const accumulated = await acc;
+        const entry = accumulated[curr.code] ?? {
+          items: [],
+          highestUnit: null,
+        };
+        entry.items.push(curr);
+        accumulated[curr.code] = entry;
 
-      const highestValue = productValues.pop();
+        if (!haveHighestUnit.has(curr.code)) {
+          const highestUnit = await this.dataSource
+            .getRepository(QuantityUnits)
+            .createQueryBuilder('quantity_units')
+            .select()
+            .where((query) => {
+              const subQuery = query
+                .subQuery()
+                .select('MAX(pantry.quantityUnitId)')
+                .from(Pantry, 'pantry')
+                .innerJoin(Product, 'product', 'pantry.productId = product.id')
+                .where('pantry.userId = :userId', { userId })
+                .andWhere('product.id = :productId', {
+                  productId: curr.productid,
+                })
+                .getQuery();
+              return `quantity_units.id = (${subQuery})`;
+            })
+            .getOne();
+          entry.highestUnit = highestUnit ?? entry.highestUnit;
+          haveHighestUnit.add(curr.code);
+        }
 
-      const productValue = productValues.reduce((acc, currentValue) => {
-        return (
-          acc + currentValue.sum / currentValue.quantity_units_divideToBigger
-        );
-      }, 0);
+        return accumulated;
+      }, Promise.resolve({}));
 
-      const returnData = {
-        amount: Number(highestValue.sum) + Number(productValue),
-        amountType: highestUnitByUser,
-      };
+      console.log(returnProducts);
+
+      // const productValues = await this.dataSource
+      //   .getRepository(Pantry)
+      //   .createQueryBuilder('pantry')
+      //   .select('SUM(pantry.quantity)')
+      //   .addSelect('quantity_units.divideToBigger')
+      //   .innerJoin(
+      //     QuantityUnits,
+      //     'quantity_units',
+      //     'pantry.quantityUnitId = quantity_units.id',
+      //   )
+      //   .where('pantry.userId = :userId', { userId })
+      //   .andWhere('pantry.expiredAt >= :now', { now: new Date() })
+      //   .andWhere('pantry.quantityUnitId <= :highestUnitByUserId', {
+      //     highestUnitByUserId: highestUnitByUser.id,
+      //   })
+      //   .groupBy('quantity_units.id, quantity_units.divideToBigger')
+      //   .orderBy('quantity_units.id')
+      //   .getRawMany();
+
+      // const highestValue = productValues.pop();
+
+      // const productValue = productValues.reduce((acc, currentValue) => {
+      //   return (
+      //     acc + currentValue.sum / currentValue.quantity_units_divideToBigger
+      //   );
+      // }, 0);
+
+      // const returnData = {
+      //   amount: Number(highestValue.sum) + Number(productValue),
+      //   amountType: highestUnitByUser,
+      // };
 
       return {
         message: ['Sikeres lekérdezés!'],
         statusCode: 200,
-        data: [returnData],
+        data: [user],
       };
     }
 

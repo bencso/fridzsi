@@ -89,11 +89,9 @@ let PantryService = class PantryService {
                 .where('pantry.user = :userId', { userId: user.id })
                 .andWhere('pantry.expiredAt >= :now', { now: new Date() })
                 .getRawMany();
-            products.map(async (product) => {
-                await this.quantityUnitsService.convertToHighest({
-                    request,
-                    productId: product.productid,
-                });
+            await this.quantityUnitsService.convertToHighest({
+                request,
+                products: products,
             });
             const returnProducts = [
                 products.reduce((acc, curr) => {
