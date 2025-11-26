@@ -87,16 +87,20 @@ let QuantityUnitsService = class QuantityUnitsService {
         if (user) {
             const userId = user.id;
             const haveHighestUnit = new Set();
+            const units = await this.dataSource
+                .getRepository(quantityUnits_entity_1.QuantityUnits)
+                .createQueryBuilder('quantity_units')
+                .select()
+                .getMany();
             const returnProducts = await products.reduce(async (acc, curr) => {
                 const accumulated = await acc;
                 const entry = accumulated[curr.code] ?? {
                     items: [],
                     highestUnit: null,
                 };
-                entry.items.push(curr);
-                accumulated[curr.code] = entry;
+                let highestUnit = entry.highestUnit;
                 if (!haveHighestUnit.has(curr.code)) {
-                    const highestUnit = await this.dataSource
+                    highestUnit = await this.dataSource
                         .getRepository(quantityUnits_entity_1.QuantityUnits)
                         .createQueryBuilder('quantity_units')
                         .select()
@@ -117,6 +121,27 @@ let QuantityUnitsService = class QuantityUnitsService {
                     entry.highestUnit = highestUnit ?? entry.highestUnit;
                     haveHighestUnit.add(curr.code);
                 }
+                if (highestUnit) {
+                    const highestUnitId = highestUnit.id ? highestUnit.id : -1;
+                    const different = Number(highestUnitId) - Number(curr.quantityunitid);
+                    if (different === 0) {
+                        entry.items.push(curr);
+                    }
+                    else {
+                        const quantity = curr.quantity;
+                        const lowerUnits = units.filter((unit) => {
+                            return unit.id < highestUnit.id;
+                        });
+                        const convertedQuantity = lowerUnits.reduce((unitAcc, unitCurr) => {
+                            return unitAcc / unitCurr.divideToBigger;
+                        }, quantity);
+                        entry.items.push({
+                            ...curr,
+                            converted_quantity: convertedQuantity.toFixed(4),
+                        });
+                    }
+                }
+                accumulated[curr.code] = entry;
                 return accumulated;
             }, Promise.resolve({}));
             console.log(returnProducts);

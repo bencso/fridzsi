@@ -83,6 +83,7 @@ let PantryService = class PantryService {
                 'product.code AS code',
                 'product.id AS productId',
                 'quantity_unit.label as quantityUnit',
+                'quantity_unit.id as quantityUnitId',
                 'quantity_unit.en as quantityUnitEn',
                 'quantity_unit.hu as quantityUnitHu',
             ])

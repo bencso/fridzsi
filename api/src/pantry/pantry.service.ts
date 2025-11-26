@@ -7,9 +7,7 @@ import { Request } from 'express';
 import { ProductService } from 'src/product/product.service';
 import { Pantry } from './entities/pantry.entity';
 import { QuantityUnits } from 'src/quantityUnits/entities/quantityUnits.entity';
-import { Product } from 'src/product/entities/product.entity';
 import { QuantityUnitsService } from 'src/quantityUnits/quantityUnits.service';
-import { ProductDto } from 'src/product/dto/Product';
 
 @Injectable()
 export class PantryService {
@@ -86,6 +84,7 @@ export class PantryService {
           'product.code AS code',
           'product.id AS productId',
           'quantity_unit.label as quantityUnit',
+          'quantity_unit.id as quantityUnitId',
           'quantity_unit.en as quantityUnitEn',
           'quantity_unit.hu as quantityUnitHu',
         ])
