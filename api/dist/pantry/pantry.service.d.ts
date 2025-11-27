@@ -19,7 +19,7 @@ export declare class PantryService {
     getUserPantry(request: Request): Promise<{
         message: string[];
         statusCode: number;
-        products: any[];
+        products: any;
     } | {
         message: string[];
         statusCode: number;

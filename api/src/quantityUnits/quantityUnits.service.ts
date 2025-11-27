@@ -9,8 +9,6 @@ import { Request } from 'express';
 import { SessionService } from 'src/sessions/sessions.service';
 import { UsersService } from 'src/users/users.service';
 import { ReturnDataDto } from 'src/dto/return.dto';
-import { Pantry } from 'src/pantry/entities/pantry.entity';
-import { Product } from 'src/product/entities/product.entity';
 
 @Injectable()
 export class QuantityUnitsService {
@@ -80,10 +78,7 @@ export class QuantityUnitsService {
     return highestUnitByCategories;
   }
 
-  //TODO: Gyorsítás miatt: egyzere az összes id-t le kell kérni,
-  //  és azt átadni majd a reduce függvénynek,
-  // és akkor egy matrix tömbbel megcsinálni
-  // az egészet és azt vsiszaadni
+  //! Itt a kódom kicsit skálázhatóság szempontjából javult, a batcheléssel
   async convertToHighest({
     request,
     products,
@@ -103,126 +98,67 @@ export class QuantityUnitsService {
     const user = await this.usersService.findUser(requestUser.email);
 
     if (user) {
-      const userId = user.id;
-
-      const units = await this.dataSource
-        .getRepository(QuantityUnits)
-        .createQueryBuilder('quantity_units')
-        .select()
-        .getMany();
+      let maxQuantityUnit = 0;
+      const codes = new Set();
 
       const productsBatch = products.reduce((acc, curr) => {
+        if (maxQuantityUnit < curr.quantityunitid)
+          maxQuantityUnit = curr.quantityunitid;
+
+        if (!codes.has(curr.code)) codes.add(curr.code);
+
         acc[curr.code] = acc[curr.code] || [];
         acc[curr.code].push(curr);
         return acc;
       }, {});
 
-      //TODO: Nagyon nem hatékony kód, ez csak tesztnek irtam,
-      //Batch már kész a termékekre
-      /*
-        ezek után az összesnél le kell kérdezni a highestUnitot
-        ezt is batchelhetjük (mátrixos megoldásban)
+      const units = await this.dataSource
+        .getRepository(QuantityUnits)
+        .createQueryBuilder('quantity_units')
+        .select('quantity_units.id', 'id')
+        .addSelect('quantity_units.divideToBigger', 'divideToBigger')
+        .orderBy('quantity_units.id', 'ASC')
+        .getRawMany();
 
-        és ezt követően pedig konvertálás
-    */
+      const convertedQuantityArray = [];
 
-      // Nem hatékony kód:
-      //   const returnProducts = await products.reduce(async (acc, curr) => {
-      //   const accumulated = await acc;
-      //   const entry = accumulated[curr.code] ?? {
-      //     items: [],
-      //     highestUnit: null,
-      //   };
-      //   let highestUnit = entry.highestUnit;
-      //   if (!haveHighestUnit.has(curr.code)) {
-      //     highestUnit = await this.dataSource
-      //       .getRepository(QuantityUnits)
-      //       .createQueryBuilder('quantity_units')
-      //       .select()
-      //       .where((query) => {
-      //         const subQuery = query
-      //           .subQuery()
-      //           .select('MAX(pantry.quantityUnitId)')
-      //           .from(Pantry, 'pantry')
-      //           .innerJoin(Product, 'product', 'pantry.productId = product.id')
-      //           .where('pantry.userId = :userId', { userId })
-      //           .andWhere('product.id = :productId', {
-      //             productId: curr.productid,
-      //           })
-      //           .getQuery();
-      //         return `quantity_units.id = (${subQuery})`;
-      //       })
-      //       .getOne();
-      //     entry.highestUnit = highestUnit ?? entry.highestUnit;
-      //     haveHighestUnit.add(curr.code);
-      //   }
+      for (const code of codes) {
+        const batch = productsBatch[code as string];
+        for (const batchItem of batch) {
+          const differentUnit = maxQuantityUnit - batchItem.quantityunitid;
+          const divide = units
+            .filter((value) => {
+              return value.id < maxQuantityUnit;
+            })
+            .slice(0, differentUnit)
+            .reduce((acc, curr) => {
+              return (acc = acc * curr.divideToBigger);
+            }, 1);
 
-      //   if (highestUnit) {
-      //     const highestUnitId = highestUnit.id ? highestUnit.id : -1;
+          if (batchItem.quantityunitid != maxQuantityUnit) {
+            convertedQuantityArray.push({
+              ...batchItem,
+              converted_quantity: batchItem.quantity / divide,
+            });
+          } else {
+            convertedQuantityArray.push({
+              ...batchItem,
+              converted_quantity: batchItem.quantity,
+            });
+          }
+        }
+      }
 
-      //     const different = Number(highestUnitId) - Number(curr.quantityunitid);
-
-      //     if (different === 0) {
-      //       entry.items.push(curr);
-      //     } else {
-      //       const quantity = curr.quantity;
-
-      //       const lowerUnits = units.filter((unit) => {
-      //         return unit.id < highestUnit.id;
-      //       });
-
-      //       const convertedQuantity = lowerUnits.reduce((unitAcc, unitCurr) => {
-      //         return unitAcc / unitCurr.divideToBigger;
-      //       }, quantity);
-
-      //       entry.items.push({
-      //         ...curr,
-      //         converted_quantity: convertedQuantity.toFixed(4),
-      //       });
-      //     }
-      //   }
-      //   accumulated[curr.code] = entry;
-      //   return accumulated;
-      // }, Promise.resolve({}));
-
-      // console.log(returnProducts);
-
-      // const productValues = await this.dataSource
-      //   .getRepository(Pantry)
-      //   .createQueryBuilder('pantry')
-      //   .select('SUM(pantry.quantity)')
-      //   .addSelect('quantity_units.divideToBigger')
-      //   .innerJoin(
-      //     QuantityUnits,
-      //     'quantity_units',
-      //     'pantry.quantityUnitId = quantity_units.id',
-      //   )
-      //   .where('pantry.userId = :userId', { userId })
-      //   .andWhere('pantry.expiredAt >= :now', { now: new Date() })
-      //   .andWhere('pantry.quantityUnitId <= :highestUnitByUserId', {
-      //     highestUnitByUserId: highestUnitByUser.id,
-      //   })
-      //   .groupBy('quantity_units.id, quantity_units.divideToBigger')
-      //   .orderBy('quantity_units.id')
-      //   .getRawMany();
-
-      // const highestValue = productValues.pop();
-
-      // const productValue = productValues.reduce((acc, currentValue) => {
-      //   return (
-      //     acc + currentValue.sum / currentValue.quantity_units_divideToBigger
-      //   );
-      // }, 0);
-
-      // const returnData = {
-      //   amount: Number(highestValue.sum) + Number(productValue),
-      //   amountType: highestUnitByUser,
-      // };
+      const returnData = convertedQuantityArray.reduce((acc, curr) => {
+        acc[curr.code] = acc[curr.code] || [];
+        acc[curr.code].push(curr);
+        return acc;
+      }, {});
 
       return {
         message: ['Sikeres lekérdezés!'],
         statusCode: 200,
-        data: [user],
+        data: [returnData],
       };
     }
 

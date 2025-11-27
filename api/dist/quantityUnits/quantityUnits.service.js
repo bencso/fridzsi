@@ -83,13 +83,52 @@ let QuantityUnitsService = class QuantityUnitsService {
         const requestUser = await this.sessionsService.validateAccessToken(request);
         const user = await this.usersService.findUser(requestUser.email);
         if (user) {
-            const userId = user.id;
+            let maxQuantityUnit = 0;
+            const codes = new Set();
+            const productsBatch = products.reduce((acc, curr) => {
+                if (maxQuantityUnit < curr.quantityunitid)
+                    maxQuantityUnit = curr.quantityunitid;
+                if (!codes.has(curr.code))
+                    codes.add(curr.code);
+                acc[curr.code] = acc[curr.code] || [];
+                acc[curr.code].push(curr);
+                return acc;
+            }, {});
             const units = await this.dataSource
                 .getRepository(quantityUnits_entity_1.QuantityUnits)
                 .createQueryBuilder('quantity_units')
-                .select()
-                .getMany();
-            const productsBatch = products.reduce((acc, curr) => {
+                .select('quantity_units.id', 'id')
+                .addSelect('quantity_units.divideToBigger', 'divideToBigger')
+                .orderBy('quantity_units.id', 'ASC')
+                .getRawMany();
+            const convertedQuantityArray = [];
+            for (const code of codes) {
+                const batch = productsBatch[code];
+                for (const batchItem of batch) {
+                    const differentUnit = maxQuantityUnit - batchItem.quantityunitid;
+                    const divide = units
+                        .filter((value) => {
+                        return value.id < maxQuantityUnit;
+                    })
+                        .slice(0, differentUnit)
+                        .reduce((acc, curr) => {
+                        return (acc = acc * curr.divideToBigger);
+                    }, 1);
+                    if (batchItem.quantityunitid != maxQuantityUnit) {
+                        convertedQuantityArray.push({
+                            ...batchItem,
+                            converted_quantity: batchItem.quantity / divide,
+                        });
+                    }
+                    else {
+                        convertedQuantityArray.push({
+                            ...batchItem,
+                            converted_quantity: batchItem.quantity,
+                        });
+                    }
+                }
+            }
+            const returnData = convertedQuantityArray.reduce((acc, curr) => {
                 acc[curr.code] = acc[curr.code] || [];
                 acc[curr.code].push(curr);
                 return acc;
@@ -97,7 +136,7 @@ let QuantityUnitsService = class QuantityUnitsService {
             return {
                 message: ['Sikeres lekérdezés!'],
                 statusCode: 200,
-                data: [user],
+                data: [returnData],
             };
         }
         return {

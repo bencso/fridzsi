@@ -5,4 +5,5 @@ export interface Product {
     quantity?: number;
     quantityunit?: string;
     expiredat?: string;
+    converted_quantity?: number;
 }
