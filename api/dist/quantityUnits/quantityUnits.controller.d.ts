@@ -3,7 +3,7 @@ import { Request } from 'express';
 export declare class QuantityUnitsController {
     private readonly quantityUnitsService;
     constructor(quantityUnitsService: QuantityUnitsService);
-    getUnits(): Promise<import("./entities/quantityUnits.entity").quantityTypesParams[] | []>;
+    getUnits(): Promise<[] | import("./entities/quantityUnits.entity").quantityTypesParams[]>;
     getTestById(id: number): Promise<any>;
     getTest(): Promise<any>;
     getTestUser(request: Request, productId?: string): Promise<any>;

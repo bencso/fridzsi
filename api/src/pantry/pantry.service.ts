@@ -183,7 +183,12 @@ export class PantryService {
     }
   }
 
-  async edit(request: Request, id: number, quantity: number) {
+  async edit(
+    request: Request,
+    id: number,
+    quantity: number,
+    quantityType: number,
+  ) {
     if (quantity <= 0) {
       return {
         message: ['A mennyiség nem lehet kisebb vagy egyenlő nullával'],
@@ -210,6 +215,7 @@ export class PantryService {
             .createQueryBuilder()
             .update({
               quantity: quantity,
+              quantity_unit: { id: String(quantityType) },
             })
             .where({
               id: id,

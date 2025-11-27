@@ -12,17 +12,19 @@ import Button from "../button";
 import { getModifyModalStyle } from "@/styles/shoppinglist/modals/modify";
 
 
-export default function EditShoppingListItem({ isOpen, setIsOpen }: ModalProp) {
+export default function EditShoppingListItem({ id, isOpen, setIsOpen, type }: ModalProp) {
     const { t } = useTranslation();
     const { scheme: colorScheme } = useTheme();
     const styles = getModifyModalStyle({ colorScheme });
     const [quantityTypes] = useState<quantityTypeProp[]>([]);
     const [quantity, setQuantity] = useState<number>(1);
     const [quantityType, setQuantityType] = useState<quantityTypeProp | null>(null);
-    const { loadQuantityTypes } = usePantry();
+    const { loadQuantityTypes, editPantryItem } = usePantry();
 
     useFocusEffect(useCallback(() => {
-        loadQuantityTypes();
+        if (type === "pantry") {
+            loadQuantityTypes();
+        }
         setQuantityType(quantityTypes[0]);
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []));
@@ -70,7 +72,13 @@ export default function EditShoppingListItem({ isOpen, setIsOpen }: ModalProp) {
                         }}>
                             <Button label={t("inventory.editItem.cta")} action={async () => {
                                 try {
-                                    Alert.alert(quantityType ? quantityType?.hu : "");
+                                    if (type === "pantry") {
+                                        await editPantryItem({
+                                            id,
+                                            quantity,
+                                            quantityType: quantityType?.id
+                                        });
+                                    }
                                     setQuantity(1);
                                     setQuantityType(quantityTypes[0]);
                                 }

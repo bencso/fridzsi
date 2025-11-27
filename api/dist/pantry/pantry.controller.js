@@ -31,8 +31,8 @@ let PantryController = class PantryController {
     getUserPantryItemByCode(request, code) {
         return this.pantryService.getUserPantryItemByCode(request, code);
     }
-    edit(request, id, quantity) {
-        return this.pantryService.edit(request, id, quantity);
+    edit(request, id, quantity, quantityType) {
+        return this.pantryService.edit(request, id, quantity, quantityType);
     }
     remove(request, id) {
         return this.pantryService.remove(request, id);
@@ -77,8 +77,9 @@ __decorate([
     __param(0, (0, common_1.Req)()),
     __param(1, (0, common_1.Param)('id')),
     __param(2, (0, common_1.Body)('quantity')),
+    __param(3, (0, common_1.Body)('quantityType')),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object, Number, Number]),
+    __metadata("design:paramtypes", [Object, Number, Number, Number]),
     __metadata("design:returntype", void 0)
 ], PantryController.prototype, "edit", null);
 __decorate([

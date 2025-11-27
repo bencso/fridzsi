@@ -179,7 +179,7 @@ let PantryService = class PantryService {
                 return { message: ['Sikertelen törlés'], statusCode: 404 };
         }
     }
-    async edit(request, id, quantity) {
+    async edit(request, id, quantity, quantityType) {
         if (quantity <= 0) {
             return {
                 message: ['A mennyiség nem lehet kisebb vagy egyenlő nullával'],
@@ -204,6 +204,7 @@ let PantryService = class PantryService {
                         .createQueryBuilder()
                         .update({
                         quantity: quantity,
+                        quantity_unit: { id: String(quantityType) },
                     })
                         .where({
                         id: id,

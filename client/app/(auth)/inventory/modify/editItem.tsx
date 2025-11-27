@@ -98,7 +98,7 @@ export default function EditItemScreen() {
                         <Button label={t("inventory.editItem.cta")} action={() => {
                             setIsOpen(!isOpen);
                         }} />
-                        <EditShoppingListItem isOpen={isOpen} setIsOpen={setIsOpen} /></>
+                        <EditShoppingListItem id={selectedItemId} isOpen={isOpen} setIsOpen={setIsOpen} type={'pantry'} /></>
                 }
             </ThemedView>
         </ThemedView>

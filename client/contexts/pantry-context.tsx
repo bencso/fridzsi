@@ -175,16 +175,20 @@ export function PantryProvider({ children }: { children: ReactNode }) {
 
     const editPantryItem = async ({
         id,
-        quantity
+        quantity,
+        quantityType
     }: {
         id: number;
         quantity: number;
+        quantityType: number;
     }) => {
         try {
             await editItem({
                 id,
-                quantity
+                quantity,
+                quantityType
             });
+            loadPantry();
         } catch {
             Alert.alert(t("inventory.editItem.quantityInput.error"), t("inventory.editItem.quantityInput.errorTitle"));
         } finally {

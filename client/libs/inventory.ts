@@ -11,7 +11,7 @@ export async function addItem({
   product_name,
   quantity,
   expiredAt,
-  quanity_units
+  quanity_units,
 }: {
   code: string;
   product_name: string;
@@ -28,7 +28,7 @@ export async function addItem({
         product_name: product_name,
         quantity: quantity,
         expiredAt: expiredAt,
-        quanity_units: quanity_units
+        quanity_units: quanity_units,
       },
       { withCredentials: true }
     );
@@ -58,12 +58,21 @@ export async function deleteItem({ id }: { id: number[] }) {
   }
 }
 
-export async function editItem({ id, quantity }: { id: number; quantity: number }) {
+export async function editItem({
+  id,
+  quantity,
+  quantityType,
+}: {
+  id: number;
+  quantity: number;
+  quantityType: number;
+}) {
   try {
     const response = await api.post(
       "/pantry/edit/" + id,
       {
         quantity,
+        quantityType
       },
       { withCredentials: true }
     );

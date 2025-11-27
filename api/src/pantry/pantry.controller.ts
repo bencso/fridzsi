@@ -55,8 +55,9 @@ export class PantryController {
     @Req() request: Request,
     @Param('id') id: number,
     @Body('quantity') quantity: number,
+    @Body('quantityType') quantityType: number,
   ) {
-    return this.pantryService.edit(request, id, quantity);
+    return this.pantryService.edit(request, id, quantity, quantityType);
   }
 
   //? Hogy ne Bodyba kelljen az id-kat küldeni arra ez is jó megoldás lehet:

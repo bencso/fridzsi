@@ -85,6 +85,13 @@ let QuantityUnitsService = class QuantityUnitsService {
         if (user) {
             const maxQuantityUnit = {};
             const codes = new Set();
+            const units = await this.dataSource
+                .getRepository(quantityUnits_entity_1.QuantityUnits)
+                .createQueryBuilder('quantity_units')
+                .select('quantity_units.id', 'id')
+                .addSelect('quantity_units.divideToBigger', 'divideToBigger')
+                .orderBy('quantity_units.id', 'ASC')
+                .getRawMany();
             const productsBatch = products.reduce((acc, curr) => {
                 if (!maxQuantityUnit[curr.code] ||
                     maxQuantityUnit[curr.code] < curr.quantityunitid)
@@ -95,13 +102,6 @@ let QuantityUnitsService = class QuantityUnitsService {
                 acc[curr.code].push(curr);
                 return acc;
             }, {});
-            const units = await this.dataSource
-                .getRepository(quantityUnits_entity_1.QuantityUnits)
-                .createQueryBuilder('quantity_units')
-                .select('quantity_units.id', 'id')
-                .addSelect('quantity_units.divideToBigger', 'divideToBigger')
-                .orderBy('quantity_units.id', 'ASC')
-                .getRawMany();
             const convertedQuantityArray = [];
             for (const code of codes) {
                 const batch = productsBatch[code];
