@@ -20,6 +20,8 @@ import { Product } from "@/constants/product.interface";
 import { ModalQuantityType } from "@/components/shoppinglist/modalAmountType";
 import { quantityTypeProp } from "@/types/shoppinglist/quantityTypeProp";
 
+//TODO: Csak a jó quantityUnits-ot kiirni, pl egy szilárd ételnél ne lehessen litert megadni :)
+// Van kategória adva a quantityUnitsnak - ezt majd valahogy ki szürni
 export default function CustomInputScreen() {
     const [productName, setProductName] = useState<string>("");
     const [productCode, setProductCode] = useState<string>("");

@@ -50,14 +50,12 @@ export function PantryProvider({ children }: { children: ReactNode }) {
             const pantryItems = await getItems();
 
             pantryItems.map((item: any) => {
-                console.log(item);
                 Object.keys(item).forEach((key) => {
                     const dateMap: Record<string, { converted_quantity: number; quantityUnit: string; }> = {};
                     item[key].forEach((product: Product) => {
                         const date = product.expiredat ? new Date(product.expiredat).toLocaleDateString() : new Date().toLocaleDateString();
                         dateMap[date] = { converted_quantity: (dateMap[date]?.converted_quantity || 0) + Number(product.converted_quantity), quantityUnit: product.quantityunit ?? "" };
                     });
-
 
                     returnItems.push({
                         code: key,
