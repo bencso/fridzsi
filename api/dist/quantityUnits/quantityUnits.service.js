@@ -83,11 +83,12 @@ let QuantityUnitsService = class QuantityUnitsService {
         const requestUser = await this.sessionsService.validateAccessToken(request);
         const user = await this.usersService.findUser(requestUser.email);
         if (user) {
-            let maxQuantityUnit = 0;
+            const maxQuantityUnit = {};
             const codes = new Set();
             const productsBatch = products.reduce((acc, curr) => {
-                if (maxQuantityUnit < curr.quantityunitid)
-                    maxQuantityUnit = curr.quantityunitid;
+                if (!maxQuantityUnit[curr.code] ||
+                    maxQuantityUnit[curr.code] < curr.quantityunitid)
+                    maxQuantityUnit[curr.code] = curr.quantityunitid;
                 if (!codes.has(curr.code))
                     codes.add(curr.code);
                 acc[curr.code] = acc[curr.code] || [];
@@ -105,10 +106,10 @@ let QuantityUnitsService = class QuantityUnitsService {
             for (const code of codes) {
                 const batch = productsBatch[code];
                 for (const batchItem of batch) {
-                    const differentUnit = maxQuantityUnit - batchItem.quantityunitid;
+                    const differentUnit = maxQuantityUnit[batchItem.code] - batchItem.quantityunitid;
                     const divide = units
                         .filter((value) => {
-                        return value.id < maxQuantityUnit;
+                        return value.id < maxQuantityUnit[batchItem.code];
                     })
                         .slice(0, differentUnit)
                         .reduce((acc, curr) => {
