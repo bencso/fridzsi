@@ -150,12 +150,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   };
 
-  const passwordChange = async ({ password }: { password: string }): Promise<boolean> => {
+  const passwordChange = async ({ password, repassword }: { password: string, repassword: string }): Promise<boolean> => {
     try {
-      const response = await api.post("/auth/passwordChange", { password });
-      if (response.data.statusCode !== 200) {
-        throw new Error(response.data?.message || "Ismeretlen hiba");
-      }
+      if (password !== repassword) throw new Error("A két jelszó nem egyezik!");
+      const response = await api.post("/auth/passwordChange", { password, repassword });
+      if (response.data.statusCode !== 200) throw new Error(response.data?.message || "Ismeretlen hiba");
       router.back();
       return true;
     } catch {
