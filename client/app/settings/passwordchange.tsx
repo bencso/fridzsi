@@ -91,7 +91,7 @@ export default function PasswordChangeScreen() {
       return;
     } else await passwordChange({
       password: password,
-      rePassword: rePassword
+      repassword: rePassword
     })
   }
 
