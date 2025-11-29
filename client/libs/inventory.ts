@@ -72,7 +72,7 @@ export async function editItem({
       "/pantry/edit/" + id,
       {
         quantity,
-        quantityType
+        quantityType,
       },
       { withCredentials: true }
     );

@@ -32,8 +32,8 @@ i18next.use(initReactI18next).init({
     hu: { translation: hu },
     en: { translation: en },
   },
-  lng: "en",
-  fallbackLng: "en",
+  lng: "hu",
+  fallbackLng: "hu",
   interpolation: {
     escapeValue: false,
   },
