@@ -70,7 +70,7 @@ api.interceptors.response.use(
         router.replace("/(notauth)/auth/login");
       }
     } else {
-      return Promise.reject(error);
+      return Promise.reject();
     }
   }
 );

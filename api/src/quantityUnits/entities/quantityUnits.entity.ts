@@ -78,7 +78,6 @@ export const quantityTypes: quantityTypesParams[] = [
     biggerUnit: null,
     divideToBigger: null,
   },
-
   {
     category: 'volume',
     label: 'ml',

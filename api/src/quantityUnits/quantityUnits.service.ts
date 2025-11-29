@@ -74,11 +74,12 @@ export class QuantityUnitsService {
         })
         .getRawOne();
     }
-    console.log(highestUnitByCategories);
+
     return highestUnitByCategories;
   }
 
   //! Itt a kódom kicsit skálázhatóság szempontjából javult, a batcheléssel
+  // Batchelés: Egy nagyobb adathalmazt adott kis részekre bontva dolgozunk fel
   async convertToHighest({
     request,
     products,
@@ -153,16 +154,10 @@ export class QuantityUnitsService {
         }
       }
 
-      const returnData = convertedQuantityArray.reduce((acc, curr) => {
-        acc[curr.code] = acc[curr.code] || [];
-        acc[curr.code].push(curr);
-        return acc;
-      }, {});
-
       return {
         message: ['Sikeres lekérdezés!'],
         statusCode: 200,
-        data: [returnData],
+        data: [convertedQuantityArray],
       };
     }
 

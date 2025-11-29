@@ -1,13 +1,13 @@
-import { Controller, Get, Param, Req } from '@nestjs/common';
+import { Controller, Get, Param } from '@nestjs/common';
 import { QuantityUnitsService } from './quantityUnits.service';
-import { Request } from 'express';
+import { quantityTypesParams } from './entities/quantityUnits.entity';
 
 @Controller()
 export class QuantityUnitsController {
   constructor(private readonly quantityUnitsService: QuantityUnitsService) {}
 
   @Get('/quantityTypes')
-  async getUnits() {
+  async getUnits(): Promise<quantityTypesParams[] | []> {
     return await this.quantityUnitsService.findAll();
   }
 
@@ -21,13 +21,5 @@ export class QuantityUnitsController {
   @Get('/quantityTypesTest')
   async getTest(): Promise<any> {
     return await this.quantityUnitsService.getHighest({});
-  }
-
-  @Get('/quantityTypesTestUser/:product')
-  async getTestUser(
-    @Req() request: Request,
-    @Param('product') productId?: string,
-  ): Promise<any> {
-    return { request, productId };
   }
 }

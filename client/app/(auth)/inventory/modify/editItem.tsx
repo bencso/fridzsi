@@ -11,16 +11,8 @@ import { Colors } from "@/constants/theme";
 import EditShoppingListItem from "@/components/inventory/EditShoppinglistItemModal";
 import Button from "@/components/button";
 import { useLanguage } from "@/contexts/language-context";
+import { ItemType } from "@/types/pantry/itemType";
 
-type ItemType = {
-    index: number;
-    name: string;
-    quantity: number;
-    expiredat: string;
-    code: string;
-    quantityuniten: string;
-    quantityunithu: string;
-}
 
 //TODO: Loadingok megcsinálása, ezenfelül refaktorálás stb.
 export default function EditItemScreen() {
@@ -63,7 +55,7 @@ export default function EditItemScreen() {
                     {t("inventory.editItem.title")}
                 </ThemedText>
                 <View style={{ flex: 1, height: "100%", gap: 16, marginTop: 16 }}>
-                    {products?.map((product: ItemType, idx) => (
+                    {products?.map((product: ItemType, idx: number) => (
                         <TouchableOpacity
                             style={{
                                 flexDirection: "row", width: "100%", justifyContent: "space-between", padding: 16, alignItems: "center", borderRadius: 24, borderWidth: 1, borderColor: selectedItemId === product.index

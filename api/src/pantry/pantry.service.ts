@@ -8,6 +8,8 @@ import { ProductService } from 'src/product/product.service';
 import { Pantry } from './entities/pantry.entity';
 import { QuantityUnits } from 'src/quantityUnits/entities/quantityUnits.entity';
 import { QuantityUnitsService } from 'src/quantityUnits/quantityUnits.service';
+import { ReturnDataDto, ReturnDto } from 'src/dto/return.dto';
+import { ReturnPantryDto } from './dto/return-pantry.dto';
 
 @Injectable()
 export class PantryService {
@@ -18,7 +20,10 @@ export class PantryService {
     private readonly productService: ProductService,
     private readonly quantityUnitsService: QuantityUnitsService,
   ) {}
-  async create(request: Request, createPantryItemDto: CreatePantryItemDto) {
+  async create(
+    request: Request,
+    createPantryItemDto: CreatePantryItemDto,
+  ): Promise<ReturnDataDto | ReturnDto> {
     const requestUser = await this.sessionsService.validateAccessToken(request);
     const user = await this.usersService.findUser(requestUser.email);
 
@@ -65,7 +70,7 @@ export class PantryService {
     }
   }
 
-  async getUserPantry(request: Request) {
+  async getUserPantry(request: Request): Promise<ReturnPantryDto | ReturnDto> {
     const requestUser = await this.sessionsService.validateAccessToken(request);
     const user = await this.usersService.findUser(requestUser.email);
 
@@ -92,11 +97,18 @@ export class PantryService {
         .andWhere('pantry.expiredAt >= :now', { now: new Date() })
         .getRawMany();
 
-      const returnData = await this.quantityUnitsService.convertToHighest({
-        request,
-        products: products,
-      });
-      const returnProducts = returnData.data;
+      const returnConvertationData =
+        await this.quantityUnitsService.convertToHighest({
+          request,
+          products: products,
+        });
+      const convertedQuantityArray = returnConvertationData.data;
+      //TODO: Erre lehetne külön függvény már, annyit használjuk :D
+      const returnProducts = convertedQuantityArray.reduce((acc, curr) => {
+        acc[curr.code] = acc[curr.code] || [];
+        acc[curr.code].push(curr);
+        return acc;
+      }, {});
 
       return products.length > 0
         ? {
@@ -112,7 +124,10 @@ export class PantryService {
     } else return { message: ['Sikertelen lekérdezés'], statusCode: 404 };
   }
 
-  async getUserPantryItemByCode(request: Request, code: string) {
+  async getUserPantryItemByCode(
+    request: Request,
+    code: string,
+  ): Promise<ReturnPantryDto | ReturnDto> {
     const requestUser = await this.sessionsService.validateAccessToken(request);
     const user = await this.usersService.findUser(requestUser.email);
 
@@ -154,7 +169,7 @@ export class PantryService {
     } else return { message: ['Sikertelen lekérdezés'], statusCode: 404 };
   }
 
-  async remove(request: Request, id: number[]) {
+  async remove(request: Request, id: number[]): Promise<ReturnDto> {
     const requestUser = await this.sessionsService.validateAccessToken(request);
     const user = await this.usersService.findUser(requestUser.email);
 
@@ -188,7 +203,7 @@ export class PantryService {
     id: number,
     quantity: number,
     quantityType: number,
-  ) {
+  ): Promise<ReturnDto> {
     if (quantity <= 0) {
       return {
         message: ['A mennyiség nem lehet kisebb vagy egyenlő nullával'],

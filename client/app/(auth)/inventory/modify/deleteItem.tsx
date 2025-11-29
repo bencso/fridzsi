@@ -11,18 +11,10 @@ import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { Text, TouchableOpacity, View } from "react-native";
 import { Colors } from "@/constants/theme";
 import { useLanguage } from "@/contexts/language-context";
-
-type ItemType = {
-    index: number;
-    name: string;
-    quantity: number;
-    expiredat: string;
-    code: string;
-    quantityuniten: string;
-    quantityunithu: string;
-}
+import { ItemType } from "@/types/pantry/itemType";
 
 //TODO: Loadingok megcsinálása, ezenfelül refaktorálás stb.
+//TODO: Magyarosítás
 export default function DeleteItemScreen() {
     const [selectedItemsId, setSelectedItemsId] = useState<number[]>([]);
     const [products, setProducts] = useState([]);
