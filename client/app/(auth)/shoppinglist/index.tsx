@@ -2,7 +2,7 @@ import { ThemedText } from "@/components/themed-text";
 import { ThemedView } from "@/components/themed-view";
 import { useTheme } from "@/contexts/theme-context";
 import { useTranslation } from "react-i18next";
-import { Alert, Animated, PanResponder, ScrollView, TouchableHighlight, View } from "react-native";
+import { Animated, PanResponder, ScrollView, TouchableHighlight, View } from "react-native";
 import { useCallback, useRef, useState } from "react";
 import getNavbarStyles from "@/styles/navbar";
 import { useFocusEffect } from "expo-router";
@@ -10,7 +10,6 @@ import { getShoppingListStyle } from "@/styles/shoppinglist";
 import { DaysNextTwoMonth } from "@/components/inventory/DaysList";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import StickyNote from "@/components/inventory/StickyNotes";
-import { TFunction } from "i18next";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { Fonts } from "@/constants/theme";
 import AddShoppinglistModal from "@/components/inventory/AddShoppinglistModal";
@@ -24,7 +23,8 @@ export default function ShoppingListScreen() {
 
   const styles = getShoppingListStyle({ colorScheme });
   const navbarStyle = getNavbarStyles({ colorScheme });
-  const { getFirstDate, shoppingList, deleteItem, getItemDates } = useShoppingList();
+  const [editModeId, setEditModeId] = useState<number>(-1);
+  const { getFirstDate, shoppingList, getItemDates } = useShoppingList();
 
   const noteRefs = useRef<{ pan: Animated.ValueXY; panResponder: any }[]>([]);
 
@@ -43,9 +43,13 @@ export default function ShoppingListScreen() {
       onMoveShouldSetPanResponder: () => true,
       onPanResponderMove: () => {
         Animated.event([null, { dx: pan.x, dy: pan.y }], { useNativeDriver: false });
-        deleteAlert({ t, note, deleteItem });
       },
       onPanResponderRelease: () => {
+        if (editModeId === note.id) {
+          setEditModeId(-1);
+        } else {
+          setEditModeId(note.id);
+        }
         pan.extractOffset();
       }
     });
@@ -71,9 +75,9 @@ export default function ShoppingListScreen() {
           <SafeAreaProvider>
             <SafeAreaView style={{ flexDirection: "row", justifyContent: "center", gap: 24, flexWrap: "wrap", marginTop: 24 }}>
               {shoppingList.map((note: ShoppingListItem, idx: number) => (
-                <StickyNote noteRefs={noteRefs} note={note} idx={idx} styles={styles} key={note.id + "-" + idx} />
+                <StickyNote editMode={editModeId} noteRefs={noteRefs} note={note} idx={idx} styles={styles} key={note.id + "-" + idx} />
               ))}
-              <AddShoppinglistModal isOpen={addModalOpen} setIsOpen={setAddModalOpen} />
+              <AddShoppinglistModal type="shoppinglist" isOpen={addModalOpen} setIsOpen={setAddModalOpen} />
               <TouchableHighlight
                 style={{
                   backgroundColor: "#B3E5FC",
@@ -95,38 +99,5 @@ export default function ShoppingListScreen() {
         </ScrollView>
       </ThemedView>
     </>
-  );
-}
-
-const deleteAlert = ({
-  t,
-  note,
-  deleteItem,
-}: {
-  t: TFunction<"translation", undefined>;
-  note: ShoppingListItem;
-  deleteItem: (params: { id: number; quantity: number }) => Promise<void>;
-}) => {
-  Alert.prompt(
-    t('shoppinglist.deleteItem.title'),
-    `${t('shoppinglist.deleteItem.message')}${note.name}?`,
-    [
-      {
-        text: t('shoppinglist.deleteItem.cancel'),
-        style: "cancel"
-      },
-      {
-        text: t('shoppinglist.deleteItem.submit'),
-        style: "default",
-        onPress: async (text: any) => {
-          try {
-            await deleteItem({ id: Number(note.id), quantity: Number(text) });
-          } catch (error: any) {
-            console.error(error);
-          }
-        }
-      }
-    ],
-    "plain-text"
   );
 }

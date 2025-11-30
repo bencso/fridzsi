@@ -76,7 +76,6 @@ let QuantityUnitsService = class QuantityUnitsService {
             })
                 .getRawOne();
         }
-        console.log(highestUnitByCategories);
         return highestUnitByCategories;
     }
     async convertToHighest({ request, products, }) {
@@ -129,15 +128,10 @@ let QuantityUnitsService = class QuantityUnitsService {
                     }
                 }
             }
-            const returnData = convertedQuantityArray.reduce((acc, curr) => {
-                acc[curr.code] = acc[curr.code] || [];
-                acc[curr.code].push(curr);
-                return acc;
-            }, {});
             return {
                 message: ['Sikeres lekérdezés!'],
                 statusCode: 200,
-                data: [returnData],
+                data: [convertedQuantityArray],
             };
         }
         return {

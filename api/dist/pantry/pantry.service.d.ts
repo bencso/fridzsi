@@ -5,6 +5,8 @@ import { SessionService } from 'src/sessions/sessions.service';
 import { Request } from 'express';
 import { ProductService } from 'src/product/product.service';
 import { QuantityUnitsService } from 'src/quantityUnits/quantityUnits.service';
+import { ReturnDataDto, ReturnDto } from 'src/dto/return.dto';
+import { ReturnPantryDto } from './dto/return-pantry.dto';
 export declare class PantryService {
     private readonly usersService;
     private readonly dataSource;
@@ -12,34 +14,9 @@ export declare class PantryService {
     private readonly productService;
     private readonly quantityUnitsService;
     constructor(usersService: UsersService, dataSource: DataSource, sessionsService: SessionService, productService: ProductService, quantityUnitsService: QuantityUnitsService);
-    create(request: Request, createPantryItemDto: CreatePantryItemDto): Promise<{
-        message: string[];
-        statusCode: number;
-    }>;
-    getUserPantry(request: Request): Promise<{
-        message: string[];
-        statusCode: number;
-        products: any;
-    } | {
-        message: string[];
-        statusCode: number;
-        products?: undefined;
-    }>;
-    getUserPantryItemByCode(request: Request, code: string): Promise<{
-        message: string[];
-        statusCode: number;
-        products: any[];
-    } | {
-        message: string[];
-        statusCode: number;
-        products?: undefined;
-    }>;
-    remove(request: Request, id: number[]): Promise<{
-        message: string[];
-        statusCode: number;
-    }>;
-    edit(request: Request, id: number, quantity: number, quantityType: number): Promise<{
-        message: string[];
-        statusCode: number;
-    }>;
+    create(request: Request, createPantryItemDto: CreatePantryItemDto): Promise<ReturnDataDto | ReturnDto>;
+    getUserPantry(request: Request): Promise<ReturnPantryDto | ReturnDto>;
+    getUserPantryItemByCode(request: Request, code: string): Promise<ReturnPantryDto | ReturnDto>;
+    remove(request: Request, id: number[]): Promise<ReturnDto>;
+    edit(request: Request, id: number, quantity: number, quantityType: number): Promise<ReturnDto>;
 }

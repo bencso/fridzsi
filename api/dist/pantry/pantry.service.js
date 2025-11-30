@@ -90,11 +90,16 @@ let PantryService = class PantryService {
                 .where('pantry.user = :userId', { userId: user.id })
                 .andWhere('pantry.expiredAt >= :now', { now: new Date() })
                 .getRawMany();
-            const returnData = await this.quantityUnitsService.convertToHighest({
+            const returnConvertationData = await this.quantityUnitsService.convertToHighest({
                 request,
                 products: products,
             });
-            const returnProducts = returnData.data;
+            const convertedQuantityArray = returnConvertationData.data;
+            const returnProducts = convertedQuantityArray.reduce((acc, curr) => {
+                acc[curr.code] = acc[curr.code] || [];
+                acc[curr.code].push(curr);
+                return acc;
+            }, {});
             return products.length > 0
                 ? {
                     message: ['Sikeres lekérdezés'],

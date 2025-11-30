@@ -30,9 +30,6 @@ let QuantityUnitsController = class QuantityUnitsController {
     async getTest() {
         return await this.quantityUnitsService.getHighest({});
     }
-    async getTestUser(request, productId) {
-        return { request, productId };
-    }
 };
 exports.QuantityUnitsController = QuantityUnitsController;
 __decorate([
@@ -54,14 +51,6 @@ __decorate([
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", Promise)
 ], QuantityUnitsController.prototype, "getTest", null);
-__decorate([
-    (0, common_1.Get)('/quantityTypesTestUser/:product'),
-    __param(0, (0, common_1.Req)()),
-    __param(1, (0, common_1.Param)('product')),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object, String]),
-    __metadata("design:returntype", Promise)
-], QuantityUnitsController.prototype, "getTestUser", null);
 exports.QuantityUnitsController = QuantityUnitsController = __decorate([
     (0, common_1.Controller)(),
     __metadata("design:paramtypes", [quantityUnits_service_1.QuantityUnitsService])

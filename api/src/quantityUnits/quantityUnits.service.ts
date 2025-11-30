@@ -78,7 +78,7 @@ export class QuantityUnitsService {
     return highestUnitByCategories;
   }
 
-  //! Itt a kódom kicsit skálázhatóság szempontjából javult, a batcheléssel
+  // Itt a kódom kicsit skálázhatóság szempontjából javult, a batcheléssel
   // Batchelés: Egy nagyobb adathalmazt adott kis részekre bontva dolgozunk fel
   async convertToHighest({
     request,

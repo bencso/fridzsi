@@ -14,7 +14,8 @@ import { ProductParams } from "@/types/product/productClass";
 import { useFocusEffect } from "expo-router";
 import { usePantry } from "@/contexts/pantry-context";
 
-//TODO: Késöbbiekben kellene a kódos felvétel, kamerával!
+//TODO: !!!!12.01!!!! Késöbbiekben kellene a kódos felvétel, kamerával,
+// és akár egy search itemes dologot áthozni ide is :)
 //TODO: Tizedes számjegy is engedélyezett legyen!
 export default function AddShoppinglistModal({ isOpen, setIsOpen }: ModalProp) {
     const { t } = useTranslation();

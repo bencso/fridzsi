@@ -29,5 +29,25 @@ export const getShoppingListStyle = ({
       minHeight: 120,
       maxHeight: 150,
     },
+    noteContainer: {
+      backgroundColor: "transparent",
+      display: "flex",
+      flexDirection: "column",
+      justifyContent: "space-between",
+      height: "100%",
+    },
+    buttonsContainer: {
+      backgroundColor: "transparent",
+      marginTop: 12,
+      display: "flex",
+      flexDirection: "row",
+      justifyContent: "space-between",
+      width: "100%",
+    },
+    noteManipulationBtn: {
+      backgroundColor: Colors[colorScheme ?? "light"].primary,
+      padding: 12,
+      borderRadius: 100,
+    },
   });
 };
