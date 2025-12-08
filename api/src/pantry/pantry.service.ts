@@ -102,13 +102,14 @@ export class PantryService {
           request,
           products: products,
         });
-      const convertedQuantityArray = returnConvertationData.data;
-      //TODO: Erre lehetne külön függvény már, annyit használjuk :D
-      const returnProducts = convertedQuantityArray.reduce((acc, curr) => {
-        acc[curr.code] = acc[curr.code] || [];
-        acc[curr.code].push(curr);
-        return acc;
-      }, {});
+      const convertedQuantityArray = returnConvertationData.data[0];
+      const returnProducts = [
+        convertedQuantityArray.reduce((acc: any, curr: any) => {
+          acc[curr.code] = acc[curr.code] || [];
+          acc[curr.code].push(curr);
+          return acc;
+        }, {}),
+      ];
 
       return products.length > 0
         ? {

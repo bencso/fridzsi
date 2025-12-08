@@ -4,18 +4,20 @@ import { SessionService } from 'src/sessions/sessions.service';
 import { ProductService } from 'src/product/product.service';
 import { ShoppingList } from './entities/shoppinglist.entity';
 import { Request } from 'express';
-import { ReturnDto } from 'src/dto/return.dto';
+import { ReturnDataDto, ReturnDto } from 'src/dto/return.dto';
 import { CreateShoppingListItemDto } from './dto/create-shoppinglist-item.dto';
+import { QuantityUnitsService } from 'src/quantityUnits/quantityUnits.service';
 export declare class ShoppingListService {
     private readonly usersService;
     private readonly dataSource;
     private readonly sessionsService;
     private readonly productService;
-    constructor(usersService: UsersService, dataSource: DataSource, sessionsService: SessionService, productService: ProductService);
+    private readonly quantityService;
+    constructor(usersService: UsersService, dataSource: DataSource, sessionsService: SessionService, productService: ProductService, quantityService: QuantityUnitsService);
     getItemByDate({ date, request, }: {
         date: string;
         request: Request;
-    }): Promise<ShoppingList[] | ReturnDto>;
+    }): Promise<ReturnDataDto | ReturnDto>;
     getItemNow({ query, request, }: {
         query: string;
         request: Request;

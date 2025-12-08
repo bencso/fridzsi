@@ -8,6 +8,7 @@ import React, {
 } from "react";
 import { ShoppingListItem } from "@/types/shoppinglist/noteClass";
 import { ShoppingListContextProp } from "@/types/shoppinglist/shoppingListContextProp";
+import { Product } from "@/constants/product.interface"
 
 const ShoppingListContext = createContext<ShoppingListContextProp | undefined>(undefined);
 
@@ -26,16 +27,62 @@ export function ShoppingListProvider({ children }: { children: ReactNode }) {
         }
     }
     async function getItemByDate(): Promise<void> {
-        const response = await api.get(`/shoppinglist/items/date/${selectedDay?.date}`, { withCredentials: true });
-        const responseData = response.data;
-        if (responseData && !responseData.message && Array.isArray(responseData)) {
-            const newItems = responseData.map((data: { customproductname: string; product_product_quantity_unit: string | null; product_product_name: string | null; shoppinglist_quantity: number; shoppinglist_day: Date; shoppinglist_id: number; quantityuniten: string; quantityunithu: string; quantityunit: string; }) => {
-                const name = data.product_product_name !== null ? data.product_product_name : data.customproductname;
-                return new ShoppingListItem(data.shoppinglist_id, name, data.shoppinglist_quantity, data.product_product_quantity_unit || "", data.shoppinglist_day, data.quantityuniten, data.quantityunithu, data.quantityunit);
+        try {
+            const response = await api.get(`/shoppinglist/items/date/${selectedDay?.date}`, { withCredentials: true });
+            const responseData = response.data.data;
+
+            let returnItems = [] as any[];
+
+            responseData.map((item: any) => {
+                Object.keys(item).forEach((key) => {
+                    const dateMap: Record<string, { converted_quantity: number; quantityUnit: string; quantityuniten: string; quantityunithu: string }> = {};
+                    item[key].forEach((product: Product) => {
+                        const date = product.expiredat ? new Date(product.expiredat).toLocaleDateString() : new Date().toLocaleDateString();
+                        dateMap[date] = { converted_quantity: (dateMap[date]?.converted_quantity || 0) + Number(product.converted_quantity), quantityUnit: product.quantityunit ?? "", quantityuniten: product.quantityuniten ?? "", quantityunithu: product.quantityunithu ?? "" };
+                    });
+
+                    returnItems.push({
+                        code: key,
+                        products: item[key].map((product: Product) => ({
+                            index: product.index,
+                            quantity: product.quantity,
+                            expiredAt: product.expiredat,
+                            quantityUnit: product.quantityunit
+                        })),
+                        name: item[key][0].product_product_name ? item[key][0].product_product_name : item[key][0].customproductname,
+                        expiredAt: Object.keys(dateMap),
+                        quantity: Object.values(dateMap).flatMap((test) => { return test.converted_quantity }),
+                        quantityUnit: Object.values(dateMap).flatMap((test) => { return test.quantityUnit }),
+                        quantityUnitHu: Object.values(dateMap).flatMap((test) => { return test.quantityunithu }),
+                        quantityUnitEn: Object.values(dateMap).flatMap((test) => { return test.quantityuniten }),
+                    });
+                });
             });
-            setShoppingList(newItems);
-        } else {
-            setShoppingList([]);
+
+
+            if (Array.isArray(returnItems)) {
+                const newItems = returnItems.map((data: any) => {
+                    console.log(data.id)
+                    const name = data.name ?? "";
+                    const quantity = Array.isArray(data.quantity) ? data.quantity[0] : 0;
+                    const quantityUnit = Array.isArray(data.quantityUnit) ? data.quantityUnit[0] : "";
+                    const day = data.expiredAt?.[0] ? new Date(data.expiredAt[0]) : new Date();
+                    return new ShoppingListItem(
+                        data.code,
+                        name,
+                        quantity,
+                        day,
+                        data.quantityUnitEn,
+                        data.quantityUnitHu,
+                        quantityUnit,
+                    );
+                });
+                setShoppingList(newItems);
+            } else {
+                setShoppingList([]);
+            }
+        } catch (error) {
+            console.error(error);
         }
     }
 

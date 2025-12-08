@@ -23,7 +23,6 @@ let ShoppingListController = class ShoppingListController {
         this.shoppinglistService = shoppinglistService;
     }
     async getItemByDate(date, request) {
-        console.log(date);
         return this.shoppinglistService.getItemByDate({
             date: date,
             request: request,

@@ -2,7 +2,7 @@ import { Colors } from "@/constants/theme";
 import { Modal, Text, TextInput, View, TouchableOpacity, Alert } from "react-native";
 import { useTranslation } from "react-i18next";
 import { useTheme } from "@/contexts/theme-context";
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { ThemedText } from "../themed-text";
 import { getShoppingListModalStyle } from "@/styles/shoppinglist/modal";
 import DateTimePicker from "@react-native-community/datetimepicker";
@@ -13,26 +13,52 @@ import { ModalQuantityType } from "../shoppinglist/modalAmountType";
 import { ProductParams } from "@/types/product/productClass";
 import { useFocusEffect } from "expo-router";
 import { usePantry } from "@/contexts/pantry-context";
+import { Product } from "@/constants/product.interface";
+import { SearchWithInput } from "../inputWithSearch";
 
-//TODO: !!!!12.01!!!! Késöbbiekben kellene a kódos felvétel, kamerával,
-// és akár egy search itemes dologot áthozni ide is :)
+//TODO: Késöbbiekben kellene a kódos felvétel, kamerával
 //TODO: Tizedes számjegy is engedélyezett legyen!
 export default function AddShoppinglistModal({ isOpen, setIsOpen }: ModalProp) {
     const { t } = useTranslation();
     const { scheme: colorScheme } = useTheme();
     const styles = getShoppingListModalStyle({ colorScheme });
-    const [formState, setFormState] = useState<ProductParams>();
+
+    const [productName, setProductName] = useState<string>("");
+    const [formState, setFormState] = useState<ProductParams>({
+        product_name: "",
+        quantity: 1,
+        code: ""
+    });
     const [day, setDay] = useState<Date>(new Date());
     const [quantityTypes] = useState<quantityTypeProp[]>([]);
     const [quantityType, setQuantityType] = useState<quantityTypeProp | null>(null);
+
+    const [filtered, setFiltered] = useState<Product[]>([]);
+
     const { addNewShoppingItem } = useShoppingList();
     const { loadQuantityTypes } = usePantry();
 
     useFocusEffect(useCallback(() => {
         loadQuantityTypes();
+        setProductName("");
+        setFormState({
+            product_name: "",
+            quantity: 1,
+            code: ""
+        });
+        setDay(new Date());
         setQuantityType(quantityTypes[0]);
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []));
+
+    useEffect(() => {
+        setFormState({
+            ...formState,
+            product_name: productName
+        })
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [productName]);
+
 
     return (
         <Modal
@@ -64,24 +90,32 @@ export default function AddShoppinglistModal({ isOpen, setIsOpen }: ModalProp) {
                     <View style={{
                         display: "flex", gap: 12
                     }}>
+                        <SearchWithInput setFiltered={setFiltered} filtered={filtered} setProductCode={(code: string) => {
+                            setFormState({
+                                ...formState,
+                                code: code
+                            })
+                        }} setProductName={(name: string) => {
+                            setProductName(name);
+                        }} productCode={formState?.code || ""} productName={productName} />
                         <TextInput
                             style={{ ...styles.input }}
                             placeholderTextColor={`${Colors[colorScheme ?? "light"].text}80`}
                             maxLength={150}
-                            value={formState?.product_name ?? ""}
+                            value={formState?.code === undefined || formState.code ? formState.code : ""}
                             autoCorrect={false}
                             onChangeText={(text: string) => {
                                 setFormState({
                                     ...formState,
-                                    product_name: text
+                                    code: text
                                 })
                             }}
                             clearButtonMode="while-editing"
-                            keyboardType="default"
+                            keyboardType="numeric"
                             autoCapitalize="none"
                             returnKeyType="next"
                             returnKeyLabel={t("buttons.next")}
-                            placeholder={t("shoppinglist.name")}
+                            placeholder={t("shoppinglist.quantity")}
                         />
                         <View style={styles.quantityInput}>
                             <TextInput
@@ -130,8 +164,9 @@ export default function AddShoppinglistModal({ isOpen, setIsOpen }: ModalProp) {
                                 day: day,
                                 quantity: formState?.quantity != null ? Number(formState.quantity) : 1,
                                 quantity_unit: quantityType != null ? quantityType.id : 1,
-                                code: null,
+                                code: formState?.code,
                             });
+                            setProductName("");
                             setFormState({
                                 product_name: "",
                                 quantity: 1,

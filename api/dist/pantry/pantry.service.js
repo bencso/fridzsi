@@ -94,12 +94,14 @@ let PantryService = class PantryService {
                 request,
                 products: products,
             });
-            const convertedQuantityArray = returnConvertationData.data;
-            const returnProducts = convertedQuantityArray.reduce((acc, curr) => {
-                acc[curr.code] = acc[curr.code] || [];
-                acc[curr.code].push(curr);
-                return acc;
-            }, {});
+            const convertedQuantityArray = returnConvertationData.data[0];
+            const returnProducts = [
+                convertedQuantityArray.reduce((acc, curr) => {
+                    acc[curr.code] = acc[curr.code] || [];
+                    acc[curr.code].push(curr);
+                    return acc;
+                }, {}),
+            ];
             return products.length > 0
                 ? {
                     message: ['Sikeres lekérdezés'],

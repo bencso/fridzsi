@@ -5,9 +5,10 @@ import { SessionService } from 'src/sessions/sessions.service';
 import { ProductService } from 'src/product/product.service';
 import { ShoppingList } from './entities/shoppinglist.entity';
 import { Request } from 'express';
-import { ReturnDto } from 'src/dto/return.dto';
+import { ReturnDataDto, ReturnDto } from 'src/dto/return.dto';
 import { CreateShoppingListItemDto } from './dto/create-shoppinglist-item.dto';
 import { QuantityUnits } from 'src/quantityUnits/entities/quantityUnits.entity';
+import { QuantityUnitsService } from 'src/quantityUnits/quantityUnits.service';
 
 @Injectable()
 export class ShoppingListService {
@@ -16,6 +17,7 @@ export class ShoppingListService {
     private readonly dataSource: DataSource,
     private readonly sessionsService: SessionService,
     private readonly productService: ProductService,
+    private readonly quantityService: QuantityUnitsService,
   ) {}
 
   async getItemByDate({
@@ -24,45 +26,62 @@ export class ShoppingListService {
   }: {
     date: string;
     request: Request;
-  }): Promise<ShoppingList[] | ReturnDto> {
+  }): Promise<ReturnDataDto | ReturnDto> {
     try {
-      console.log(date);
       const convertedDate = new Date(date);
 
       const requestUser =
         await this.sessionsService.validateAccessToken(request);
       const user = await this.usersService.findUser(requestUser.email);
 
-      const shoppingList = await this.dataSource
-        .getRepository(ShoppingList)
-        .createQueryBuilder('shoppinglist')
-        .leftJoinAndSelect('shoppinglist.product', 'product')
-        .leftJoinAndSelect('shoppinglist.quantity_unit', 'quantity_unit')
-        .select([
-          "COALESCE(shoppinglist.customProductName, 'Unkown/Ismeretlen') as customProductName",
-          'product.product_name',
-          'shoppinglist.id',
-          'shoppinglist.quantity',
-          'shoppinglist.day',
-          'quantity_unit.label as quantityUnit',
-          'quantity_unit.en as quantityUnitEn',
-          'quantity_unit.hu as quantityUnitHu',
-        ])
-        .where({
-          day: Equal(convertedDate),
-          user: user,
-        })
-        .getRawMany();
+      if (user) {
+        const shoppingList = await this.dataSource
+          .getRepository(ShoppingList)
+          .createQueryBuilder('shoppinglist')
+          .leftJoinAndSelect('shoppinglist.product', 'product')
+          .leftJoinAndSelect('shoppinglist.quantity_unit', 'quantity_unit')
+          .select([
+            "COALESCE(shoppinglist.customProductName, 'Unknown/Ismeretlen') as customProductName",
+            'product.product_name',
+            'product.code as code',
+            'shoppinglist.id',
+            'shoppinglist.quantity as quantity',
+            'shoppinglist.day',
+            'quantity_unit.id as quantityunitid',
+            'quantity_unit.label as quantityUnit',
+            'quantity_unit.en as quantityUnitEn',
+            'quantity_unit.hu as quantityUnitHu',
+          ])
+          .where('shoppinglist.day = :day', { day: convertedDate })
+          .andWhere('shoppinglist.user = :userId', { userId: user.id })
+          .getRawMany();
 
-      if (shoppingList.length > 0) {
-        console.log(shoppingList);
-        return shoppingList;
-      } else {
-        return {
-          message: ['Nincs felvitt item-e a felhasználónak!'],
-          statusCode: 401,
-        };
-      }
+        const returnConvertationData =
+          await this.quantityService.convertToHighest({
+            request,
+            products: shoppingList,
+          });
+        const convertedQuantityArray = returnConvertationData.data[0];
+        const returnProducts = [
+          convertedQuantityArray.reduce((acc: any, curr: any) => {
+            acc[curr.code] = acc[curr.code] || [];
+            acc[curr.code].push(curr);
+            return acc;
+          }, {}),
+        ];
+
+        return shoppingList.length > 0
+          ? {
+              message: ['Sikeres lekérdezés'],
+              statusCode: 200,
+              data: returnProducts,
+            }
+          : {
+              message: ['Nincs semmi a raktárjában a felhasználónak!'],
+              statusCode: 404,
+              data: shoppingList,
+            };
+      } else return { message: ['Sikertelen lekérdezés'], statusCode: 404 };
     } catch {
       return {
         message: ['Hiba történt a lekérdezés során!'],
@@ -89,7 +108,7 @@ export class ShoppingListService {
         .leftJoinAndSelect('shoppinglist.product', 'product')
         .leftJoinAndSelect('shoppinglist.quantity_unit', 'quantity_unit')
         .select([
-          "COALESCE(shoppinglist.customProductName, 'Unkown/Ismeretlen') as customProductName",
+          "COALESCE(shoppinglist.customProductName, 'Unknown/Ismeretlen') as customProductName",
           'product.product_name',
           'product.product_quantity_unit',
           'shoppinglist.id',
@@ -115,6 +134,7 @@ export class ShoppingListService {
       }
 
       const result = await shoppingList.getRawMany();
+
       if (result.length > 0) {
         return result;
       } else {
@@ -206,7 +226,7 @@ export class ShoppingListService {
         await this.sessionsService.validateAccessToken(request);
       const user = await this.usersService.findUser(requestUser.email);
 
-      let product;
+      let product = null;
 
       if (data.code) {
         product = await this.productService.getItemById(data.code);

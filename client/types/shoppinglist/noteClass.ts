@@ -18,7 +18,6 @@ export class ShoppingListItem {
   public id: number;
   public name: string;
   public quantity: number;
-  public metric: string;
   public day: Date;
   public random: number;
   public quantityUnitEn: string;
@@ -29,7 +28,6 @@ export class ShoppingListItem {
     id: number,
     name: string,
     quantity: number,
-    metric: string,
     day: Date,
     quantityUnitEn: string,
     quantityUnitHu: string,
@@ -38,7 +36,6 @@ export class ShoppingListItem {
     this.id = id;
     this.name = name;
     this.quantity = quantity;
-    this.metric = metric;
     this.day = day;
     this.quantityUnitEn = quantityUnitEn;
     this.quantityUnitHu = quantityUnitHu;

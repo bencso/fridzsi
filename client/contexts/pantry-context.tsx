@@ -28,7 +28,6 @@ export function PantryProvider({ children }: { children: ReactNode }) {
             const response = await api.get("/quantityTypes");
             const data = response.data;
             if (!data.statusCode && Array.isArray(data)) {
-                console.log(data);
                 let quantitytypes = [] as quantityTypeProp[];
                 data.map((item) => {
                     quantitytypes.push({

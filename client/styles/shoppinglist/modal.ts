@@ -26,10 +26,12 @@ export const getShoppingListModalStyle = ({
       maxWidth: 300,
       borderRadius: 0,
       width: "100%",
-      height: "100%",
+      height: "auto",
       minHeight: 200,
-      maxHeight: 300,
-      gap: 24
+      maxHeight: 450,
+      gap: 24,
+      paddingTop: 24,
+      paddingBottom: 24
     },
     input: {
       color: Colors[colorScheme ?? "light"].text,

@@ -4,6 +4,8 @@ export interface Product {
     name?: string | null;
     quantity?: number;
     quantityunit?: string;
+    quantityuniten?: string;
+    quantityunithu?: string;
     expiredat?: string;
     converted_quantity?: number;
 }

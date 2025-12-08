@@ -24,7 +24,6 @@ export class ShoppingListController {
   @UseGuards(AuthGuard)
   @HttpCode(HttpStatus.OK)
   async getItemByDate(@Param('date') date: string, @Req() request: Request) {
-    console.log(date);
     return this.shoppinglistService.getItemByDate({
       date: date,
       request: request,

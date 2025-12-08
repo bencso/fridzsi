@@ -3,22 +3,21 @@ import {
     Text,
     TextInput,
     TouchableOpacity,
-    View,
-    ScrollView
-} from "react-native";
+    View} from "react-native";
 import { ThemedText } from "@/components/themed-text";
 import { ThemedView } from "@/components/themed-view";
 import { Colors } from "@/constants/theme";
 import { useTheme } from "@/contexts/theme-context";
-import { Fragment, useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { usePantry } from "@/contexts/pantry-context";
 import { router, useFocusEffect } from "expo-router";
-import { getCustomInputStyles } from "@/styles/camera/customInput";
 import { Product } from "@/constants/product.interface";
 import { ModalQuantityType } from "@/components/shoppinglist/modalAmountType";
 import { quantityTypeProp } from "@/types/shoppinglist/quantityTypeProp";
+import { SearchWithInput } from "@/components/inputWithSearch";
+import { getCameraCustomInputsStyle } from "@/styles/camera/customInputIndex";
 
 //TODO: Csak a jó quantityUnits-ot kiirni, pl egy szilárd ételnél ne lehessen litert megadni :)
 // Van kategória adva a quantityUnitsnak - ezt majd valahogy ki szürni
@@ -27,7 +26,7 @@ export default function CustomInputScreen() {
     const [productCode, setProductCode] = useState<string>("");
     const [filtered, setFiltered] = useState<Product[]>([]);
     const [expired, setExpired] = useState<Date>(new Date());
-    const [focusedInput, setFocusedInput] = useState<boolean>(false);
+
     const [quantity, setquantity] = useState<number>(1);
     const { scheme } = useTheme();
     const { addPantryItem, product, setProduct, loadPantry, setScanned, searchProductByKeyword, loadQuantityTypes } = usePantry();
@@ -40,10 +39,7 @@ export default function CustomInputScreen() {
         setQuantityType(quantityTypes[0]);
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []));
-    const showSearch = (filtered
-        && filtered.length > 0
-        && !!focusedInput)
-        && !(productCode.length && productName.length);
+
 
     useEffect(() => {
         if (product?.code) setProductCode(product.code);
@@ -51,10 +47,6 @@ export default function CustomInputScreen() {
     }, [product])
 
     const disabledButton = productName?.length === 0;
-
-    function productNameOnChange(text: string) {
-        setProductName(text);
-    }
 
     useEffect(() => {
         if (quantity && quantity <= 1) setquantity(1);
@@ -83,7 +75,7 @@ export default function CustomInputScreen() {
         }
     }
 
-    const styles = getCustomInputStyles({ scheme, disabledButton });
+    const styles = getCameraCustomInputsStyle({ scheme, disabledButton });
 
     return (
         <ThemedView style={styles.mainContainer}>
@@ -94,69 +86,7 @@ export default function CustomInputScreen() {
             </ThemedView>
             <ThemedView>
                 <View style={styles.inputContainer}>
-                    <TextInput
-                        style={{ ...styles.input, color: (product?.name === null || product?.name === undefined) ? Colors[scheme ?? "light"].text : `${Colors[scheme ?? "light"].text}80` }}
-                        placeholderTextColor={`${Colors[scheme ?? "light"].text}80`}
-                        value={productName}
-                        maxLength={150}
-                        autoCorrect={false}
-                        clearButtonMode="while-editing"
-                        keyboardType="default"
-                        autoCapitalize="none"
-                        returnKeyType="next"
-                        editable={product?.name === null || product?.name === undefined}
-                        returnKeyLabel={t("buttons.next")}
-                        onChangeText={async (text) => {
-                            productNameOnChange(text);
-                            setFiltered(await searchProductByKeyword(text.toLowerCase()));
-                        }}
-                        onFocus={() => {
-                            setFocusedInput(true);
-                        }}
-                        onBlur={() => {
-                            setFocusedInput(false);
-                        }}
-                        placeholder={t("customInput.productName")}
-                    />
-                    {showSearch && (
-                        <Fragment>
-                            <Text>{t("customInput.searchLabel")}</Text><ScrollView
-                                showsVerticalScrollIndicator={true}
-                                style={{
-                                    maxHeight: 50,
-                                }}
-                                contentContainerStyle={{
-                                    gap: 8,
-                                }}
-                            >
-                                {filtered.map((filteredItem: Product, idx: number) => (
-                                    <TouchableOpacity
-                                        key={idx}
-                                        style={{
-                                            backgroundColor: Colors[scheme ?? "light"].border,
-                                            borderRadius: 12,
-                                            paddingLeft: 12,
-                                            paddingRight: 12,
-                                            paddingTop: 6,
-                                            paddingBottom: 6
-                                        }}
-                                        onPress={() => {
-                                            setProductName(filteredItem?.name || "");
-                                            setProductCode(filteredItem?.code || "");
-                                        }}
-                                    >
-                                        <Text
-                                            style={{
-                                                color: "black"
-                                            }}
-                                        >
-                                            {filteredItem?.name}
-                                        </Text>
-                                    </TouchableOpacity>
-                                ))}
-                            </ScrollView>
-                        </Fragment>
-                    )}
+                    <SearchWithInput filtered={filtered} setFiltered={setFiltered} styles={styles} productCode={productCode} productName={productName} setProductCode={setProductCode} setProductName={setProductName} />
                     <TextInput
                         style={{ ...styles.input, color: (product?.code === null || product?.code === undefined) ? Colors[scheme ?? "light"].text : `${Colors[scheme ?? "light"].text}80` }}
                         value={productCode}

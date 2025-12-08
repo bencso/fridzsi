@@ -1,18 +1,27 @@
 import { Colors } from "@/constants/theme";
 import { StyleSheet } from "react-native";
+import { getCustomInputStyles } from "@/styles/customInput";
 
-//TODO: Több componens ugyanaz a style-al rendelkezik ezeket egyesíteni majd :)
-export const getCustomInputStyles = ({
+export const getCameraCustomInputsStyle = ({
   scheme,
   disabledButton,
 }: {
   scheme: keyof typeof Colors;
   disabledButton: boolean;
 }) => {
+  const inputStyle = getCustomInputStyles({ scheme });
   return StyleSheet.create({
     titleContainer: {
       flexDirection: "column",
       gap: 8,
+    },
+    input: {
+      ...inputStyle.input,
+      backgroundColor: Colors[scheme ?? "light"].border,
+      borderColor: Colors[scheme ?? "light"].border,
+    },
+    inputContainer: {
+      ...inputStyle.inputContainer,
     },
     mainContainer: {
       flex: 1,
@@ -21,22 +30,6 @@ export const getCustomInputStyles = ({
       gap: 24,
       paddingVertical: 40,
       paddingHorizontal: 24,
-    },
-    input: {
-      color: Colors[scheme ?? "light"].text,
-      paddingTop: 16,
-      paddingBottom: 16,
-      paddingStart: 10,
-      borderWidth: 1,
-      borderColor: Colors[scheme ?? "light"].border,
-      borderRadius: 12,
-      fontSize: 16,
-      backgroundColor: Colors[scheme ?? "light"].border,
-    },
-    inputContainer: {
-      display: "flex",
-      gap: 16,
-      justifyContent: "center",
     },
     button: {
       alignItems: "center",
