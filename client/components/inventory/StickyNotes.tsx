@@ -43,7 +43,7 @@ export default function StickyNote({ note, idx, noteRefs, styles, editMode }: {
                 editMode !== note.id && <><ThemedText style={{ fontSize: 18, fontWeight: "900", color: note.getColors().text, fontFamily: Fonts.bold, textOverflow: "clip", overflow: "hidden", maxWidth: 200 }}>
                     {note.name}
                 </ThemedText><ThemedText style={{ fontSize: 15, marginTop: 8, color: note.getColors().text, fontFamily: Fonts.rounded }}>
-                        {note.quantity} {Language === "en" ? note.quantityUnitEn : note.quantityUnitHu}{t("shoppinglist.stickyNote")}
+                        {note.quantity} {Language === "en" ? note.quantityUnitEn : note.quantityUnitHu} {t("shoppinglist.stickyNote")}
                     </ThemedText></>
             }
             {

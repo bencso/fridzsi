@@ -41,46 +41,35 @@ export function ShoppingListProvider({ children }: { children: ReactNode }) {
                         dateMap[date] = { converted_quantity: (dateMap[date]?.converted_quantity || 0) + Number(product.converted_quantity), quantityUnit: product.quantityunit ?? "", quantityuniten: product.quantityuniten ?? "", quantityunithu: product.quantityunithu ?? "" };
                     });
 
-                    returnItems.push({
+                    const data = {
                         code: key,
-                        products: item[key].map((product: Product) => ({
-                            index: product.index,
-                            quantity: product.quantity,
-                            expiredAt: product.expiredat,
-                            quantityUnit: product.quantityunit
-                        })),
                         name: item[key][0].product_product_name ? item[key][0].product_product_name : item[key][0].customproductname,
                         expiredAt: Object.keys(dateMap),
-                        quantity: Object.values(dateMap).flatMap((test) => { return test.converted_quantity }),
+                        quantity: Object.values(dateMap).flatMap((test) => { return Number(test.converted_quantity).toFixed(3) }),
                         quantityUnit: Object.values(dateMap).flatMap((test) => { return test.quantityUnit }),
                         quantityUnitHu: Object.values(dateMap).flatMap((test) => { return test.quantityunithu }),
-                        quantityUnitEn: Object.values(dateMap).flatMap((test) => { return test.quantityuniten }),
+                        quantityUnitEn: Object.values(dateMap).flatMap((test) => { return test.quantityuniten })
+                    };
+
+                    Object.values(dateMap).map((test) => {
+                        const name = data.name ?? "";
+                        const quantityUnit = Array.isArray(data.quantityUnit) ? data.quantityUnit[0] : "";
+                        const day = data.expiredAt?.[0] ? new Date(data.expiredAt[0]) : new Date();
+                        returnItems.push(new ShoppingListItem(
+                            data.code,
+                            name,
+                            test.converted_quantity,
+                            day,
+                            test.quantityuniten,
+                            test.quantityunithu,
+                            quantityUnit,
+                        ));
                     });
+
+                    setShoppingList(returnItems);
                 });
             });
 
-
-            if (Array.isArray(returnItems)) {
-                const newItems = returnItems.map((data: any) => {
-                    console.log(data.id)
-                    const name = data.name ?? "";
-                    const quantity = Array.isArray(data.quantity) ? data.quantity[0] : 0;
-                    const quantityUnit = Array.isArray(data.quantityUnit) ? data.quantityUnit[0] : "";
-                    const day = data.expiredAt?.[0] ? new Date(data.expiredAt[0]) : new Date();
-                    return new ShoppingListItem(
-                        data.code,
-                        name,
-                        quantity,
-                        day,
-                        data.quantityUnitEn,
-                        data.quantityUnitHu,
-                        quantityUnit,
-                    );
-                });
-                setShoppingList(newItems);
-            } else {
-                setShoppingList([]);
-            }
         } catch (error) {
             console.error(error);
         }

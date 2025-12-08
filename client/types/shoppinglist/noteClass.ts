@@ -15,7 +15,7 @@ export class ShoppingListItem {
     },
   ];
 
-  public id: number;
+  public id: string;
   public name: string;
   public quantity: number;
   public day: Date;
@@ -25,7 +25,7 @@ export class ShoppingListItem {
   public quantityUnit: string;
 
   constructor(
-    id: number,
+    id: string,
     name: string,
     quantity: number,
     day: Date,
