@@ -32,12 +32,13 @@ export type ShoppingListContextProp = {
   >;
   changeDateItem: Promise<void> | any;
   deleteItem: Promise<void> | any;
-addNewShoppingItem: (params: {
-  day: Date;
-  product_name?: string | null;
-  quantity: number;
-  quantity_unit: number;
-  code?: string | null;
-}) => Promise<void | string>;
-getNowList: (params: {q?:string| null}) => Promise<any>
+  addNewShoppingItem: (params: {
+    day: Date;
+    product_name?: string | null;
+    quantity: number;
+    quantity_unit: number;
+    code?: string | null;
+  }) => Promise<void | string>;
+  getNowList: (params: { q?: string | null }) => Promise<any>;
+  getItemById: (id?: string | null) => Promise<any>;
 };

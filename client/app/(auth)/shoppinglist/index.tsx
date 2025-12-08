@@ -23,7 +23,7 @@ export default function ShoppingListScreen() {
 
   const styles = getShoppingListStyle({ colorScheme });
   const navbarStyle = getNavbarStyles({ colorScheme });
-  const [editModeId, setEditModeId] = useState<number>(-1);
+  const [editModeId, setEditModeId] = useState<string>("-1");
   const { getFirstDate, shoppingList, getItemDates } = useShoppingList();
 
   const noteRefs = useRef<{ pan: Animated.ValueXY; panResponder: any }[]>([]);
@@ -46,7 +46,7 @@ export default function ShoppingListScreen() {
       },
       onPanResponderRelease: () => {
         if (editModeId === note.id) {
-          setEditModeId(-1);
+          setEditModeId("-1");
         } else {
           setEditModeId(note.id);
         }

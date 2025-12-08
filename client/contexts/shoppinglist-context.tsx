@@ -33,42 +33,47 @@ export function ShoppingListProvider({ children }: { children: ReactNode }) {
 
             let returnItems = [] as any[];
 
-            responseData.map((item: any) => {
-                Object.keys(item).forEach((key) => {
-                    const dateMap: Record<string, { converted_quantity: number; quantityUnit: string; quantityuniten: string; quantityunithu: string }> = {};
-                    item[key].forEach((product: Product) => {
-                        const date = product.expiredat ? new Date(product.expiredat).toLocaleDateString() : new Date().toLocaleDateString();
-                        dateMap[date] = { converted_quantity: (dateMap[date]?.converted_quantity || 0) + Number(product.converted_quantity), quantityUnit: product.quantityunit ?? "", quantityuniten: product.quantityuniten ?? "", quantityunithu: product.quantityunithu ?? "" };
+            if (responseData) {
+                responseData.map((item: any) => {
+                    Object.keys(item).forEach((key) => {
+                        const dateMap: Record<string, { converted_quantity: number; quantityUnit: string; quantityuniten: string; quantityunithu: string }> = {};
+                        item[key].forEach((product: Product) => {
+                            const date = product.expiredat ? new Date(product.expiredat).toLocaleDateString() : new Date().toLocaleDateString();
+                            dateMap[date] = { converted_quantity: (dateMap[date]?.converted_quantity || 0) + Number(product.converted_quantity), quantityUnit: product.quantityunit ?? "", quantityuniten: product.quantityuniten ?? "", quantityunithu: product.quantityunithu ?? "" };
+                        });
+
+                        const data = {
+                            code: key,
+                            name: item[key][0].product_product_name ? item[key][0].product_product_name : item[key][0].customproductname,
+                            expiredAt: Object.keys(dateMap),
+                            quantityUnit: Object.values(dateMap).flatMap((test) => { return test.quantityUnit }),
+                            quantityUnitHu: Object.values(dateMap).flatMap((test) => { return test.quantityunithu }),
+                            quantityUnitEn: Object.values(dateMap).flatMap((test) => { return test.quantityuniten })
+                        };
+
+                        Object.values(dateMap).map((test) => {
+                            const name = data.name ?? "";
+                            const quantityUnit = Array.isArray(data.quantityUnit) ? data.quantityUnit[0] : "";
+                            const day = data.expiredAt?.[0] ? new Date(data.expiredAt[0]) : new Date();
+                            returnItems.push(new ShoppingListItem(
+                                data.code,
+                                name,
+                                Number(test.converted_quantity).toFixed(3),
+                                day,
+                                test.quantityuniten,
+                                test.quantityunithu,
+                                quantityUnit,
+                            ));
+                        });
+
+                        if (returnItems.length > 0) {
+                            setShoppingList(returnItems);
+                        } else {
+                            setShoppingList([]);
+                        }
                     });
-
-                    const data = {
-                        code: key,
-                        name: item[key][0].product_product_name ? item[key][0].product_product_name : item[key][0].customproductname,
-                        expiredAt: Object.keys(dateMap),
-                        quantity: Object.values(dateMap).flatMap((test) => { return Number(test.converted_quantity).toFixed(3) }),
-                        quantityUnit: Object.values(dateMap).flatMap((test) => { return test.quantityUnit }),
-                        quantityUnitHu: Object.values(dateMap).flatMap((test) => { return test.quantityunithu }),
-                        quantityUnitEn: Object.values(dateMap).flatMap((test) => { return test.quantityuniten })
-                    };
-
-                    Object.values(dateMap).map((test) => {
-                        const name = data.name ?? "";
-                        const quantityUnit = Array.isArray(data.quantityUnit) ? data.quantityUnit[0] : "";
-                        const day = data.expiredAt?.[0] ? new Date(data.expiredAt[0]) : new Date();
-                        returnItems.push(new ShoppingListItem(
-                            data.code,
-                            name,
-                            test.converted_quantity,
-                            day,
-                            test.quantityuniten,
-                            test.quantityunithu,
-                            quantityUnit,
-                        ));
-                    });
-
-                    setShoppingList(returnItems);
                 });
-            });
+            }
 
         } catch (error) {
             console.error(error);
@@ -149,8 +154,19 @@ export function ShoppingListProvider({ children }: { children: ReactNode }) {
         }
     }
 
+    async function getItemById(id?: string | null) {
+        try {
+            const response = await api.get("/shoppinglist/items/id/" + id, { withCredentials: true });
+            return response.data;
+        }
+        catch (error: any) {
+            return "Hiba történt létrehozás közben: " + error;
+        }
+    }
+
+
     return (
-        <ShoppingListContext.Provider value={{ shoppingList, getFirstDate, getItemByDate, selectedDay, setSelectedDay, getItemDates, shoppingListDays, setShoppingListDays, changeDateItem, deleteItem, addNewShoppingItem, getNowList }}>
+        <ShoppingListContext.Provider value={{ shoppingList, getFirstDate, getItemByDate, selectedDay, setSelectedDay, getItemDates, shoppingListDays, setShoppingListDays, changeDateItem, deleteItem, addNewShoppingItem, getNowList, getItemById }}>
             {children}
         </ShoppingListContext.Provider>
     );

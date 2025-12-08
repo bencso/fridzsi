@@ -17,7 +17,7 @@ export class ShoppingListItem {
 
   public id: string;
   public name: string;
-  public quantity: number;
+  public quantity: string;
   public day: Date;
   public random: number;
   public quantityUnitEn: string;
@@ -27,7 +27,7 @@ export class ShoppingListItem {
   constructor(
     id: string,
     name: string,
-    quantity: number,
+    quantity: string,
     day: Date,
     quantityUnitEn: string,
     quantityUnitHu: string,

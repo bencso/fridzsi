@@ -1,4 +1,4 @@
-import { RefObject } from "react";
+import { RefObject, useState } from "react";
 import { Animated, TouchableOpacity } from "react-native";
 import { ThemedText } from "../themed-text";
 import { t } from "i18next";
@@ -8,8 +8,7 @@ import { useLanguage } from "@/contexts/language-context";
 import { ThemedView } from "../themed-view";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { useTheme } from "@/contexts/theme-context";
-import { useShoppingList } from "@/contexts/shoppinglist-context";
-import { deleteAlert } from "../shoppinglist/deleteAlert";
+import { router } from "expo-router";
 
 export default function StickyNote({ note, idx, noteRefs, styles, editMode }: {
     noteRefs: RefObject<{
@@ -23,7 +22,6 @@ export default function StickyNote({ note, idx, noteRefs, styles, editMode }: {
 }) {
     const { Language } = useLanguage();
     const { scheme } = useTheme();
-    const { deleteItem } = useShoppingList();
 
     return (
         <Animated.View
@@ -57,14 +55,21 @@ export default function StickyNote({ note, idx, noteRefs, styles, editMode }: {
                     }}>
                         <TouchableOpacity style={{
                             ...styles.noteManipulationBtn
-                        }} onPress={() => { }}>
+                        }} onPress={() => {
+                            if (note.id) {
+                                router.navigate({ pathname: "/inventory/modify/editItem", params: { id: note.id } });
+                            }
+                        }}>
+
                             <MaterialCommunityIcons name="pen" size={20} />
                         </TouchableOpacity>
                         <TouchableOpacity style={{
                             ...styles.noteManipulationBtn,
                             backgroundColor: Colors[scheme ?? "light"].uncorrect
                         }} onPress={() => {
-                            deleteAlert({ t, note, deleteItem });
+                              if (note.id) {
+                                router.navigate({ pathname: "/inventory/modify/deleteItem", params: { id: note.id } });
+                            }
                         }}>
                             <MaterialCommunityIcons name="trash-can" color={Colors[scheme ?? "light"].background} size={20} />
                         </TouchableOpacity>
