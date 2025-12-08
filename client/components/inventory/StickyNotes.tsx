@@ -1,4 +1,4 @@
-import { RefObject, useState } from "react";
+import { RefObject } from "react";
 import { Animated, TouchableOpacity } from "react-native";
 import { ThemedText } from "../themed-text";
 import { t } from "i18next";
@@ -57,7 +57,7 @@ export default function StickyNote({ note, idx, noteRefs, styles, editMode }: {
                             ...styles.noteManipulationBtn
                         }} onPress={() => {
                             if (note.id) {
-                                router.navigate({ pathname: "/inventory/modify/editItem", params: { id: note.id } });
+                                router.navigate({ pathname: "/shoppinglist/modify/editItem", params: { id: note.id } });
                             }
                         }}>
 
@@ -68,7 +68,7 @@ export default function StickyNote({ note, idx, noteRefs, styles, editMode }: {
                             backgroundColor: Colors[scheme ?? "light"].uncorrect
                         }} onPress={() => {
                               if (note.id) {
-                                router.navigate({ pathname: "/inventory/modify/deleteItem", params: { id: note.id } });
+                                router.navigate({ pathname: "/shoppinglist/modify/deleteItem", params: { id: note.id } });
                             }
                         }}>
                             <MaterialCommunityIcons name="trash-can" color={Colors[scheme ?? "light"].background} size={20} />
