@@ -33,12 +33,9 @@ export declare class ShoppingListService {
         request: Request;
         data: CreateShoppingListItemDto;
     }): Promise<ShoppingList | ReturnDto>;
-    removeItem({ id, request, body, }: {
-        id: number;
+    removeItem({ ids, request }: {
+        ids: number[];
         request: Request;
-        body: {
-            quantity: number;
-        };
     }): Promise<{
         message: string[];
         statusCode: number;

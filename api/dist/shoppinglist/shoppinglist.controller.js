@@ -54,11 +54,10 @@ let ShoppingListController = class ShoppingListController {
     async createItem(data, request) {
         return this.shoppinglistService.createItem({ request, data });
     }
-    async removeItem(id, body, request) {
+    async removeItem(ids, request) {
         return this.shoppinglistService.removeItem({
             request,
-            id,
-            body,
+            ids,
         });
     }
 };
@@ -128,15 +127,14 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], ShoppingListController.prototype, "createItem", null);
 __decorate([
-    (0, common_1.Post)('/items/remove/:id'),
+    (0, common_1.Post)('/items/remove/:ids'),
     (0, swagger_1.ApiBearerAuth)(),
     (0, common_1.UseGuards)(auth_guard_1.AuthGuard),
     (0, common_1.HttpCode)(common_1.HttpStatus.OK),
-    __param(0, (0, common_1.Param)('id')),
-    __param(1, (0, common_1.Body)()),
-    __param(2, (0, common_1.Req)()),
+    __param(0, (0, common_1.Param)('ids', new common_1.ParseArrayPipe({ items: Number, separator: ',' }))),
+    __param(1, (0, common_1.Req)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Number, Object, Object]),
+    __metadata("design:paramtypes", [Array, Object]),
     __metadata("design:returntype", Promise)
 ], ShoppingListController.prototype, "removeItem", null);
 exports.ShoppingListController = ShoppingListController = __decorate([

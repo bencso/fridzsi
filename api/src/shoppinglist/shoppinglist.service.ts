@@ -330,20 +330,12 @@ export class ShoppingListService {
     }
   }
 
-  //TODO: Késöbb itt is a mértékegységekkel játszani
-  async removeItem({
-    id,
-    request,
-    body,
-  }: {
-    id: number;
-    request: Request;
-    body: { quantity: number };
-  }) {
+  async removeItem({ ids, request }: { ids: number[]; request: Request }) {
     try {
       const requestUser =
         await this.sessionsService.validateAccessToken(request);
       const user = await this.usersService.findUser(requestUser.email);
+      console.log(ids);
 
       const haveThisItem = await this.dataSource
         .getRepository(ShoppingList)
@@ -353,35 +345,25 @@ export class ShoppingListService {
           'shoppinglist.quantity',
           'shoppinglist.user',
         ])
-        .where('shoppinglist.id = :id', { id: id })
+        .where('shoppinglist.id IN (:...ids)', { ids })
         .andWhere('shoppinglist.user = :userId', { userId: user.id })
         .getOne();
 
       if (haveThisItem) {
-        if (haveThisItem.quantity <= body.quantity) {
-          await this.dataSource
-            .createQueryBuilder()
-            .delete()
-            .from(ShoppingList)
-            .where('id = :id', { id: id })
-            .andWhere('user = :userId', { userId: user.id })
-            .execute();
-        } else {
-          await this.dataSource
-            .createQueryBuilder()
-            .update(ShoppingList)
-            .set({ quantity: haveThisItem.quantity - body.quantity })
-            .where('id = :id', { id: id })
-            .andWhere('user = :userId', { userId: user.id })
-            .execute();
-        }
+        await this.dataSource
+          .createQueryBuilder()
+          .delete()
+          .from(ShoppingList)
+          .where('id IN (:...ids)', { ids })
+          .andWhere('user = :userId', { userId: user.id })
+          .execute();
         return {
           message: ['Sikeres törlés'],
           statusCode: 200,
         };
       } else {
         return {
-          message: ['Nem található ilyen item'],
+          message: ['Hiba történt a létrehozás során!'],
           statusCode: 401,
         };
       }

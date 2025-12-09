@@ -80,8 +80,8 @@ export function ShoppingListProvider({ children }: { children: ReactNode }) {
         }
     }
 
-    async function deleteItem({ id, quantity }: { id: number; quantity: number }): Promise<void> {
-        await api.post(`/shoppinglist/items/remove/${id}`, { quantity }, { withCredentials: true });
+    async function deleteItem({ ids }: { ids: number[];}): Promise<void> {
+        await api.post(`/shoppinglist/items/remove/${ids.join(",")}`, {}, { withCredentials: true });
         getItemDates();
         getFirstDate();
     }

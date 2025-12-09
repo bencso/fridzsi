@@ -5,6 +5,7 @@ import {
   HttpCode,
   HttpStatus,
   Param,
+  ParseArrayPipe,
   Post,
   Req,
   UseGuards,
@@ -87,19 +88,18 @@ export class ShoppingListController {
     return this.shoppinglistService.createItem({ request, data });
   }
 
-  @Post('/items/remove/:id')
+  @Post('/items/remove/:ids')
   @ApiBearerAuth()
   @UseGuards(AuthGuard)
   @HttpCode(HttpStatus.OK)
   async removeItem(
-    @Param('id') id: number,
-    @Body() body: { quantity: number },
+    @Param('ids', new ParseArrayPipe({ items: Number, separator: ',' }))
+    ids: number[],
     @Req() request: Request,
   ) {
     return this.shoppinglistService.removeItem({
       request,
-      id,
-      body,
+      ids,
     });
   }
 }
