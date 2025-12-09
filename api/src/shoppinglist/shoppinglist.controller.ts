@@ -30,6 +30,17 @@ export class ShoppingListController {
     });
   }
 
+  @Get('/items/code/:code')
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard)
+  @HttpCode(HttpStatus.OK)
+  async getItemById(@Param('code') code: string, @Req() request: Request) {
+    return this.shoppinglistService.getItemById({
+      code: code,
+      request: request,
+    });
+  }
+
   @Get('/items/now')
   @ApiBearerAuth()
   @UseGuards(AuthGuard)

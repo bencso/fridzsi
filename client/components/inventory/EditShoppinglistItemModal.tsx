@@ -10,6 +10,7 @@ import { useFocusEffect } from "expo-router";
 import { usePantry } from "@/contexts/pantry-context";
 import Button from "../button";
 import { getModifyModalStyle } from "@/styles/shoppinglist/modals/modify";
+import { useShoppingList } from "@/contexts/shoppinglist-context";
 
 
 export default function EditShoppingListItem({ id, isOpen, setIsOpen, type }: ModalProp) {
@@ -20,10 +21,15 @@ export default function EditShoppingListItem({ id, isOpen, setIsOpen, type }: Mo
     const [quantity, setQuantity] = useState<number>(1);
     const [quantityType, setQuantityType] = useState<quantityTypeProp | null>(null);
     const { loadQuantityTypes, editPantryItem } = usePantry();
+    const { getItemById } = useShoppingList();
 
     useFocusEffect(useCallback(() => {
         if (type === "pantry") {
             loadQuantityTypes();
+        } else {
+            (async () => {
+                await getItemById(Number(id));
+            })();
         }
         setQuantityType(quantityTypes[0]);
         // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -78,11 +84,19 @@ export default function EditShoppingListItem({ id, isOpen, setIsOpen, type }: Mo
                                             quantity,
                                             quantityType: quantityType?.id
                                         });
+                                    } else {
+                                        //TODO: Kicserélni a shoppinglistre
+                                        await editPantryItem({
+                                            id,
+                                            quantity,
+                                            quantityType: quantityType?.id
+                                        });
                                     }
                                     setQuantity(1);
                                     setQuantityType(quantityTypes[0]);
                                 }
                                 catch {
+                                    //TODO: Fordítás
                                     Alert.alert("HIBA!");
                                 }
                                 setIsOpen(false);

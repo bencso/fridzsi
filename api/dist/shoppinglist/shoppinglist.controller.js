@@ -28,6 +28,12 @@ let ShoppingListController = class ShoppingListController {
             request: request,
         });
     }
+    async getItemById(code, request) {
+        return this.shoppinglistService.getItemById({
+            code: code,
+            request: request,
+        });
+    }
     async getItemNow(request) {
         return this.shoppinglistService.getItemNow({
             query: '',
@@ -68,6 +74,17 @@ __decorate([
     __metadata("design:paramtypes", [String, Object]),
     __metadata("design:returntype", Promise)
 ], ShoppingListController.prototype, "getItemByDate", null);
+__decorate([
+    (0, common_1.Get)('/items/code/:code'),
+    (0, swagger_1.ApiBearerAuth)(),
+    (0, common_1.UseGuards)(auth_guard_1.AuthGuard),
+    (0, common_1.HttpCode)(common_1.HttpStatus.OK),
+    __param(0, (0, common_1.Param)('code')),
+    __param(1, (0, common_1.Req)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, Object]),
+    __metadata("design:returntype", Promise)
+], ShoppingListController.prototype, "getItemById", null);
 __decorate([
     (0, common_1.Get)('/items/now'),
     (0, swagger_1.ApiBearerAuth)(),

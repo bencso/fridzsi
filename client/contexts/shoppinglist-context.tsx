@@ -154,9 +154,19 @@ export function ShoppingListProvider({ children }: { children: ReactNode }) {
         }
     }
 
-    async function getItemById(id?: string | null) {
+    async function getItemByCode(code?: string | null) {
         try {
-            const response = await api.get("/shoppinglist/items/id/" + id, { withCredentials: true });
+            const response = await api.get("/shoppinglist/items/code/" + code, { withCredentials: true });
+            return response.data;
+        }
+        catch (error: any) {
+            return "Hiba történt létrehozás közben: " + error;
+        }
+    }
+
+    async function getItemById(id?: number | null) {
+        try {
+            const response = await api.get("/shoppinglist/item/id/" + id, { withCredentials: true });
             return response.data;
         }
         catch (error: any) {
@@ -166,7 +176,7 @@ export function ShoppingListProvider({ children }: { children: ReactNode }) {
 
 
     return (
-        <ShoppingListContext.Provider value={{ shoppingList, getFirstDate, getItemByDate, selectedDay, setSelectedDay, getItemDates, shoppingListDays, setShoppingListDays, changeDateItem, deleteItem, addNewShoppingItem, getNowList, getItemById }}>
+        <ShoppingListContext.Provider value={{ shoppingList, getFirstDate, getItemByDate, selectedDay, setSelectedDay, getItemDates, shoppingListDays, setShoppingListDays, changeDateItem, deleteItem, addNewShoppingItem, getNowList, getItemByCode, getItemById }}>
             {children}
         </ShoppingListContext.Provider>
     );
