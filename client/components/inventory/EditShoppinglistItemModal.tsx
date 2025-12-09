@@ -21,11 +21,12 @@ export default function EditShoppingListItem({ id, isOpen, setIsOpen, type }: Mo
     const [quantity, setQuantity] = useState<number>(1);
     const [quantityType, setQuantityType] = useState<quantityTypeProp | null>(null);
     const { loadQuantityTypes, editPantryItem } = usePantry();
-    const { getItemById } = useShoppingList();
+    const { getItemById, editItem } = useShoppingList();
 
     useFocusEffect(useCallback(() => {
+        loadQuantityTypes();
         if (type === "pantry") {
-            loadQuantityTypes();
+            
         } else {
             (async () => {
                 await getItemById(Number(id));
@@ -85,11 +86,10 @@ export default function EditShoppingListItem({ id, isOpen, setIsOpen, type }: Mo
                                             quantityType: quantityType?.id
                                         });
                                     } else {
-                                        //TODO: Kicserélni a shoppinglistre
-                                        await editPantryItem({
-                                            id,
+                                        await editItem({
+                                            id: Number(id),
                                             quantity,
-                                            quantityType: quantityType?.id
+                                            quantityUnitId: Number(quantityType?.id)
                                         });
                                     }
                                     setQuantity(1);

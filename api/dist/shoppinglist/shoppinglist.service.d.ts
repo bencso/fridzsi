@@ -40,4 +40,13 @@ export declare class ShoppingListService {
         message: string[];
         statusCode: number;
     }>;
+    editItem({ id, quantity, quantityUnitId, request, }: {
+        id: number;
+        quantity: number;
+        quantityUnitId: number;
+        request: Request;
+    }): Promise<{
+        message: string[];
+        statusCode: number;
+    }>;
 }

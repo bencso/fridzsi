@@ -42,4 +42,13 @@ export type ShoppingListContextProp = {
   getNowList: (params: { q?: string | null }) => Promise<any>;
   getItemByCode: (code?: string | null) => Promise<any>;
   getItemById: (id?: number | null) => Promise<any>;
+  editItem: ({
+    id,
+    quantity,
+    quantityUnitId,
+  }: {
+    id?: number | null;
+    quantity?: number;
+    quantityUnitId?: number;
+  }) => Promise<any>;
 };

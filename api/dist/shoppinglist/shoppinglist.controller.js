@@ -54,6 +54,14 @@ let ShoppingListController = class ShoppingListController {
     async createItem(data, request) {
         return this.shoppinglistService.createItem({ request, data });
     }
+    async editItem(id, data, request) {
+        return this.shoppinglistService.editItem({
+            request,
+            id,
+            quantity: data.quantity,
+            quantityUnitId: data.quantityunitId,
+        });
+    }
     async removeItem(ids, request) {
         return this.shoppinglistService.removeItem({
             request,
@@ -126,6 +134,18 @@ __decorate([
     __metadata("design:paramtypes", [create_shoppinglist_item_dto_1.CreateShoppingListItemDto, Object]),
     __metadata("design:returntype", Promise)
 ], ShoppingListController.prototype, "createItem", null);
+__decorate([
+    (0, common_1.Post)('/items/edit/:id'),
+    (0, swagger_1.ApiBearerAuth)(),
+    (0, common_1.UseGuards)(auth_guard_1.AuthGuard),
+    (0, common_1.HttpCode)(common_1.HttpStatus.OK),
+    __param(0, (0, common_1.Param)('id')),
+    __param(1, (0, common_1.Body)()),
+    __param(2, (0, common_1.Req)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Number, Object, Object]),
+    __metadata("design:returntype", Promise)
+], ShoppingListController.prototype, "editItem", null);
 __decorate([
     (0, common_1.Post)('/items/remove/:ids'),
     (0, swagger_1.ApiBearerAuth)(),

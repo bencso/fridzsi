@@ -374,4 +374,53 @@ export class ShoppingListService {
       };
     }
   }
+
+  async editItem({
+    id,
+    quantity,
+    quantityUnitId,
+    request,
+  }: {
+    id: number;
+    quantity: number;
+    quantityUnitId: number;
+    request: Request;
+  }) {
+    try {
+      const requestUser =
+        await this.sessionsService.validateAccessToken(request);
+      const user = await this.usersService.findUser(requestUser.email);
+
+      const haveThisItem = await this.dataSource
+        .getRepository(ShoppingList)
+        .createQueryBuilder('shoppinglist')
+        .select([
+          'shoppinglist.id',
+          'shoppinglist.quantity',
+          'shoppinglist.user',
+        ])
+        .where('shoppinglist.id = id', { id })
+        .andWhere('shoppinglist.user = :userId', { userId: user.id })
+        .getOne();
+
+      if (haveThisItem) {
+        //TODO: A váltást megcsinálni
+        console.log(quantity, quantityUnitId);
+        return {
+          message: ['Sikeres törlés'],
+          statusCode: 200,
+        };
+      } else {
+        return {
+          message: ['Hiba történt a létrehozás során!'],
+          statusCode: 401,
+        };
+      }
+    } catch (error: any) {
+      return {
+        message: ['Hiba történt a létrehozás során! ' + error],
+        statusCode: 401,
+      };
+    }
+  }
 }

@@ -315,6 +315,42 @@ let ShoppingListService = class ShoppingListService {
             };
         }
     }
+    async editItem({ id, quantity, quantityUnitId, request, }) {
+        try {
+            const requestUser = await this.sessionsService.validateAccessToken(request);
+            const user = await this.usersService.findUser(requestUser.email);
+            const haveThisItem = await this.dataSource
+                .getRepository(shoppinglist_entity_1.ShoppingList)
+                .createQueryBuilder('shoppinglist')
+                .select([
+                'shoppinglist.id',
+                'shoppinglist.quantity',
+                'shoppinglist.user',
+            ])
+                .where('shoppinglist.id = id', { id })
+                .andWhere('shoppinglist.user = :userId', { userId: user.id })
+                .getOne();
+            if (haveThisItem) {
+                console.log(quantity, quantityUnitId);
+                return {
+                    message: ['Sikeres törlés'],
+                    statusCode: 200,
+                };
+            }
+            else {
+                return {
+                    message: ['Hiba történt a létrehozás során!'],
+                    statusCode: 401,
+                };
+            }
+        }
+        catch (error) {
+            return {
+                message: ['Hiba történt a létrehozás során! ' + error],
+                statusCode: 401,
+            };
+        }
+    }
 };
 exports.ShoppingListService = ShoppingListService;
 exports.ShoppingListService = ShoppingListService = __decorate([

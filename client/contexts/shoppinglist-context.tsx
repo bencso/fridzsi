@@ -80,7 +80,7 @@ export function ShoppingListProvider({ children }: { children: ReactNode }) {
         }
     }
 
-    async function deleteItem({ ids }: { ids: number[];}): Promise<void> {
+    async function deleteItem({ ids }: { ids: number[]; }): Promise<void> {
         await api.post(`/shoppinglist/items/remove/${ids.join(",")}`, {}, { withCredentials: true });
         getItemDates();
         getFirstDate();
@@ -174,9 +174,22 @@ export function ShoppingListProvider({ children }: { children: ReactNode }) {
         }
     }
 
+    async function editItem({ id, quantity, quantityUnitId }: { id?: number | null; quantity?: number; quantityUnitId?: number }) {
+        try {
+            const response = await api.post("/shoppinglist/items/edit/" + id, {
+                quantity,
+                quantityUnitId
+            }, { withCredentials: true });
+            return response.data;
+        }
+        catch (error: any) {
+            return "Hiba történt létrehozás közben: " + error;
+        }
+    }
+
 
     return (
-        <ShoppingListContext.Provider value={{ shoppingList, getFirstDate, getItemByDate, selectedDay, setSelectedDay, getItemDates, shoppingListDays, setShoppingListDays, changeDateItem, deleteItem, addNewShoppingItem, getNowList, getItemByCode, getItemById }}>
+        <ShoppingListContext.Provider value={{ shoppingList, getFirstDate, getItemByDate, selectedDay, setSelectedDay, getItemDates, shoppingListDays, setShoppingListDays, changeDateItem, deleteItem, addNewShoppingItem, getNowList, getItemByCode, getItemById, editItem }}>
             {children}
         </ShoppingListContext.Provider>
     );

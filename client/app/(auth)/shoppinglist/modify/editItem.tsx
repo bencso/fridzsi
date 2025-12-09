@@ -28,7 +28,7 @@ export default function EditItemScreen() {
     const { scheme } = useTheme();
     const { t } = useTranslation();
     const params = useLocalSearchParams();
-    const { getItemByCode } = useShoppingList();
+    const { getItemByCode} = useShoppingList();
 
     const { Language } = useLanguage();
     const disabledButton = !!selectedItemId;

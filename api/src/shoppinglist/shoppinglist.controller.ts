@@ -87,6 +87,23 @@ export class ShoppingListController {
   ) {
     return this.shoppinglistService.createItem({ request, data });
   }
+  @Post('/items/edit/:id')
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard)
+  @HttpCode(HttpStatus.OK)
+  async editItem(
+    @Param('id')
+    id: number,
+    @Body() data: { quantity: number; quantityunitId: number },
+    @Req() request: Request,
+  ) {
+    return this.shoppinglistService.editItem({
+      request,
+      id,
+      quantity: data.quantity,
+      quantityUnitId: data.quantityunitId,
+    });
+  }
 
   @Post('/items/remove/:ids')
   @ApiBearerAuth()
