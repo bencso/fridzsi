@@ -122,6 +122,7 @@ export class ShoppingListService {
           ])
           .where('product.code = :code', { code: code })
           .andWhere('shoppinglist.user = :userId', { userId: user.id })
+          .orderBy('shoppinglist.day, quantity_unit.id, shoppinglist.quantity')
           .getRawMany();
 
         console.log(shoppingList);
