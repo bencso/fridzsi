@@ -2,11 +2,11 @@ import { Colors } from "@/constants/theme";
 import { Modal, TextInput, View, Alert } from "react-native";
 import { useTranslation } from "react-i18next";
 import { useTheme } from "@/contexts/theme-context";
-import { useCallback, useState } from "react";
+import { useEffect, useState } from "react";
 import { quantityTypeProp } from "@/types/shoppinglist/quantityTypeProp";
 import { ModalProp } from "@/types/shoppinglist/addShoppingListProp";
 import { ModalQuantityType } from "../shoppinglist/modalAmountType";
-import { router, useFocusEffect } from "expo-router";
+import { router } from "expo-router";
 import { usePantry } from "@/contexts/pantry-context";
 import Button from "../button";
 import { getModifyModalStyle } from "@/styles/shoppinglist/modals/modify";
@@ -17,32 +17,42 @@ export default function EditShoppingListItem({ id, isOpen, setIsOpen, type }: Mo
     const { t } = useTranslation();
     const { scheme: colorScheme } = useTheme();
     const styles = getModifyModalStyle({ colorScheme });
-    const [quantityTypes, setQuantityTypes] = useState<quantityTypeProp[]>([]);
     const [quantity, setQuantity] = useState<number>(1);
+    const [quantityCategory, setQuantityCategory] = useState<string>("");
     const [quantityType, setQuantityType] = useState<quantityTypeProp | null>(null);
-    const { loadQuantityTypes, editPantryItem } = usePantry();
-    const { getItemById, editItem } = useShoppingList();
+    const { quantityTypes, loadQuantityTypes, editPantryItem, getItemById: getPantryById } = usePantry();
+    const { getItemById, editItem, setEditModeId } = useShoppingList();
 
-    useFocusEffect(
-        useCallback(() => {
-            const init = async () => {
-                const types = await loadQuantityTypes() as quantityTypeProp[];
-                setQuantityTypes(types);
-                if (type === "pantry") {
+    useEffect(() => {
+        const fetchData = async () => {
+            loadQuantityTypes();
+            setQuantityType(quantityTypes[0]);
+        };
 
-                } else {
-                    const item = await getItemById(Number(id));
-                    if (item.data) {
-                        setQuantity(item.data.quantity);
-                        const foundType = types.find(qt => qt.id === item.data.quantityunitid);
-                        setQuantityType(foundType ? foundType : types[0]);
-                    }
-                }
-            };
-            init();
-            // eslint-disable-next-line react-hooks/exhaustive-deps
-        }, [])
-    );
+        fetchData();
+
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
+
+    useEffect(() => {
+        const fetchItemData = async () => {
+            const fetchItem = type !== "pantry" ? getItemById : getPantryById;
+            const item = await fetchItem(String(id));
+            if (item.data) {
+                setQuantity(item.data.quantity);
+                const unitIndex = quantityTypes.findIndex((q: quantityTypeProp) => q.id === item.data.quantityunitid);
+                setQuantityCategory(item.data.category);
+                setQuantityType(quantityTypes[unitIndex >= 0 ? unitIndex : 0]);
+            } else {
+                setQuantity(1);
+                setQuantityType(quantityTypes[0]);
+            }
+        }
+
+        fetchItemData();
+    }, [getItemById, getPantryById, id, quantityTypes, type]);
+
+
 
     return (
         <Modal
@@ -79,7 +89,7 @@ export default function EditShoppingListItem({ id, isOpen, setIsOpen, type }: Mo
                                 placeholder={t("shoppinglist.quantity")}
                             />
                             <View>
-                                <ModalQuantityType setQuantityType={setQuantityType} quantityType={quantityType} />
+                                <ModalQuantityType setQuantityType={setQuantityType} quantityType={quantityType} quantityCategory={quantityCategory} />
                             </View>
                         </View>
                         <View style={{
@@ -99,11 +109,13 @@ export default function EditShoppingListItem({ id, isOpen, setIsOpen, type }: Mo
                                             quantity,
                                             quantityUnitId: Number(quantityType?.id)
                                         });
+                                        setEditModeId("-1");
                                     }
                                     setQuantity(1);
-                                    setQuantityType(quantityTypes[0]);
+                                    if (quantityTypes.length > 0) {
+                                        setQuantityType(quantityTypes[0]);
+                                    }
                                     router.back();
-                                    //TODO: Még annyit cisnálni majd hogy eltüntetni a gombokat
                                 }
                                 catch {
                                     //TODO: Fordítás

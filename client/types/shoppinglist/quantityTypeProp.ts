@@ -7,4 +7,5 @@ export type quantityTypeProp = {
   multiplyToBase: number;
   biggerUnit: string | null;
   divideToBigger: number;
+  category: string;
 };

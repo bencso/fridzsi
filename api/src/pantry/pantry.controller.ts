@@ -48,6 +48,14 @@ export class PantryController {
     return this.pantryService.getUserPantryItemByCode(request, code);
   }
 
+  @Get('/item/id/:id')
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard)
+  @HttpCode(HttpStatus.OK)
+  getUserPantryItemById(@Req() request: Request, @Param('id') id: string): any {
+    return this.pantryService.getUserPantryItemById(request, id);
+  }
+
   @Post('/edit/:id')
   @ApiBearerAuth()
   @UseGuards(AuthGuard)

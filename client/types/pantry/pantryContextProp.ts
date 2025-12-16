@@ -18,4 +18,5 @@ export type PantryContextProp = {
   getItemsById: (code: number) => Promise<any | null>;
   quantityTypes: quantityTypeProp[];
   loadQuantityTypes: () => Promise<any | null>;
+  getItemById: (id?: string | null | undefined) => Promise<any>
 };

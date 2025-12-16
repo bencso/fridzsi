@@ -19,11 +19,11 @@ import { ShoppingListItem } from "@/types/shoppinglist/noteClass";
 export default function ShoppingListScreen() {
   const { scheme: colorScheme } = useTheme();
   const { t } = useTranslation();
+  const { editModeId, setEditModeId } = useShoppingList();
   const [addModalOpen, setAddModalOpen] = useState<boolean>(false);
 
   const styles = getShoppingListStyle({ colorScheme });
   const navbarStyle = getNavbarStyles({ colorScheme });
-  const [editModeId, setEditModeId] = useState<string>("-1");
   const { getFirstDate, shoppingList, getItemDates } = useShoppingList();
 
   const noteRefs = useRef<{ pan: Animated.ValueXY; panResponder: any }[]>([]);

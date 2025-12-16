@@ -158,6 +158,49 @@ let PantryService = class PantryService {
         else
             return { message: ['Sikertelen lekérdezés'], statusCode: 404 };
     }
+    async getUserPantryItemById(request, id) {
+        const requestUser = await this.sessionsService.validateAccessToken(request);
+        const user = await this.usersService.findUser(requestUser.email);
+        if (user) {
+            const products = await this.dataSource
+                .getRepository(pantry_entity_1.Pantry)
+                .createQueryBuilder('pantry')
+                .innerJoin('pantry.product', 'product')
+                .innerJoin('pantry.quantity_unit', 'quantity_unit')
+                .select([
+                'pantry.id AS index',
+                'product.product_name AS name',
+                'pantry.quantity AS quantity',
+                'pantry.quantity_unit AS quantityUnit',
+                'pantry.expiredAt AS expiredAt',
+                'product.code AS code',
+                'quantity_unit.id as quantityUnitId',
+                'quantity_unit.label as quantityUnit',
+                'quantity_unit.en as quantityUnitEn',
+                'quantity_unit.hu as quantityUnitHu',
+                'quantity_unit.category as category',
+            ])
+                .where('pantry.user = :userId', { userId: user.id })
+                .andWhere('pantry.id = :id', { id })
+                .andWhere('pantry.expiredAt >= :now', { now: new Date() })
+                .getRawOne();
+            return products
+                ? {
+                    message: ['Sikeres lekérdezés'],
+                    statusCode: 200,
+                    data: products,
+                }
+                : {
+                    message: [
+                        'Nincs semmi a raktárjában a felhasználónak az alábbi kóddal!',
+                    ],
+                    statusCode: 404,
+                    products: [],
+                };
+        }
+        else
+            return { message: ['Sikertelen lekérdezés'], statusCode: 404 };
+    }
     async remove(request, id) {
         const requestUser = await this.sessionsService.validateAccessToken(request);
         const user = await this.usersService.findUser(requestUser.email);

@@ -92,6 +92,17 @@ export function PantryProvider({ children }: { children: ReactNode }) {
         }
     }
 
+
+    async function getItemById(id?: string | null) {
+        try {
+            const response = await api.get("/pantry/item/id/" + Number(id), { withCredentials: true });
+            return response.data;
+        }
+        catch (error: any) {
+            return "Hiba történt lekérdezés közben: " + error;
+        }
+    }
+
     const setProductItemByCode = async (code: string) => {
         try {
             const response = await api.get("/product/items/code/" + code);
@@ -196,7 +207,7 @@ export function PantryProvider({ children }: { children: ReactNode }) {
     }
 
     return (
-        <PantryContext.Provider value={{ pantry, loadPantry, isLoading, addPantryItem, deletePantryItem, product, getItemsById, setProductItemByCode, searchProductByKeyword, scanned, setScanned, setProduct, editPantryItem, loadQuantityTypes, quantityTypes }}>
+        <PantryContext.Provider value={{ pantry, loadPantry, isLoading, addPantryItem, deletePantryItem, product, getItemsById, setProductItemByCode, searchProductByKeyword, scanned, setScanned, setProduct, editPantryItem, loadQuantityTypes, quantityTypes, getItemById }}>
             {children}
         </PantryContext.Provider>
     );

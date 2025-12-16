@@ -17,6 +17,7 @@ export declare class PantryService {
     create(request: Request, createPantryItemDto: CreatePantryItemDto): Promise<ReturnDataDto | ReturnDto>;
     getUserPantry(request: Request): Promise<ReturnPantryDto | ReturnDto>;
     getUserPantryItemByCode(request: Request, code: string): Promise<ReturnPantryDto | ReturnDto>;
+    getUserPantryItemById(request: Request, id: string): Promise<ReturnPantryDto | ReturnDto>;
     remove(request: Request, id: number[]): Promise<ReturnDto>;
     edit(request: Request, id: number, quantity: number, quantityType: number): Promise<ReturnDto>;
 }

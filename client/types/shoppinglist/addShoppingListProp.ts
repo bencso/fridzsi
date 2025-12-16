@@ -1,8 +1,8 @@
 import { Dispatch, SetStateAction } from "react";
 
 export type ModalProp = {
-  id?: number | string;
+  id: string|number;
   isOpen: boolean;
-  setIsOpen: Dispatch<SetStateAction<boolean>>;
+  setIsOpen: Dispatch<SetStateAction<boolean>> ;
   type: "pantry" | "shoppinglist";
 };

@@ -9,10 +9,12 @@ import { useTranslation } from "react-i18next";
 
 export function ModalQuantityType({
     quantityType,
-    setQuantityType
+    setQuantityType,
+    quantityCategory
 }: {
     quantityType: quantityTypeProp | null,
-    setQuantityType: Dispatch<SetStateAction<quantityTypeProp | null>>
+    setQuantityType: Dispatch<SetStateAction<quantityTypeProp | null>>,
+    quantityCategory?: string | null,
 }) {
     const [modalVisible, setModalVisible] = useState<boolean>(false);
     const { quantityTypes } = usePantry();
@@ -52,7 +54,12 @@ export function ModalQuantityType({
                             mode="dropdown"
                         >
                             {
-                                quantityTypes.map((quantityType: quantityTypeProp, idx: number) => {
+                                quantityTypes.filter((q) => {
+                                    if (quantityCategory) {
+                                        return q.category === quantityCategory
+                                    } else
+                                        return true;
+                                }).map((quantityType: quantityTypeProp, idx: number) => {
                                     return (
                                         <Picker.Item label={quantityType?.label} key={idx} value={quantityType?.id} />
                                     )

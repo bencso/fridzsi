@@ -18,6 +18,7 @@ export function ShoppingListProvider({ children }: { children: ReactNode }) {
         date: Date
     } | undefined>();
     const [shoppingListDays, setShoppingListDays] = useState<{ date: Date; }[]>([]);
+    const [editModeId, setEditModeId] = useState<string>("-1");
 
     async function getFirstDate(): Promise<void> {
         const response = await api.get("/shoppinglist/items/dates", { withCredentials: true });
@@ -55,10 +56,11 @@ export function ShoppingListProvider({ children }: { children: ReactNode }) {
                             const name = data.name ?? "";
                             const quantityUnit = Array.isArray(data.quantityUnit) ? data.quantityUnit[0] : "";
                             const day = data.expiredAt?.[0] ? new Date(data.expiredAt[0]) : new Date();
+                            let quantityValue = Number(test.converted_quantity);
                             returnItems.push(new ShoppingListItem(
                                 data.code,
                                 name,
-                                Number(test.converted_quantity).toFixed(3),
+                                Number.isInteger(quantityValue) ? quantityValue.toString() : quantityValue.toFixed(3),
                                 day,
                                 test.quantityuniten,
                                 test.quantityunithu,
@@ -164,9 +166,9 @@ export function ShoppingListProvider({ children }: { children: ReactNode }) {
         }
     }
 
-    async function getItemById(id?: number | null) {
+    async function getItemById(id?: string | null) {
         try {
-            const response = await api.get("/shoppinglist/item/id/" + id, { withCredentials: true });
+            const response = await api.get("/shoppinglist/item/id/" + Number(id), { withCredentials: true });
             return response.data;
         }
         catch (error: any) {
@@ -189,7 +191,7 @@ export function ShoppingListProvider({ children }: { children: ReactNode }) {
 
 
     return (
-        <ShoppingListContext.Provider value={{ shoppingList, getFirstDate, getItemByDate, selectedDay, setSelectedDay, getItemDates, shoppingListDays, setShoppingListDays, changeDateItem, deleteItem, addNewShoppingItem, getNowList, getItemByCode, getItemById, editItem }}>
+        <ShoppingListContext.Provider value={{ shoppingList, getFirstDate, getItemByDate, selectedDay, setSelectedDay, getItemDates, shoppingListDays, setShoppingListDays, changeDateItem, deleteItem, addNewShoppingItem, getNowList, getItemByCode, getItemById, editItem, editModeId, setEditModeId }}>
             {children}
         </ShoppingListContext.Provider>
     );

@@ -45,7 +45,7 @@ export default function StickyNote({ note, idx, noteRefs, styles, editMode }: {
                     </ThemedText></>
             }
             {
-                editMode === note.id && <ThemedView style={{
+                editMode && editMode === note.id && <ThemedView style={{
                     ...styles.noteContainer
                 }}><ThemedText style={{ fontSize: 14, fontWeight: "900", color: note.getColors().text, fontFamily: Fonts.bold, textOverflow: "clip", overflow: "hidden", maxWidth: 200 }}>
                         {note.name}
@@ -67,7 +67,7 @@ export default function StickyNote({ note, idx, noteRefs, styles, editMode }: {
                             ...styles.noteManipulationBtn,
                             backgroundColor: Colors[scheme ?? "light"].uncorrect
                         }} onPress={() => {
-                              if (note.id) {
+                            if (note.id) {
                                 router.navigate({ pathname: "/shoppinglist/modify/deleteItem", params: { id: note.id } });
                             }
                         }}>

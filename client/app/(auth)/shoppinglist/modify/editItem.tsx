@@ -28,7 +28,7 @@ export default function EditItemScreen() {
     const { scheme } = useTheme();
     const { t } = useTranslation();
     const params = useLocalSearchParams();
-    const { getItemByCode} = useShoppingList();
+    const { getItemByCode } = useShoppingList();
 
     const { Language } = useLanguage();
     const disabledButton = !!selectedItemId;
@@ -71,7 +71,7 @@ export default function EditItemScreen() {
                         <TouchableOpacity
                             style={{
                                 flexDirection: "row", width: "100%", justifyContent: "space-between", padding: 16, marginTop: 16, alignItems: "center", borderRadius: 24, borderWidth: 1, borderColor: selectedItemId === product.id
-                                    ? Colors[scheme ?? "light"].primary : Colors[scheme ?? "light"].border, backgroundColor: selectedItemId === product.id
+                                    ? Colors[scheme ?? "light"].primary : Colors[scheme ?? "light"].border, backgroundColor: selectedItemId&&selectedItemId === product.id
                                         ? Colors[scheme ?? "light"].primary : Colors[scheme ?? "light"].border
                             }}
                             onPress={() => selectItem({

@@ -17,6 +17,12 @@ export type ShoppingListContextProp = {
       | undefined
     >
   >;
+   setEditModeId: React.Dispatch<
+    React.SetStateAction<
+      | string
+    >
+  >;
+  editModeId: string;
   getItemDates: Promise<void> | any;
   shoppingListDays:
     | {
@@ -41,7 +47,7 @@ export type ShoppingListContextProp = {
   }) => Promise<void | string>;
   getNowList: (params: { q?: string | null }) => Promise<any>;
   getItemByCode: (code?: string | null) => Promise<any>;
-  getItemById: (id?: number | null) => Promise<any>;
+  getItemById: (id?: string | null) => Promise<any>;
   editItem: ({
     id,
     quantity,

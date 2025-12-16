@@ -31,6 +31,9 @@ let PantryController = class PantryController {
     getUserPantryItemByCode(request, code) {
         return this.pantryService.getUserPantryItemByCode(request, code);
     }
+    getUserPantryItemById(request, id) {
+        return this.pantryService.getUserPantryItemById(request, id);
+    }
     edit(request, id, quantity, quantityType) {
         return this.pantryService.edit(request, id, quantity, quantityType);
     }
@@ -70,6 +73,17 @@ __decorate([
     __metadata("design:paramtypes", [Object, String]),
     __metadata("design:returntype", Object)
 ], PantryController.prototype, "getUserPantryItemByCode", null);
+__decorate([
+    (0, common_1.Get)('/item/id/:id'),
+    (0, swagger_1.ApiBearerAuth)(),
+    (0, common_1.UseGuards)(auth_guard_1.AuthGuard),
+    (0, common_1.HttpCode)(common_1.HttpStatus.OK),
+    __param(0, (0, common_1.Req)()),
+    __param(1, (0, common_1.Param)('id')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, String]),
+    __metadata("design:returntype", Object)
+], PantryController.prototype, "getUserPantryItemById", null);
 __decorate([
     (0, common_1.Post)('/edit/:id'),
     (0, swagger_1.ApiBearerAuth)(),

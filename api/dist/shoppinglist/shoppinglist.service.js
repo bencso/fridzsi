@@ -101,6 +101,7 @@ let ShoppingListService = class ShoppingListService {
                     'quantity_unit.label as quantityUnit',
                     'quantity_unit.en as quantityUnitEn',
                     'quantity_unit.hu as quantityUnitHu',
+                    'quantity_unit.category as category',
                 ])
                     .where('shoppinglist.user = :userId', { userId: user.id })
                     .andWhere('shoppinglist.id = :id', { id: id })
@@ -153,7 +154,6 @@ let ShoppingListService = class ShoppingListService {
                     .andWhere('shoppinglist.user = :userId', { userId: user.id })
                     .orderBy('shoppinglist.day, quantity_unit.id, shoppinglist.quantity')
                     .getRawMany();
-                console.log(shoppingList);
                 return shoppingList.length > 0
                     ? {
                         message: ['Sikeres lekérdezés'],
