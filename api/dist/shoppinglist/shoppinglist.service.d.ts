@@ -18,7 +18,11 @@ export declare class ShoppingListService {
         date: string;
         request: Request;
     }): Promise<ReturnDataDto | ReturnDto>;
-    getItemById({ code, request, }: {
+    getItemById({ id, request, }: {
+        id: string;
+        request: Request;
+    }): Promise<ReturnDataDto | ReturnDto>;
+    getItemByCode({ code, request, }: {
         code: string;
         request: Request;
     }): Promise<ReturnDataDto | ReturnDto>;

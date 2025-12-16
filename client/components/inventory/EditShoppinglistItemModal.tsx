@@ -6,7 +6,7 @@ import { useCallback, useState } from "react";
 import { quantityTypeProp } from "@/types/shoppinglist/quantityTypeProp";
 import { ModalProp } from "@/types/shoppinglist/addShoppingListProp";
 import { ModalQuantityType } from "../shoppinglist/modalAmountType";
-import { useFocusEffect } from "expo-router";
+import { router, useFocusEffect } from "expo-router";
 import { usePantry } from "@/contexts/pantry-context";
 import Button from "../button";
 import { getModifyModalStyle } from "@/styles/shoppinglist/modals/modify";
@@ -17,24 +17,32 @@ export default function EditShoppingListItem({ id, isOpen, setIsOpen, type }: Mo
     const { t } = useTranslation();
     const { scheme: colorScheme } = useTheme();
     const styles = getModifyModalStyle({ colorScheme });
-    const [quantityTypes] = useState<quantityTypeProp[]>([]);
+    const [quantityTypes, setQuantityTypes] = useState<quantityTypeProp[]>([]);
     const [quantity, setQuantity] = useState<number>(1);
     const [quantityType, setQuantityType] = useState<quantityTypeProp | null>(null);
     const { loadQuantityTypes, editPantryItem } = usePantry();
     const { getItemById, editItem } = useShoppingList();
 
-    useFocusEffect(useCallback(() => {
-        loadQuantityTypes();
-        if (type === "pantry") {
-            
-        } else {
-            (async () => {
-                await getItemById(Number(id));
-            })();
-        }
-        setQuantityType(quantityTypes[0]);
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []));
+    useFocusEffect(
+        useCallback(() => {
+            const init = async () => {
+                const types = await loadQuantityTypes() as quantityTypeProp[];
+                setQuantityTypes(types);
+                if (type === "pantry") {
+
+                } else {
+                    const item = await getItemById(Number(id));
+                    if (item.data) {
+                        setQuantity(item.data.quantity);
+                        const foundType = types.find(qt => qt.id === item.data.quantityunitid);
+                        setQuantityType(foundType ? foundType : types[0]);
+                    }
+                }
+            };
+            init();
+            // eslint-disable-next-line react-hooks/exhaustive-deps
+        }, [])
+    );
 
     return (
         <Modal
@@ -94,6 +102,8 @@ export default function EditShoppingListItem({ id, isOpen, setIsOpen, type }: Mo
                                     }
                                     setQuantity(1);
                                     setQuantityType(quantityTypes[0]);
+                                    router.back();
+                                    //TODO: Még annyit cisnálni majd hogy eltüntetni a gombokat
                                 }
                                 catch {
                                     //TODO: Fordítás

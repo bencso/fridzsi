@@ -28,9 +28,15 @@ let ShoppingListController = class ShoppingListController {
             request: request,
         });
     }
-    async getItemById(code, request) {
-        return this.shoppinglistService.getItemById({
+    async getItemByCode(code, request) {
+        return this.shoppinglistService.getItemByCode({
             code: code,
+            request: request,
+        });
+    }
+    async getItemById(id, request) {
+        return this.shoppinglistService.getItemById({
+            id: id,
             request: request,
         });
     }
@@ -59,7 +65,7 @@ let ShoppingListController = class ShoppingListController {
             request,
             id,
             quantity: data.quantity,
-            quantityUnitId: data.quantityunitId,
+            quantityUnitId: data.quantityUnitId,
         });
     }
     async removeItem(ids, request) {
@@ -87,6 +93,17 @@ __decorate([
     (0, common_1.UseGuards)(auth_guard_1.AuthGuard),
     (0, common_1.HttpCode)(common_1.HttpStatus.OK),
     __param(0, (0, common_1.Param)('code')),
+    __param(1, (0, common_1.Req)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, Object]),
+    __metadata("design:returntype", Promise)
+], ShoppingListController.prototype, "getItemByCode", null);
+__decorate([
+    (0, common_1.Get)('/item/id/:id'),
+    (0, swagger_1.ApiBearerAuth)(),
+    (0, common_1.UseGuards)(auth_guard_1.AuthGuard),
+    (0, common_1.HttpCode)(common_1.HttpStatus.OK),
+    __param(0, (0, common_1.Param)('id')),
     __param(1, (0, common_1.Req)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String, Object]),

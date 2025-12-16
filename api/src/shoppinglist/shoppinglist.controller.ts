@@ -35,9 +35,20 @@ export class ShoppingListController {
   @ApiBearerAuth()
   @UseGuards(AuthGuard)
   @HttpCode(HttpStatus.OK)
-  async getItemById(@Param('code') code: string, @Req() request: Request) {
-    return this.shoppinglistService.getItemById({
+  async getItemByCode(@Param('code') code: string, @Req() request: Request) {
+    return this.shoppinglistService.getItemByCode({
       code: code,
+      request: request,
+    });
+  }
+
+  @Get('/item/id/:id')
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard)
+  @HttpCode(HttpStatus.OK)
+  async getItemById(@Param('id') id: string, @Req() request: Request) {
+    return this.shoppinglistService.getItemById({
+      id: id,
       request: request,
     });
   }
@@ -94,14 +105,14 @@ export class ShoppingListController {
   async editItem(
     @Param('id')
     id: number,
-    @Body() data: { quantity: number; quantityunitId: number },
+    @Body() data: { quantity: number; quantityUnitId: number },
     @Req() request: Request,
   ) {
     return this.shoppinglistService.editItem({
       request,
       id,
       quantity: data.quantity,
-      quantityUnitId: data.quantityunitId,
+      quantityUnitId: data.quantityUnitId,
     });
   }
 

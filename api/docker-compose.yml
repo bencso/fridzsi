@@ -39,6 +39,8 @@ services:
       db:
         condition: service_healthy
     restart: unless-stopped
+    volumes:
+      - ../api:/src/app
     networks:
       - backend
 

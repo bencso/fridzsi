@@ -150,7 +150,7 @@ export function ShoppingListProvider({ children }: { children: ReactNode }) {
             return response.data;
         }
         catch (error: any) {
-            return "Hiba történt létrehozás közben: " + error;
+            return "Hiba történt lekérdezés közben: " + error;
         }
     }
 
@@ -160,7 +160,7 @@ export function ShoppingListProvider({ children }: { children: ReactNode }) {
             return response.data;
         }
         catch (error: any) {
-            return "Hiba történt létrehozás közben: " + error;
+            return "Hiba történt lekérdezés közben: " + error;
         }
     }
 
@@ -170,7 +170,7 @@ export function ShoppingListProvider({ children }: { children: ReactNode }) {
             return response.data;
         }
         catch (error: any) {
-            return "Hiba történt létrehozás közben: " + error;
+            return "Hiba történt lekérdezés közben: " + error;
         }
     }
 

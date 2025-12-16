@@ -91,6 +91,54 @@ export class ShoppingListService {
   }
 
   async getItemById({
+    id,
+    request,
+  }: {
+    id: string;
+    request: Request;
+  }): Promise<ReturnDataDto | ReturnDto> {
+    try {
+      const requestUser =
+        await this.sessionsService.validateAccessToken(request);
+      const user = await this.usersService.findUser(requestUser.email);
+
+      if (user) {
+        const shoppingList = await this.dataSource
+          .getRepository(ShoppingList)
+          .createQueryBuilder('shoppinglist')
+          .leftJoinAndSelect('shoppinglist.quantity_unit', 'quantity_unit')
+          .select([
+            'shoppinglist.quantity as quantity',
+            'quantity_unit.id as quantityunitid',
+            'quantity_unit.label as quantityUnit',
+            'quantity_unit.en as quantityUnitEn',
+            'quantity_unit.hu as quantityUnitHu',
+          ])
+          .where('shoppinglist.user = :userId', { userId: user.id })
+          .andWhere('shoppinglist.id = :id', { id: id })
+          .getRawOne();
+
+        return shoppingList
+          ? {
+              message: ['Sikeres lekérdezés'],
+              statusCode: 200,
+              data: shoppingList,
+            }
+          : {
+              message: ['Nincs ilyen termék a bevásárlólistán!'],
+              statusCode: 404,
+              data: shoppingList,
+            };
+      } else return { message: ['Sikertelen lekérdezés'], statusCode: 404 };
+    } catch {
+      return {
+        message: ['Hiba történt a lekérdezés során!'],
+        statusCode: 401,
+      };
+    }
+  }
+
+  async getItemByCode({
     code,
     request,
   }: {
@@ -134,7 +182,7 @@ export class ShoppingListService {
               data: shoppingList,
             }
           : {
-              message: ['Nincs semmi a raktárjában a felhasználónak!'],
+              message: ['Nincs semmi a bevásárlólistáján a felhasználónak!'],
               statusCode: 404,
               data: shoppingList,
             };
@@ -159,7 +207,7 @@ export class ShoppingListService {
         await this.sessionsService.validateAccessToken(request);
       const user = await this.usersService.findUser(requestUser.email);
 
-      const shoppingList = await this.dataSource
+      const shoppingList = this.dataSource
         .getRepository(ShoppingList)
         .createQueryBuilder('shoppinglist')
         .leftJoinAndSelect('shoppinglist.product', 'product')
@@ -196,7 +244,7 @@ export class ShoppingListService {
         return result;
       } else {
         return {
-          message: ['Nincs felvitt item-e a felhasználónak!'],
+          message: ['Nincs felvitt iteme a felhasználónak!'],
           statusCode: 401,
         };
       }
@@ -235,7 +283,7 @@ export class ShoppingListService {
         ];
       } else {
         return {
-          message: ['Nincs felvitt item-e a felhasználónak!'],
+          message: ['Nincs felvitt iteme a felhasználónak!'],
           statusCode: 401,
         };
       }
@@ -404,8 +452,15 @@ export class ShoppingListService {
         .getOne();
 
       if (haveThisItem) {
-        //TODO: A váltást megcsinálni
-        console.log(quantity, quantityUnitId);
+        await this.dataSource
+          .createQueryBuilder()
+          .update(ShoppingList)
+          .set({
+            quantity: quantity,
+            quantity_unit: quantityUnitId,
+          })
+          .where('id = :id', { id })
+          .execute();
         return {
           message: ['Sikeres törlés'],
           statusCode: 200,
