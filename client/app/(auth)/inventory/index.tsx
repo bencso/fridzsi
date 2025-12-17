@@ -29,12 +29,31 @@ export default function InventoryScreen() {
 
   return (
     <>
-    <ThemedView style={styles.container}>
-    <View style={navbarStyle.navbar}>
-      <ThemedText type="title" style={navbarStyle.title}>
-        {t("inventory.title")}
-      </ThemedText>
-    </View>
+      <ThemedView style={styles.container}>
+        <View style={navbarStyle.navbar}>
+          <ThemedText type="title" style={navbarStyle.title}>
+            {t("inventory.title")}
+          </ThemedText>
+        </View>
+        {
+          pantry.length === 0 && (
+            <ThemedView
+              style={{
+          paddingTop: 300,
+          paddingHorizontal: 32,
+          alignItems: "center",
+          justifyContent: "center",
+              }}
+            >
+              <ThemedText type="title" style={{ marginBottom: 12, opacity: 0.7 }}>
+          {t("inventory.empty")}
+              </ThemedText>
+              <ThemedText type="default" style={{ color: "#888", textAlign: "center" }}>
+          {t("inventory.emptyDescription") || "Nincs még egyetlen termék sem a készletben. Adj hozzá új terméket a kezdéshez!"}
+              </ThemedText>
+            </ThemedView>
+          )
+        }
         {
           (pantry !== null) && <ThemedView style={styles.content}>
             <ScrollView showsVerticalScrollIndicator={false} scrollToOverflowEnabled style={{ height: "100%", overflow: "hidden", width: "100%" }}>
@@ -50,9 +69,7 @@ export default function InventoryScreen() {
             </ScrollView>
           </ThemedView>
         }
-        {
-          (pantry === null) && <ThemedText>{t("inventory.empty")}</ThemedText>
-        }
+
       </ThemedView>
     </>)
 }

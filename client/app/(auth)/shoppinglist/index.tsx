@@ -77,7 +77,7 @@ export default function ShoppingListScreen() {
               {shoppingList.map((note: ShoppingListItem, idx: number) => (
                 <StickyNote editMode={editModeId} noteRefs={noteRefs} note={note} idx={idx} styles={styles} key={note.id + "-" + idx} />
               ))}
-              <AddShoppinglistModal type="shoppinglist" isOpen={addModalOpen} setIsOpen={setAddModalOpen} />
+              <AddShoppinglistModal id={editModeId} type="shoppinglist" isOpen={addModalOpen} setIsOpen={setAddModalOpen} />
               <TouchableHighlight
                 style={{
                   backgroundColor: "#B3E5FC",
