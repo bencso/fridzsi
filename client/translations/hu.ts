@@ -75,6 +75,8 @@ export default {
   inventory: {
     cta: "Kamra",
     title: "Az Ön kamrája",
+      empty: "Az Ön kamrája üres",
+  emptyDescription: "Adjon hozzá termékeket a kamrájához a kezdéshez.",
     permission: {
       title: "A kamera használatához engedély szükséges.",
       description:

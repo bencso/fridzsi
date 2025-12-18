@@ -6,7 +6,7 @@ import { Colors, Fonts } from "@/constants/theme";
 import { ShoppingListItem } from "@/types/shoppinglist/noteClass";
 import { useLanguage } from "@/contexts/language-context";
 import { ThemedView } from "../themed-view";
-import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { Ionicons } from "@expo/vector-icons";
 import { useTheme } from "@/contexts/theme-context";
 import { router } from "expo-router";
 
@@ -61,7 +61,7 @@ export default function StickyNote({ note, idx, noteRefs, styles, editMode }: {
                             }
                         }}>
 
-                            <MaterialCommunityIcons name="pen" size={20} />
+                            <Ionicons name="pen" size={20} />
                         </TouchableOpacity>
                         <TouchableOpacity style={{
                             ...styles.noteManipulationBtn,
@@ -71,7 +71,7 @@ export default function StickyNote({ note, idx, noteRefs, styles, editMode }: {
                                 router.navigate({ pathname: "/shoppinglist/modify/deleteItem", params: { id: note.id } });
                             }
                         }}>
-                            <MaterialCommunityIcons name="trash-can" color={Colors[scheme ?? "light"].background} size={20} />
+                            <Ionicons name="trash-can" color={Colors[scheme ?? "light"].background} size={20} />
                         </TouchableOpacity>
                     </ThemedView>
                 </ThemedView>

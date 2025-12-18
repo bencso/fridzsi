@@ -66,10 +66,10 @@ export default function CameraScreen() {
         active && <CameraOverlay facing={facing} torch={torch} />
       }
       <ThemedView style={styles.cameraTools}>
-        <Button icon={torch ? "flashlight" : "flashlight-off"} label="" chevron={false} coloredIcon action={() => {
+        <Button icon={torch ? "flash" : "flash-off"} label="" chevron={false} coloredIcon action={() => {
           setTorch(!torch);
         }} />
-        <Button icon={"pen"} label={t("inventory.camera.custominput")} chevron={false} coloredIcon action={() => {
+        <Button icon={"add"} label={t("inventory.camera.custominput")} chevron={false} coloredIcon action={() => {
           setProduct(null);
           router.navigate("/(auth)/camera/customInput");
         }} />

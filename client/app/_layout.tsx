@@ -5,7 +5,7 @@ import { ThemeProvider, useTheme } from "@/contexts/theme-context";
 import en from "@/translations/en";
 import hu from "@/translations/hu";
 import { useFonts } from "expo-font";
-import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { Ionicons } from "@expo/vector-icons";
 import {
   DarkTheme,
   DefaultTheme,
@@ -121,7 +121,7 @@ function AppContent() {
                   }}
                   onPress={() => router.navigate("/settings")}
                 >
-                  <MaterialCommunityIcons
+                  <Ionicons
                     name="cog"
                     size={24}
                     color={Colors[scheme ?? "light"].tabIconSelected}
@@ -148,9 +148,9 @@ function AppContent() {
                   }}
                   onPress={() => router.navigate("/settings")}
                 >
-                  <MaterialCommunityIcons
+                  <Ionicons
                     name="cog"
-                    color={pathname === "/" ? Colors[scheme === "light" ? "dark" : "light"].tabIconDefault : Colors[scheme ?? "light"].tabIconDefault}
+                    color={pathname === "/" ? Colors[scheme ?? "light"].tabIconDefault : Colors[scheme ?? "light"].text}
                     size={24}
                   />
                 </TouchableOpacity>
@@ -183,8 +183,8 @@ function AppContent() {
                   router.back();
                 }}
               >
-                <MaterialCommunityIcons
-                  name="chevron-left"
+                <Ionicons
+                  name="chevron-back"
                   size={24}
                   color={Colors[scheme ?? "light"].text}
                 />

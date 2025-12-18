@@ -1,7 +1,7 @@
 import { Colors } from "@/constants/theme";
 import { getInventoryStyle } from "@/styles/inventory";
 import { PantryType } from "@/types/pantry/pantryType";
-import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
 import { TouchableOpacity, View } from "react-native";
 import { ThemedText } from "../themed-text";
@@ -44,7 +44,7 @@ export
                     }
                 }} >
                     <ThemedText style={styles.deleteButtonText}>
-                        <MaterialCommunityIcons name="pen" size={24} />
+                        <Ionicons name="pen" size={24} />
                     </ThemedText>
                 </TouchableOpacity>
                 <TouchableOpacity style={styles.deleteButton} onPress={async () => {
@@ -52,7 +52,7 @@ export
                         router.navigate({ pathname: "/inventory/modify/deleteItem", params: { code } });
                     }
                 }} >
-                    <ThemedText style={styles.deleteButtonText}><MaterialCommunityIcons name="trash-can" size={24} /></ThemedText>
+                    <ThemedText style={styles.deleteButtonText}><Ionicons name="trash-can" size={24} /></ThemedText>
                 </TouchableOpacity>
             </Reanimated.View>
         );

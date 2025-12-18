@@ -1,6 +1,6 @@
 import { Colors } from "@/constants/theme";
 import { useTheme } from "@/contexts/theme-context";
-import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { Ionicons } from "@expo/vector-icons";
 import { TouchableOpacity, View } from "react-native";
 import { ThemedText } from "./themed-text";
 import { getButtonStyles } from "@/styles/button";
@@ -16,7 +16,7 @@ export default function Button({
   label: string;
   action: Promise<void> | void | Function | any;
   chevron?: boolean;
-  icon?: keyof typeof MaterialCommunityIcons.glyphMap;
+  icon?: keyof typeof Ionicons.glyphMap;
   coloredIcon?: boolean;
   disabled?: boolean;
 }) {
@@ -31,7 +31,7 @@ export default function Button({
     <TouchableOpacity style={styles.button} disabled={disabledButton} onPress={action} >
         <View style={styles.row}>
         {icon && (
-          <MaterialCommunityIcons
+          <Ionicons
             name={icon}
             size={24}
             color={Colors["light"].buttomText}
@@ -49,8 +49,8 @@ export default function Button({
         </View>
       {
         chevron ?? (
-          <MaterialCommunityIcons
-            name="chevron-right"
+          <Ionicons
+            name="chevron-forward"
             size={24}
             color={coloredIcon ? Colors[scheme ?? "light"].neutral : Colors[scheme ?? "light"].buttomText}
             style={styles.chevron}

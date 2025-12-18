@@ -30,8 +30,8 @@ export default function AuthenticatedLayout() {
           <NativeTabs.Trigger name="inventory">
             <Icon
               selectedColor={Colors[scheme ?? "light"].tabIconSelected}
-              sf="cube.box.fill"
-              drawable="custom_cube_drawable"
+              sf="box.truck"
+              drawable="custom_house_drawable"
             />
             <Label>{t("inventory.cta")}</Label>
           </NativeTabs.Trigger>

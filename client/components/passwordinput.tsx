@@ -1,6 +1,6 @@
 import React, { SetStateAction, useRef, useState } from "react";
 import { View, TextInput, TouchableOpacity } from "react-native";
-import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { Ionicons } from "@expo/vector-icons";
 import { Colors } from "@/constants/theme";
 import getLoginStyles from "@/styles/auth/login";
 
@@ -21,7 +21,7 @@ const PasswordInputText = ({
         scheme: scheme,
         disabledButton: false
     });
-    const [eyeIcon, setEyeIcon] = useState<any>("eye-off");
+    const [eyeIcon, setEyeIcon] = useState<any>("eye");
     const [showPassword, setShowPassword] = useState<boolean>(false);
     const passwordRef = useRef(null);
 
@@ -62,7 +62,7 @@ const PasswordInputText = ({
                 }}
                 activeOpacity={0.7}
             >
-                <MaterialCommunityIcons
+                <Ionicons
                     name={eyeIcon}
                     size={24}
                     style={styles.icon}

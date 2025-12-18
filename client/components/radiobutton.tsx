@@ -1,6 +1,6 @@
 import { ThemedText } from "@/components/themed-text";
 import { Colors } from "@/constants/theme";
-import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { Ionicons } from "@expo/vector-icons";
 import { ReactNode } from "react";
 import {
   ColorSchemeName,
@@ -11,7 +11,7 @@ import {
 
 interface OptionsParam {
   label: string;
-  icon: keyof typeof MaterialCommunityIcons.glyphMap | ReactNode;
+  icon: keyof typeof Ionicons.glyphMap | ReactNode;
   value: string;
 }
 
@@ -103,9 +103,9 @@ export const RadioButtons = ({
           >
             <View style={styles.buttonContent}>
               {typeof option.icon === "string" ? (
-                <MaterialCommunityIcons
+                <Ionicons
                   name={
-                    option.icon as keyof typeof MaterialCommunityIcons.glyphMap
+                    option.icon as keyof typeof Ionicons.glyphMap
                   }
                   size={24}
                   color={Colors[colorScheme ?? "light"].buttomText}
@@ -116,7 +116,7 @@ export const RadioButtons = ({
               )}
               <ThemedText style={styles.label}>{option.label}</ThemedText>
             </View>
-            <MaterialCommunityIcons
+            <Ionicons
               name={
                 checkedValue === option.value
                   ? "radiobox-marked"

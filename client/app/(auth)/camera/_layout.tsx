@@ -1,7 +1,7 @@
 import { Colors } from "@/constants/theme";
 import { PantryProvider } from "@/contexts/pantry-context";
 import { useTheme } from "@/contexts/theme-context";
-import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { Ionicons } from "@expo/vector-icons";
 import { router, Stack } from "expo-router";
 import { TouchableOpacity } from "react-native";
 
@@ -29,8 +29,8 @@ export default function CameraLayout() {
                 router.back();
               }}
             >
-              <MaterialCommunityIcons
-                name="chevron-left"
+              <Ionicons
+                name="chevron-back"
                 size={24}
                 color={Colors[scheme ?? "light"].text}
               />

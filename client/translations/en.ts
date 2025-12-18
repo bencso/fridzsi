@@ -83,6 +83,8 @@ export default {
         'Enable camera access in the app settings or press the "Request Permission" button.',
       cta: "Request permission",
       openSettings: "Open settings",
+  empty: "Your pantry is empty",
+  emptyDescription: "Add products to your pantry to get started.",
     },
     camera: {
       cta: "Camera",

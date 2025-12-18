@@ -4,7 +4,7 @@ import { ThemedView } from "@/components/themed-view";
 import { Colors } from "@/constants/theme";
 import { useAuth } from "@/contexts/auth-context";
 import { useTheme } from "@/contexts/theme-context";
-import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -133,7 +133,7 @@ export default function PasswordChangeScreen() {
                 }}
                 activeOpacity={0.7}
               >
-                <MaterialCommunityIcons
+                <Ionicons
                   name={showPassword ? 'eye-off' : 'eye'}
                   size={24}
                   style={styles.icon}
@@ -173,7 +173,7 @@ export default function PasswordChangeScreen() {
                 }}
                 activeOpacity={0.7}
               >
-                <MaterialCommunityIcons
+                <Ionicons
                   name={showPassword ? 'eye-off' : 'eye'}
                   size={24}
                   style={styles.icon}

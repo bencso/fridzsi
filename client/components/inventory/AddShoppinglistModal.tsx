@@ -17,7 +17,6 @@ import { Product } from "@/constants/product.interface";
 import { SearchWithInput } from "../inputWithSearch";
 
 //TODO: Késöbbiekben kellene a kódos felvétel, kamerával
-//TODO: Tizedes számjegy is engedélyezett legyen!
 export default function AddShoppinglistModal({ isOpen, setIsOpen }: ModalProp) {
     const { t } = useTranslation();
     const { scheme: colorScheme } = useTheme();
@@ -90,7 +89,7 @@ export default function AddShoppinglistModal({ isOpen, setIsOpen }: ModalProp) {
                     <View style={{
                         display: "flex", gap: 12
                     }}>
-                        <SearchWithInput setFiltered={setFiltered} filtered={filtered} setProductCode={(code: string) => {
+                        <SearchWithInput styles={{...styles}} setFiltered={setFiltered} filtered={filtered} setProductCode={(code: string) => {
                             setFormState({
                                 ...formState,
                                 code: code

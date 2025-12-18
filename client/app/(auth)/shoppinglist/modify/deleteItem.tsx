@@ -6,7 +6,7 @@ import { useTranslation } from "react-i18next";
 import { getInventoryModifyStyles } from "@/styles/inventory/modify";
 import Button from "@/components/button";
 import { router, useFocusEffect, useLocalSearchParams } from "expo-router";
-import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { Ionicons } from "@expo/vector-icons";
 import { ScrollView, Text, TouchableOpacity, View } from "react-native";
 import { Colors } from "@/constants/theme";
 import { useLanguage } from "@/contexts/language-context";
@@ -101,7 +101,7 @@ export default function DeleteItemScreen() {
                                             <ThemedText>{product.quantity} {Language === "en" ? product.quantityuniten : product.quantityunithu}</ThemedText>
                                         </View>
                                     </View>
-                                    <MaterialCommunityIcons
+                                    <Ionicons
                                         name={
                                             selectedItemsId.includes(product.id)
                                                 ? "check-circle-outline"

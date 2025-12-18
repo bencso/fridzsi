@@ -10,7 +10,7 @@ import { getShoppingListStyle } from "@/styles/shoppinglist";
 import { DaysNextTwoMonth } from "@/components/inventory/DaysList";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import StickyNote from "@/components/inventory/StickyNotes";
-import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { Ionicons } from "@expo/vector-icons";
 import { Fonts } from "@/constants/theme";
 import AddShoppinglistModal from "@/components/inventory/AddShoppinglistModal";
 import { useShoppingList } from "@/contexts/shoppinglist-context";
@@ -91,7 +91,7 @@ export default function ShoppingListScreen() {
                 underlayColor="#B3E5FC"
               >
                 <ThemedText style={{ fontWeight: "900", color: "#01579B", fontFamily: Fonts.bold }}>
-                  <MaterialCommunityIcons size={50} name="plus" />
+                  <Ionicons size={50} name="add" />
                 </ThemedText>
               </TouchableHighlight>
             </SafeAreaView>

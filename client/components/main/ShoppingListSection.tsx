@@ -9,6 +9,7 @@ import { useTranslation } from "react-i18next";
 import { useShoppingList } from "@/contexts/shoppinglist-context";
 import { useFocusEffect } from "expo-router";
 import { ShoppingListItem } from "@/types/shoppinglist/noteClass";
+import { Ionicons } from "@expo/vector-icons";
 
 export const ShoppingListSection = () => {
     const { scheme: colorScheme } = useTheme();
@@ -28,7 +29,7 @@ export const ShoppingListSection = () => {
                 if (!response.message) {
                     const items = response.map((data: { customproductname: string; product_product_quantity_unit: string | null; product_product_name: string | null; shoppinglist_quantity: number; shoppinglist_day: Date; shoppinglist_id: number; quantityunithu: string; quantityuniten: string; quantityunit: string; }) => {
                         const name = data.product_product_name !== null ? data.product_product_name : data.customproductname;
-                        return new ShoppingListItem(data.shoppinglist_id, name, data.shoppinglist_quantity, data.product_product_quantity_unit || "", data.shoppinglist_day, data.quantityuniten, data.quantityunithu, data.quantityunit);
+                        return new ShoppingListItem(data.shoppinglist_id.toString(), name, data.shoppinglist_quantity.toString(), data.shoppinglist_day, data.quantityuniten, data.quantityunithu, data.quantityunit);
                     });
                     setLists(items);
                 } else setLists([]);
@@ -49,9 +50,27 @@ export const ShoppingListSection = () => {
                 color: Colors[colorScheme ?? "light"].background
             }}>{t("shoppinglist.title")}</ThemedText>
             <View>
-                <TextInput clearButtonMode="while-editing" autoComplete="off" returnKeyType="search" keyboardType="web-search" cursorColor={Colors[colorScheme ?? "light"].primary} style={styles.input} autoCapitalize="none" placeholder={t("shoppinglist.search.cta")} value={search} onChangeText={(text: string) => {
-                    setSearch(text);
-                }} />
+                <ThemedView style={{ ...styles.input, padding: 0, paddingLeft: 0, paddingRight: 12, position: 'relative' }}>
+                    <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                        <Ionicons name="search" size={20} color={Colors[colorScheme ?? "light"].text} style={{ marginLeft: 4, marginRight: 12 }} />
+                        <TextInput
+                            style={{ flex: 1 }}
+                            placeholderTextColor={`${Colors[colorScheme ?? "light"].text}80`}
+                            value={search ? search : ""}
+                            maxLength={150}
+                            autoCorrect={false}
+                            clearButtonMode="while-editing"
+                            keyboardType="default"
+                            autoCapitalize="none"
+                            returnKeyType="next"
+                            returnKeyLabel={t("buttons.next")}
+                            onChangeText={async (text) => {
+                                setSearch(text);
+                            }}
+                            placeholder={t("customInput.productName")}
+                        />
+                    </View>
+                </ThemedView>
             </View>
             <ThemedView style={styles.topBar}>
                 <ScrollView showsVerticalScrollIndicator={false}>
