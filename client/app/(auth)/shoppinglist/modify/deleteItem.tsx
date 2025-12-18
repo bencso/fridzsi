@@ -104,8 +104,8 @@ export default function DeleteItemScreen() {
                                     <Ionicons
                                         name={
                                             selectedItemsId.includes(product.id)
-                                                ? "check-circle-outline"
-                                                : "circle-outline"
+                                                ? "checkmark-ellipse-outline"
+                                                : "ellipse-outline"
                                         }
                                         size={24}
                                     />

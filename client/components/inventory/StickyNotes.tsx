@@ -61,7 +61,7 @@ export default function StickyNote({ note, idx, noteRefs, styles, editMode }: {
                             }
                         }}>
 
-                            <Ionicons name="pen" size={20} />
+                            <Ionicons name="create-outline" size={20} />
                         </TouchableOpacity>
                         <TouchableOpacity style={{
                             ...styles.noteManipulationBtn,
@@ -71,7 +71,7 @@ export default function StickyNote({ note, idx, noteRefs, styles, editMode }: {
                                 router.navigate({ pathname: "/shoppinglist/modify/deleteItem", params: { id: note.id } });
                             }
                         }}>
-                            <Ionicons name="trash-can" color={Colors[scheme ?? "light"].background} size={20} />
+                            <Ionicons name="trash" color={Colors[scheme ?? "light"].background} size={20} />
                         </TouchableOpacity>
                     </ThemedView>
                 </ThemedView>

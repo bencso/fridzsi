@@ -30,14 +30,14 @@ export default function SettingsScreen() {
             action={() => {
               router.navigate("/settings/language");
             }}
-            icon="translate"
+            icon="language-outline"
           />
           <Button
             label={t("settings.colortheme.cta")}
             action={() => {
               router.navigate("/settings/theme");
             }}
-            icon="theme-light-dark"
+            icon="contrast-outline"
           />
         </View>
       </ThemedView>
@@ -62,7 +62,7 @@ function AuthenticatedSection() {
         action={() => {
           router.navigate("/settings/passwordchange");
         }}
-        icon="form-textbox-password"
+        icon="bag-outline"
       />
       <Button
         label={t("auth.logout")}
@@ -70,7 +70,7 @@ function AuthenticatedSection() {
           await logout();
         }}
         chevron={false}
-        icon="logout"
+        icon="log-out-outline"
       />
     </ThemedView>
   );

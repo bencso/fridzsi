@@ -36,7 +36,7 @@ export default function ThemeButton() {
           },
           {
             label: t("settings.colortheme.dark"),
-            icon: "moon-waning-crescent",
+            icon: "moon-outline",
             value: "dark",
           },
         ]}

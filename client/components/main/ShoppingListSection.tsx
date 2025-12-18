@@ -24,7 +24,7 @@ export const ShoppingListSection = () => {
 
     useFocusEffect(
         useCallback(() => {
-            (async () => {
+            async function fetchList() {
                 const response = await getNowList({ q: search });
                 if (!response.message) {
                     const items = response.map((data: { customproductname: string; product_product_quantity_unit: string | null; product_product_name: string | null; shoppinglist_quantity: number; shoppinglist_day: Date; shoppinglist_id: number; quantityunithu: string; quantityuniten: string; quantityunit: string; }) => {
@@ -33,9 +33,9 @@ export const ShoppingListSection = () => {
                     });
                     setLists(items);
                 } else setLists([]);
-            })();
-            // eslint-disable-next-line react-hooks/exhaustive-deps
-        }, [search])
+            }
+            fetchList();
+        }, [getNowList, search])
     );
 
     const filteredLists = deferredQuery.length > 0
@@ -73,13 +73,15 @@ export const ShoppingListSection = () => {
                 </ThemedView>
             </View>
             <ThemedView style={styles.topBar}>
-                <ScrollView showsVerticalScrollIndicator={false}>
+                <ScrollView showsVerticalScrollIndicator={false} scrollEnabled={filteredLists.length > 0}>
                     {
-                        filteredLists.length === 0 && <ThemedText style={{
-                            paddingHorizontal: 12,
-                            paddingVertical: 24
-                        }}>{search.length > 0 ? t("shoppinglist.search.notHave") : t("shoppinglist.search.clear")}</ThemedText>
-
+                        filteredLists.length === 0 && (
+                            <View style={{ flex: 1, justifyContent: "center", alignItems: "center", minHeight: 180 }}>
+                                <ThemedText type="default" style={{ color: "#777", textAlign: "center" }}>
+                                    {search.length > 0 ? t("shoppinglist.search.notHave") : t("shoppinglist.search.clear")}
+                                </ThemedText>
+                            </View>
+                        )
                     }
                     {
                         filteredLists.map(({ name, quantity, quantityUnit }: { name: string; quantity?: number; quantityUnit?: string; }, idx: number) => (

@@ -44,7 +44,7 @@ export
                     }
                 }} >
                     <ThemedText style={styles.deleteButtonText}>
-                        <Ionicons name="pen" size={24} />
+                        <Ionicons name="create-outline" size={24} />
                     </ThemedText>
                 </TouchableOpacity>
                 <TouchableOpacity style={styles.deleteButton} onPress={async () => {
@@ -52,7 +52,7 @@ export
                         router.navigate({ pathname: "/inventory/modify/deleteItem", params: { code } });
                     }
                 }} >
-                    <ThemedText style={styles.deleteButtonText}><Ionicons name="trash-can" size={24} /></ThemedText>
+                    <ThemedText style={styles.deleteButtonText}><Ionicons name="trash" size={24} /></ThemedText>
                 </TouchableOpacity>
             </Reanimated.View>
         );

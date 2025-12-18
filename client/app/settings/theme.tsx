@@ -32,12 +32,12 @@ export default function ThemeScreen() {
                             {
                                 label: t("settings.colortheme.light"),
                                 value: "light",
-                                icon: "weather-sunny",
+                                icon: "sunny-outline",
                             },
                             {
                                 label: t("settings.colortheme.dark"),
                                 value: "dark",
-                                icon: "moon-waning-crescent",
+                                icon: "moon-outline",
                             },
                         ]}
                         checkedValue={selectedTheme}

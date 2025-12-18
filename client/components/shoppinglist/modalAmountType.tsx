@@ -66,7 +66,7 @@ export function ModalQuantityType({
                                 })
                             }
                         </Picker>
-                        <Button label={t("shoppinglist.done")} icon="check-circle" action={() => {
+                        <Button label={t("shoppinglist.done")} icon="checkmark" action={() => {
                             setModalVisible(!modalVisible);
                         }} />
                     </View>

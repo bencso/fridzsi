@@ -97,8 +97,8 @@ export default function DeleteItemScreen() {
                                 <Ionicons
                                     name={
                                         selectedItemsId.includes(product.index)
-                                            ? "check-circle-outline"
-                                            : "circle-outline"
+                                            ? "checkmark-circle-outline"
+                                            : "ellipse-outline"
                                     }
                                     size={24}
                                 />
@@ -111,7 +111,7 @@ export default function DeleteItemScreen() {
                 gap: 12,
             }}>
                 {
-                    selectedItemsId.length > 0 && <Button disabled={selectedItemsId.length === 0} label={selectedItemsId.length + " " + t("inventory.deleteItem.cta")} icon="trash-can" action={async () => {
+                    selectedItemsId.length > 0 && <Button disabled={selectedItemsId.length === 0} label={selectedItemsId.length + " " + t("inventory.deleteItem.cta")} icon="trash" action={async () => {
                         if (selectedItemsId.length > 0) {
                             try {
                                 await deletePantryItem({ id: selectedItemsId });

@@ -202,6 +202,7 @@ export class ShoppingListService {
     request: Request;
   }): Promise<ShoppingList[] | ReturnDto> {
     try {
+      console.error('Q: ' + query);
       const requestUser =
         await this.sessionsService.validateAccessToken(request);
       const user = await this.usersService.findUser(requestUser.email);

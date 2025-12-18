@@ -40,7 +40,7 @@ export const SearchWithInput = ({ filtered, productCode, setProductCode, product
     return (
         <ThemedView style={{ ...inputStyles.input, padding: 0, paddingLeft: 0, paddingRight: 12, position: 'relative' }}>
             <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                <Ionicons name="fast-food-outline" size={20} color={Colors[scheme ?? "light"].text} style={{ marginLeft: 4, marginRight: 12 }} />
+                <Ionicons name="pricetag-outline" size={20} color={Colors[scheme ?? "light"].text} style={{ marginLeft: 4, marginRight: 12 }} />
                 <TextInput
                     style={{ flex: 1, color: (product?.name === null || product?.name === undefined) ? Colors[scheme ?? "light"].text : `${Colors[scheme ?? "light"].text}80` }}
                     placeholderTextColor={`${Colors[scheme ?? "light"].text}80`}

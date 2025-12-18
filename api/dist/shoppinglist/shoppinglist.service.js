@@ -178,6 +178,7 @@ let ShoppingListService = class ShoppingListService {
     }
     async getItemNow({ query, request, }) {
         try {
+            console.error('Q: ' + query);
             const requestUser = await this.sessionsService.validateAccessToken(request);
             const user = await this.usersService.findUser(requestUser.email);
             const shoppingList = this.dataSource

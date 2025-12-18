@@ -119,8 +119,8 @@ export const RadioButtons = ({
             <Ionicons
               name={
                 checkedValue === option.value
-                  ? "radiobox-marked"
-                  : "radiobox-blank"
+                  ? "radio-button-on-outline"
+                  : "radio-button-off-outline"
               }
               size={24}
               color={Colors[colorScheme ?? "light"].buttomText}
