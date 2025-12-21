@@ -11,6 +11,9 @@ export declare class QuantityUnitsService {
     private readonly usersService;
     constructor(quantityUnitsRepo: Repository<QuantityUnits>, dataSource: DataSource, sessionsService: SessionService, usersService: UsersService);
     findAll(): Promise<quantityTypesParams[] | []>;
+    findToId({ id }: {
+        id?: number;
+    }): Promise<any>;
     getHighest({ id }: {
         id?: number;
     }): Promise<any>;

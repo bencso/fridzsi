@@ -26,6 +26,10 @@ export declare class ShoppingListService {
         code: string;
         request: Request;
     }): Promise<ReturnDataDto | ReturnDto>;
+    getItemByProductId({ id, request, }: {
+        id: string;
+        request: Request;
+    }): Promise<ReturnDataDto | ReturnDto>;
     getItemNow({ query, request, }: {
         query: string;
         request: Request;

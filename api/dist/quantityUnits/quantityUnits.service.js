@@ -33,6 +33,23 @@ let QuantityUnitsService = class QuantityUnitsService {
             },
         })) || []);
     }
+    async findToId({ id }) {
+        return await this.dataSource
+            .getRepository(quantityUnits_entity_1.QuantityUnits)
+            .createQueryBuilder('quantity_units')
+            .select('quantity_units.divideToBigger')
+            .where('quantity_units.id >= :id', { id: id })
+            .andWhere((q) => {
+            const subQuery = q
+                .subQuery()
+                .select('q.category')
+                .from(quantityUnits_entity_1.QuantityUnits, 'q')
+                .where('q.id = :id', { id: id })
+                .getQuery();
+            return `quantity_units.category = ${subQuery}`;
+        })
+            .getRawMany();
+    }
     async getHighest({ id }) {
         let highestUnitByCategories = await this.dataSource
             .getRepository(quantityUnits_entity_1.QuantityUnits)

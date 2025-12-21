@@ -30,6 +30,24 @@ export class QuantityUnitsService {
     );
   }
 
+  async findToId({ id }: { id?: number }): Promise<any> {
+    return await this.dataSource
+      .getRepository(QuantityUnits)
+      .createQueryBuilder('quantity_units')
+      .select('quantity_units.divideToBigger')
+      .where('quantity_units.id >= :id', { id: id })
+      .andWhere((q) => {
+        const subQuery = q
+          .subQuery()
+          .select('q.category')
+          .from(QuantityUnits, 'q')
+          .where('q.id = :id', { id: id })
+          .getQuery();
+        return `quantity_units.category = ${subQuery}`;
+      })
+      .getRawMany();
+  }
+
   async getHighest({ id }: { id?: number }): Promise<any> {
     let highestUnitByCategories = await this.dataSource
       .getRepository(QuantityUnits)

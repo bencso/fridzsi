@@ -10,6 +10,7 @@ import { QuantityUnits } from 'src/quantityUnits/entities/quantityUnits.entity';
 import { QuantityUnitsService } from 'src/quantityUnits/quantityUnits.service';
 import { ReturnDataDto, ReturnDto } from 'src/dto/return.dto';
 import { ReturnPantryDto } from './dto/return-pantry.dto';
+import { ShoppingListService } from 'src/shoppinglist/shoppinglist.service';
 
 @Injectable()
 export class PantryService {
@@ -19,6 +20,7 @@ export class PantryService {
     private readonly sessionsService: SessionService,
     private readonly productService: ProductService,
     private readonly quantityUnitsService: QuantityUnitsService,
+    private readonly shoppinglistService: ShoppingListService,
   ) {}
   async create(
     request: Request,
@@ -62,6 +64,61 @@ export class PantryService {
             expiredAt: createPantryItemDto.expiredAt || new Date(),
           })
           .execute();
+
+        const shoppinglist = (await this.shoppinglistService.getItemByProductId(
+          {
+            id: productId,
+            request: request,
+          },
+        )) as { data: any };
+
+        if (shoppinglist.data) {
+          const data = shoppinglist.data;
+          if (Array.isArray(data[0][createPantryItemDto.code])) {
+            const originalItem = data[0][createPantryItemDto.code].find(
+              (item: any) => item.quantity === item.converted_quantity,
+            );
+
+            let minDiff = Infinity;
+            let bestItem = null;
+            const targetQuantity = createPantryItemDto.quantity;
+
+            for (const item of data[0][createPantryItemDto.code]) {
+              const quantityUnitNumber = await this.quantityUnitsService
+                .findToId({ id: originalItem.quantityunitid })
+                .then((data) =>
+                  data.reduce(
+                    (
+                      acc: number,
+                      currentValue: {
+                        quantity_units_divideToBigger: number | null;
+                      },
+                    ) =>
+                      Number(currentValue.quantity_units_divideToBigger) > 0
+                        ? acc *
+                          Number(currentValue.quantity_units_divideToBigger)
+                        : acc,
+                    1,
+                  ),
+                );
+              const diff = Math.abs(
+                item.quantity / quantityUnitNumber - targetQuantity,
+              );
+              if (diff < minDiff) {
+                minDiff = diff;
+                bestItem = item;
+              }
+            }
+
+            if (bestItem) {
+              console.log(
+                `Legkisebb különbség: ${minDiff}, Eredeti egység: ${bestItem.quantityunitid}, Cél mennyiség: ${targetQuantity}, Talált mennyiség: ${bestItem.quantity}`,
+              );
+            }
+          } else {
+            console.log('No items found for code:', createPantryItemDto.code);
+          }
+        }
 
         return { message: ['Sikeres létrehozás'], statusCode: 200 };
       }
