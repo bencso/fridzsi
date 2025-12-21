@@ -92,7 +92,6 @@ let PantryService = class PantryService {
                             }
                             else {
                                 const newQuantity = quantityInGrams - remaining;
-                                console.log(newQuantity);
                                 remaining = 0;
                                 if (newQuantity === 0) {
                                     await this.dataSource

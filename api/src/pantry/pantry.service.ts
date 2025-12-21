@@ -102,9 +102,7 @@ export class PantryService {
                   .where('id = :id', { id: item.shoppinglist_id })
                   .execute();
               } else {
-                //TODO: Váltásnál hibás majd ezt fixálni!
                 const newQuantity = quantityInGrams - remaining;
-                console.log(newQuantity);
                 remaining = 0;
                 if (newQuantity === 0) {
                   await this.dataSource
