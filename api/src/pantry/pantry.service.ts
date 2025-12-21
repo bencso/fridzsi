@@ -75,48 +75,13 @@ export class PantryService {
         if (shoppinglist.data) {
           const data = shoppinglist.data;
           if (Array.isArray(data[0][createPantryItemDto.code])) {
-            const originalItem = data[0][createPantryItemDto.code].find(
-              (item: any) => item.quantity === item.converted_quantity,
-            );
-
-            let minDiff = Infinity;
-            let bestItem = null;
-            const targetQuantity = createPantryItemDto.quantity;
-
-            for (const item of data[0][createPantryItemDto.code]) {
-              const quantityUnitNumber = await this.quantityUnitsService
-                .findToId({ id: originalItem.quantityunitid })
-                .then((data) =>
-                  data.reduce(
-                    (
-                      acc: number,
-                      currentValue: {
-                        quantity_units_divideToBigger: number | null;
-                      },
-                    ) =>
-                      Number(currentValue.quantity_units_divideToBigger) > 0
-                        ? acc *
-                          Number(currentValue.quantity_units_divideToBigger)
-                        : acc,
-                    1,
-                  ),
-                );
-              const diff = Math.abs(
-                item.quantity / quantityUnitNumber - targetQuantity,
-              );
-              if (diff < minDiff) {
-                minDiff = diff;
-                bestItem = item;
-              }
-            }
-
-            if (bestItem) {
-              console.log(
-                `Legkisebb különbség: ${minDiff}, Eredeti egység: ${bestItem.quantityunitid}, Cél mennyiség: ${targetQuantity}, Talált mennyiség: ${bestItem.quantity}`,
-              );
-            }
+            // TODO:
+            // 1. Minden mennyiséget grammra konvertálunk
+            // 2. A levonást kizárólag gramm-mal csináljuk
+            // 3. Ha marad mennyiség, az elemet "teljesítettnek" tekintjük és megyünk tovább
+            // 4. A maradékot szükség esetén visszaalakítjuk megjelenítéshez és átírjuk arra a régit
           } else {
-            console.log('No items found for code:', createPantryItemDto.code);
+            console.log('Nincs ilyen termék: ', createPantryItemDto.code);
           }
         }
 
