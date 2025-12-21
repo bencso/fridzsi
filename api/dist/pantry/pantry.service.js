@@ -19,6 +19,7 @@ const pantry_entity_1 = require("./entities/pantry.entity");
 const quantityUnits_entity_1 = require("../quantityUnits/entities/quantityUnits.entity");
 const quantityUnits_service_1 = require("../quantityUnits/quantityUnits.service");
 const shoppinglist_service_1 = require("../shoppinglist/shoppinglist.service");
+const shoppinglist_entity_1 = require("../shoppinglist/entities/shoppinglist.entity");
 let PantryService = class PantryService {
     constructor(usersService, dataSource, sessionsService, productService, quantityUnitsService, shoppinglistService) {
         this.usersService = usersService;
@@ -67,29 +68,53 @@ let PantryService = class PantryService {
                 if (shoppinglist.data) {
                     const data = shoppinglist.data;
                     if (Array.isArray(data[0][createPantryItemDto.code])) {
-                        const originalItem = data[0][createPantryItemDto.code].find((item) => item.quantity === item.converted_quantity);
-                        let minDiff = Infinity;
-                        let bestItem = null;
-                        const targetQuantity = createPantryItemDto.quantity;
-                        for (const item of data[0][createPantryItemDto.code]) {
-                            const quantityUnitNumber = await this.quantityUnitsService
-                                .findToId({ id: originalItem.quantityunitid })
-                                .then((data) => data.reduce((acc, currentValue) => Number(currentValue.quantity_units_divideToBigger) > 0
-                                ? acc *
-                                    Number(currentValue.quantity_units_divideToBigger)
-                                : acc, 1));
-                            const diff = Math.abs(item.quantity / quantityUnitNumber - targetQuantity);
-                            if (diff < minDiff) {
-                                minDiff = diff;
-                                bestItem = item;
+                        const shoppinglist = data?.[0]?.[createPantryItemDto.code];
+                        if (!Array.isArray(shoppinglist))
+                            return;
+                        let remaining = createPantryItemDto.quantity;
+                        for (const item of shoppinglist) {
+                            if (remaining <= 0)
+                                break;
+                            const factor = item.quantityunit !== 'g'
+                                ? await this.quantityUnitsService.convertToGram({
+                                    id: item.quantityunitid,
+                                })
+                                : 1;
+                            const quantityInGrams = item.quantity * factor;
+                            if (quantityInGrams < remaining) {
+                                remaining -= quantityInGrams;
+                                await this.dataSource
+                                    .createQueryBuilder()
+                                    .delete()
+                                    .from(shoppinglist_entity_1.ShoppingList)
+                                    .where('id = :id', { id: item.shoppinglist_id })
+                                    .execute();
                             }
-                        }
-                        if (bestItem) {
-                            console.log(`Legkisebb különbség: ${minDiff}, Eredeti egység: ${bestItem.quantityunitid}, Cél mennyiség: ${targetQuantity}, Talált mennyiség: ${bestItem.quantity}`);
+                            else {
+                                const newQuantity = quantityInGrams - remaining;
+                                console.log(newQuantity);
+                                remaining = 0;
+                                if (newQuantity === 0) {
+                                    await this.dataSource
+                                        .createQueryBuilder()
+                                        .delete()
+                                        .from(shoppinglist_entity_1.ShoppingList)
+                                        .where('id = :id', { id: item.shoppinglist_id })
+                                        .execute();
+                                }
+                                else {
+                                    await this.dataSource
+                                        .createQueryBuilder()
+                                        .update(shoppinglist_entity_1.ShoppingList)
+                                        .set({ quantity: newQuantity })
+                                        .where('id = :id', { id: item.shoppinglist_id })
+                                        .execute();
+                                }
+                            }
                         }
                     }
                     else {
-                        console.log('No items found for code:', createPantryItemDto.code);
+                        console.log('Nincs ilyen termék: ', createPantryItemDto.code);
                     }
                 }
                 return { message: ['Sikeres létrehozás'], statusCode: 200 };

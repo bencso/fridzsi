@@ -11,6 +11,7 @@ import { QuantityUnitsService } from 'src/quantityUnits/quantityUnits.service';
 import { ReturnDataDto, ReturnDto } from 'src/dto/return.dto';
 import { ReturnPantryDto } from './dto/return-pantry.dto';
 import { ShoppingListService } from 'src/shoppinglist/shoppinglist.service';
+import { ShoppingList } from 'src/shoppinglist/entities/shoppinglist.entity';
 
 @Injectable()
 export class PantryService {
@@ -75,11 +76,53 @@ export class PantryService {
         if (shoppinglist.data) {
           const data = shoppinglist.data;
           if (Array.isArray(data[0][createPantryItemDto.code])) {
-            // TODO:
-            // 1. Minden mennyiséget grammra konvertálunk
-            // 2. A levonást kizárólag gramm-mal csináljuk
-            // 3. Ha marad mennyiség, az elemet "teljesítettnek" tekintjük és megyünk tovább
-            // 4. A maradékot szükség esetén visszaalakítjuk megjelenítéshez és átírjuk arra a régit
+            const shoppinglist = data?.[0]?.[createPantryItemDto.code];
+            if (!Array.isArray(shoppinglist)) return;
+
+            let remaining = createPantryItemDto.quantity;
+
+            for (const item of shoppinglist) {
+              if (remaining <= 0) break;
+              const factor =
+                item.quantityunit !== 'g'
+                  ? await this.quantityUnitsService.convertToGram({
+                      id: item.quantityunitid,
+                    })
+                  : 1;
+
+              const quantityInGrams = item.quantity * factor;
+
+              if (quantityInGrams < remaining) {
+                remaining -= quantityInGrams;
+
+                await this.dataSource
+                  .createQueryBuilder()
+                  .delete()
+                  .from(ShoppingList)
+                  .where('id = :id', { id: item.shoppinglist_id })
+                  .execute();
+              } else {
+                //TODO: Váltásnál hibás majd ezt fixálni!
+                const newQuantity = quantityInGrams - remaining;
+                console.log(newQuantity);
+                remaining = 0;
+                if (newQuantity === 0) {
+                  await this.dataSource
+                    .createQueryBuilder()
+                    .delete()
+                    .from(ShoppingList)
+                    .where('id = :id', { id: item.shoppinglist_id })
+                    .execute();
+                } else {
+                  await this.dataSource
+                    .createQueryBuilder()
+                    .update(ShoppingList)
+                    .set({ quantity: newQuantity })
+                    .where('id = :id', { id: item.shoppinglist_id })
+                    .execute();
+                }
+              }
+            }
           } else {
             console.log('Nincs ilyen termék: ', createPantryItemDto.code);
           }

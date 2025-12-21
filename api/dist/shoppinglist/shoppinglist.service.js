@@ -200,6 +200,7 @@ let ShoppingListService = class ShoppingListService {
                 ])
                     .where('product.id = :id', { id: id })
                     .andWhere('shoppinglist.user = :userId', { userId: user.id })
+                    .orderBy('shoppinglist.day', 'ASC')
                     .getRawMany();
                 const returnConvertationData = await this.quantityService.convertToHighest({
                     request,

@@ -33,11 +33,11 @@ let QuantityUnitsService = class QuantityUnitsService {
             },
         })) || []);
     }
-    async findToId({ id }) {
-        return await this.dataSource
+    async convertToGram({ id }) {
+        const metrics = await this.dataSource
             .getRepository(quantityUnits_entity_1.QuantityUnits)
             .createQueryBuilder('quantity_units')
-            .select('quantity_units.divideToBigger')
+            .select('quantity_units.divideToBigger as divide')
             .where('quantity_units.id >= :id', { id: id })
             .andWhere((q) => {
             const subQuery = q
@@ -49,6 +49,9 @@ let QuantityUnitsService = class QuantityUnitsService {
             return `quantity_units.category = ${subQuery}`;
         })
             .getRawMany();
+        console.log(metrics);
+        const returnData = metrics.reduce((acc, cv) => cv.divide != null ? acc * cv.divide : acc, 1);
+        return returnData;
     }
     async getHighest({ id }) {
         let highestUnitByCategories = await this.dataSource
