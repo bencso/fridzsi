@@ -102,10 +102,17 @@ let PantryService = class PantryService {
                                         .execute();
                                 }
                                 else {
+                                    const nextQuantityUnit = await this.quantityUnitsService.convertToLowerUnit({
+                                        remaining,
+                                        quantityUnit: item.quantityunitid,
+                                    });
                                     await this.dataSource
                                         .createQueryBuilder()
                                         .update(shoppinglist_entity_1.ShoppingList)
-                                        .set({ quantity: newQuantity })
+                                        .set({
+                                        quantity: newQuantity,
+                                        quantityUnit: nextQuantityUnit,
+                                    })
                                         .where('id = :id', { id: item.shoppinglist_id })
                                         .execute();
                                 }

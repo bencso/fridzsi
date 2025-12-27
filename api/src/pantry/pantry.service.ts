@@ -112,10 +112,18 @@ export class PantryService {
                     .where('id = :id', { id: item.shoppinglist_id })
                     .execute();
                 } else {
+                  const nextQuantityUnit =
+                    await this.quantityUnitsService.convertToLowerUnit({
+                      remaining,
+                      quantityUnit: item.quantityunitid,
+                    });
                   await this.dataSource
                     .createQueryBuilder()
                     .update(ShoppingList)
-                    .set({ quantity: newQuantity })
+                    .set({
+                      quantity: newQuantity,
+                      quantityUnit: nextQuantityUnit,
+                    })
                     .where('id = :id', { id: item.shoppinglist_id })
                     .execute();
                 }

@@ -17,6 +17,10 @@ export declare class QuantityUnitsService {
     getHighest({ id }: {
         id?: number;
     }): Promise<any>;
+    convertToLowerUnit({ remaining, quantityUnit, }: {
+        remaining: number;
+        quantityUnit: number;
+    }): Promise<string>;
     convertToHighest({ request, products, }: {
         request: Request;
         products?: any[];

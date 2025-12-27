@@ -49,8 +49,7 @@ let QuantityUnitsService = class QuantityUnitsService {
             return `quantity_units.category = ${subQuery}`;
         })
             .getRawMany();
-        console.log(metrics);
-        const returnData = metrics.reduce((acc, cv) => cv.divide != null ? acc * cv.divide : acc, 1);
+        const returnData = metrics.reduce((acc, cv) => (cv.divide != null ? acc * cv.divide : acc), 1);
         return returnData;
     }
     async getHighest({ id }) {
@@ -97,6 +96,29 @@ let QuantityUnitsService = class QuantityUnitsService {
                 .getRawOne();
         }
         return highestUnitByCategories;
+    }
+    async convertToLowerUnit({ remaining, quantityUnit, }) {
+        const currentUnit = await this.quantityUnitsRepo.findOne({
+            where: {
+                id: typeof quantityUnit === 'number'
+                    ? String(quantityUnit - 1)
+                    : String(Number(quantityUnit) - 1),
+            },
+        });
+        if (!currentUnit)
+            return null;
+        const lowerUnit = await this.quantityUnitsRepo.findOne({
+            where: {
+                category: currentUnit.category,
+                id: typeof currentUnit.id === 'number'
+                    ? String(currentUnit.id - 1)
+                    : String(Number(currentUnit.id) - 1),
+            },
+        });
+        if (lowerUnit && remaining < currentUnit.divideToBigger) {
+            return lowerUnit.id;
+        }
+        return null;
     }
     async convertToHighest({ request, products, }) {
         const requestUser = await this.sessionsService.validateAccessToken(request);

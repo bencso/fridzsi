@@ -47,8 +47,10 @@ export class QuantityUnitsService {
       })
       .getRawMany();
 
-      console.log(metrics);
-    const returnData = metrics.reduce((acc, cv) => cv.divide != null ? acc * cv.divide : acc, 1);
+    const returnData = metrics.reduce(
+      (acc, cv) => (cv.divide != null ? acc * cv.divide : acc),
+      1,
+    );
 
     return returnData;
   }
@@ -99,6 +101,41 @@ export class QuantityUnitsService {
     }
 
     return highestUnitByCategories;
+  }
+
+  async convertToLowerUnit({
+    remaining,
+    quantityUnit,
+  }: {
+    remaining: number;
+    quantityUnit: number;
+  }) {
+    const currentUnit = await this.quantityUnitsRepo.findOne({
+      where: {
+        id:
+          typeof quantityUnit === 'number'
+            ? String(quantityUnit - 1)
+            : String(Number(quantityUnit) - 1),
+      },
+    });
+
+    if (!currentUnit) return null;
+
+    const lowerUnit = await this.quantityUnitsRepo.findOne({
+      where: {
+        category: currentUnit.category,
+        id:
+          typeof currentUnit.id === 'number'
+            ? String(currentUnit.id - 1)
+            : String(Number(currentUnit.id) - 1),
+      },
+    });
+
+    if (lowerUnit && remaining < currentUnit.divideToBigger) {
+      return lowerUnit.id;
+    }
+
+    return null;
   }
 
   // Itt a kódom kicsit skálázhatóság szempontjából javult, a batcheléssel
